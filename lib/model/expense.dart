@@ -34,9 +34,11 @@ class Expense {
   String id;
   DateTime date;
   Category category;
+
   String get formattedDate {
     return formatter.format(date);
   }
+  
   Expense({
     required this.title,
     required this.amount,

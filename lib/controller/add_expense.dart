@@ -27,22 +27,25 @@ class _AddExpenseState extends State<AddExpense> {
     final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
     if (_titleController.text.trim().isEmpty ||
-        amountIsInvalid||
+        amountIsInvalid ||
         _selectedDate == null) {
-      showDialog(context: context, builder: (ctx) {
-        return AlertDialog(
-          title: const Text('Invalid Input'),
-          content: const Text('Please make sure a valid title, amount, date and category was entered'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Okay'),
-            )
-          ],
-        );
-      });
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: const Text('Invalid Input'),
+              content: const Text(
+                  'Please make sure a valid title, amount, date and category was entered'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Okay'),
+                )
+              ],
+            );
+          });
       return;
     }
     widget.addExpense(Expense(
@@ -51,6 +54,7 @@ class _AddExpenseState extends State<AddExpense> {
       date: _selectedDate!,
       category: _selectedCategory,
     ));
+    Navigator.pop(context);
   }
 
   void _datePicker() async {
@@ -69,9 +73,12 @@ class _AddExpenseState extends State<AddExpense> {
 
   @override
   Widget build(BuildContext context) {
+    final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(7, 48, 4, 16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
               decoration: const InputDecoration(labelText: 'Title'),
@@ -101,47 +108,56 @@ class _AddExpenseState extends State<AddExpense> {
                         ? 'No Selected Date'
                         : formatter.format(_selectedDate!)),
                     IconButton(
-                        onPressed: _datePicker,
-                        icon: const Icon(
-                          Icons.calendar_month_sharp,
-                        )),
+                      onPressed: _datePicker,
+                      icon: const Icon(
+                        Icons.calendar_month_sharp,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(
-            height: 16,
+            height: 40,
           ),
-          Row(
-            children: [
-              DropdownButton(
-                value: _selectedCategory,
-                items: Category.values
-                    .map(
-                      (category) => DropdownMenuItem(
-                        value: category,
-                        child: Text(
-                          category.name.toUpperCase(),
+          DropdownButton(
+            value: _selectedCategory,
+            items: Category.values
+                .map(
+                  (category) => DropdownMenuItem(
+                    value: category,
+                    child: Row(
+                      children: [
+                        Icon(categoryIcons[category]),
+                        const SizedBox(
+                          width: 8,
                         ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
-              ),
-              const Spacer(),
+                        Text(category.name.toUpperCase()),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              if (value == null) {
+                return;
+              }
+              setState(() {
+                _selectedCategory = value;
+              });
+            },
+          ),
+          isKeyboardVisible ? const SizedBox(height: 50) :
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Cancel'),
+                child: const Text('Cancel! Go back.'),
               ),
               ElevatedButton(
                 onPressed: _submitExpenseData,
