@@ -4,7 +4,7 @@ import 'package:momento/model/expense.dart';
 //function pass to the childwidget which would be called in the child widget that would be 
 //implemented with setState in parent widget
 class DummyData {
-  final List<Expense> _registeredExpensesList = [
+   List<Expense> registeredExpensesList = [
       Expense(
       title: "Breakfast",
       amount: 20000,

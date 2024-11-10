@@ -1,6 +1,7 @@
 import 'package:momento/controller/add_expense.dart';
+import 'package:momento/controller/charts_page.dart';
+import 'package:momento/dummy_data.dart';
 import 'package:momento/model/expense.dart';
-import 'package:momento/view/charts_page.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/controller/expenses_list.dart';
 
@@ -14,13 +15,15 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-  final List<Expense> _registeredExpensesList = [];
+  final List<Expense> _registeredExpensesList =
+      DummyData().registeredExpensesList;
 
   void _addExpense(Expense newExpense) {
     setState(() {
       _registeredExpensesList.add(newExpense);
     });
   }
+
   void _deleteExpense(Expense expense) {
     final index = _registeredExpensesList.indexOf(expense);
     setState(() {
@@ -40,13 +43,24 @@ class _ExpensesState extends State<Expenses> {
       ),
     ));
   }
+
   void _onAddNewExpenseLayout() {
     showModalBottomSheet(
       isScrollControlled: true,
-        context: context,
-        builder: (ctx) => AddExpense(
-              addExpense: _addExpense,
-            ));
+      useSafeArea: true,
+      context: context,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.fromLTRB(
+          0,
+          0,
+          0,
+          MediaQuery.of(ctx).viewInsets.bottom,
+        ),
+        child: AddExpense(
+          addExpense: _addExpense,
+        ),
+      ),
+    );
   }
 
   @override
@@ -64,22 +78,31 @@ class _ExpensesState extends State<Expenses> {
       body: Column(
         children: [
           GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ChartsPage(expenses: _registeredExpensesList)),
-            );
-          },
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.bar_chart, size: 24),
-              SizedBox(width: 8),
-              Text("The Chart"),
-            ],
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ChartsPage(expenses: _registeredExpensesList)),
+              );
+            },
+            child: const Card(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.bar_chart, size: 24),
+                  SizedBox(width: 8),
+                  Text(
+                    "The Chart",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
           Expanded(
-            child: ExpensesList(expenses: _registeredExpensesList, deleteExpense: _deleteExpense),
+            child: ExpensesList(
+                expenses: _registeredExpensesList,
+                deleteExpense: _deleteExpense),
           ),
         ],
       ),

@@ -73,54 +73,53 @@ class _AddExpenseState extends State<AddExpense> {
 
   @override
   Widget build(BuildContext context) {
-    final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(7, 48, 4, 16),
+  return SingleChildScrollView(
+    child: Padding(
+      padding: const EdgeInsets.all(8),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-              decoration: const InputDecoration(labelText: 'Title'),
-              keyboardType: TextInputType.text,
-              maxLength: 50,
-              controller: _titleController),
+            decoration: const InputDecoration(labelText: 'Title'),
+            keyboardType: TextInputType.text,
+            maxLength: 50,
+            controller: _titleController,
+          ),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
                 child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Amount',
-                      prefixText: '৳',
-                    ),
-                    keyboardType: TextInputType.number,
-                    controller: _amountController),
+                  decoration: const InputDecoration(
+                    labelText: 'Amount',
+                    prefixText: '৳',
+                  ),
+                  keyboardType: TextInputType.number,
+                  controller: _amountController,
+                ),
               ),
-              const SizedBox(
-                width: 16,
-              ),
+              const SizedBox(width: 16),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(_selectedDate == null
-                        ? 'No Selected Date'
-                        : formatter.format(_selectedDate!)),
+                    Text(
+                      _selectedDate == null
+                          ? 'No Selected Date'
+                          : formatter.format(_selectedDate!),
+                    ),
                     IconButton(
                       onPressed: _datePicker,
-                      icon: const Icon(
-                        Icons.calendar_month_sharp,
-                      ),
+                      icon: const Icon(Icons.calendar_month_sharp),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 40,
-          ),
+          const SizedBox(height: 24),
           DropdownButton(
             value: _selectedCategory,
             items: Category.values
@@ -130,9 +129,7 @@ class _AddExpenseState extends State<AddExpense> {
                     child: Row(
                       children: [
                         Icon(categoryIcons[category]),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        const SizedBox(width: 8),
                         Text(category.name.toUpperCase()),
                       ],
                     ),
@@ -148,25 +145,27 @@ class _AddExpenseState extends State<AddExpense> {
               });
             },
           ),
-          isKeyboardVisible ? const SizedBox(height: 50) :
-          const Spacer(),
+          const SizedBox(height: 32),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Cancel! Go back.'),
+                child: const Text('Cancel'),
               ),
+              const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: _submitExpenseData,
                 child: const Text('Add Expense'),
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 8),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
