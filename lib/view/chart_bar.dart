@@ -18,7 +18,7 @@ class ChartBar extends StatelessWidget {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
     final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    double multiplier = (isPortrait)? 0.6:0.1;
+    double multiplier = (isPortrait)? 0.6: 0.4;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       
