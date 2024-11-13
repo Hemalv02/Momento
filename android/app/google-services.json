@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336235766087",
+    "project_id": "momento-1234",
+    "storage_bucket": "momento-1234.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336235766087:android:be6fe7e10e73a7b71fac62",
+        "android_client_info": {
+          "package_name": "com.alchemist.app.momento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqzo0YWFsFciVulWYgGHQjSWK8M0SFB7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
