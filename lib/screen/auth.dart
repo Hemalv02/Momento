@@ -24,29 +24,32 @@ class _AuthScreenState extends State<AuthScreen> {
       return;
     }
     _formKey.currentState!.save();
-    if (_isLogin) {
-      // Log in
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Expenses()));
-    } else {
-      try {
+    try {
+      if (_isLogin) {
+        final userCredentials = await _firebase.signInWithEmailAndPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+        );
+        // Log in
+       
+      } else {
         final userCredentials = await _firebase.createUserWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
-      } on FirebaseAuthException catch (error) {
-        var message = 'An error occurred, please check your credentials!';
-        if (error.message != null) {
-          message = error.message!;
-        }
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
       }
+    } on FirebaseAuthException catch (error) {
+      var message = 'An error occurred, please check your credentials!';
+      if (error.message != null) {
+        message = error.message!;
+      }
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
     }
   }
 
