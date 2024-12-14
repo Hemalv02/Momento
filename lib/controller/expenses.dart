@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:momento/controller/add_expense.dart';
 import 'package:momento/controller/charts_page.dart';
 import 'package:momento/dummy_data.dart';
@@ -69,18 +67,12 @@ class _ExpensesState extends State<Expenses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut();
-          },
-          icon: const Icon(Icons.logout),
-        ),
         title: const Text("Event ExpenseTracker"),
         actions: [
           IconButton(
             onPressed: _onAddNewExpenseLayout,
             icon: const Icon(Icons.add),
-          )
+          ),
         ],
       ),
       body: Column(

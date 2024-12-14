@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:momento/controller/expenses.dart';
+import 'package:momento/home_screen.dart';
 import 'package:momento/screen/auth.dart';
 import 'package:momento/view/themedata.dart';
 import 'package:momento/view/dark_themedata.dart';
@@ -27,7 +27,7 @@ void main() async {
             );
           }
           if (userSnapshot.hasData) {
-            return Expenses();
+            return HomeScreen();
           }
           return AuthScreen();
         },

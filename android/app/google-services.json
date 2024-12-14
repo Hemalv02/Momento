@@ -12,7 +12,20 @@
           "package_name": "com.alchemist.app.momento"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "336235766087-ghfv09htmnbbsgnese2idhedvja4gmbr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alchemist.app.momento",
+            "certificate_hash": "69ee5ae88208a892507c7dbb2584b4ee81f15899"
+          }
+        },
+        {
+          "client_id": "336235766087-66rh3gsjc2rsk2f4gkgctmrkmb7podc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCqzo0YWFsFciVulWYgGHQjSWK8M0SFB7A"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336235766087-66rh3gsjc2rsk2f4gkgctmrkmb7podc9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "336235766087-od2rdd9qvvo35fs4r14jrtmf66evnc8n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alchemist.app.momento"
+              }
+            }
+          ]
         }
       }
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:momento/controller/expenses.dart';
 import 'package:momento/view/password_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -13,10 +13,16 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.signOut();
+  }
   final _formKey = GlobalKey<FormState>();
   var _isLogin = true;
   var _enteredPassword = "";
   var _enteredEmail = "";
+  var _enteredUsername = "";
 
   void _submit() async {
     final isValid = _formKey.currentState!.validate();
@@ -37,6 +43,11 @@ class _AuthScreenState extends State<AuthScreen> {
           email: _enteredEmail,
           password: _enteredPassword,
         );
+
+        await FirebaseFirestore.instance.collection('users').doc(userCredentials.user!.uid).set({
+          'username': _enteredUsername,
+          'email': _enteredEmail,
+        });
       }
     } on FirebaseAuthException catch (error) {
       var message = 'An error occurred, please check your credentials!';
@@ -91,6 +102,22 @@ class _AuthScreenState extends State<AuthScreen> {
                             },
                             onSaved: (newValue) => _enteredEmail = newValue!,
                           ),
+                          if(!_isLogin)
+                          TextFormField(
+                            decoration: const InputDecoration(
+                                labelText: 'Username'),
+                            keyboardType: TextInputType.text,
+                            autocorrect: false,
+                            textCapitalization: TextCapitalization.none,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter a username.';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) => _enteredUsername = newValue!,
+                          ),
+
                           Flexible(
                             child: TextFormField(
                               decoration: const InputDecoration(
