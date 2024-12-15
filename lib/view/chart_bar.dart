@@ -17,12 +17,12 @@ class ChartBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    double multiplier = (isPortrait)? 0.6: 0.4;
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+    double multiplier = (isPortrait) ? 0.6 : 0.4;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      
-      child:  SizedBox(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.3,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -37,17 +37,15 @@ class ChartBar extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .outline
-                            .withOpacity(0.3),
+                        color:
+                            Theme.of(context).colorScheme.outline.withAlpha(76),
                         width: 1,
                       ),
                       borderRadius: BorderRadius.circular(8),
                       color: Theme.of(context)
                           .colorScheme
                           .surfaceContainerHighest
-                          .withOpacity(0.3),
+                          .withAlpha(76),
                     ),
                   ),
                   FractionallySizedBox(
@@ -57,7 +55,7 @@ class ChartBar extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         color: isDarkMode
                             ? colorScheme.secondary
-                            : colorScheme.primary.withOpacity(0.85),
+                            : colorScheme.primary.withAlpha(217),
                       ),
                     ),
                   ),
@@ -66,8 +64,7 @@ class ChartBar extends StatelessWidget {
             ),
             Text(
               '৳ ${totalAmount.toStringAsFixed(0)}',
-              ),
-            
+            ),
             const SizedBox(height: 4),
             Icon(
               categoryIcons[category],

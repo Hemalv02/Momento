@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:momento/allocated_screen/event_review.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -19,7 +22,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     super.dispose();
   }
 
-  void _submitFeedback() {
+  void _submitFeedback() async {
     final String name = _nameController.text.trim();
     final String feedback = _feedbackController.text.trim();
 
@@ -34,6 +37,23 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Feedback sent successfully!')),
     );
+
+    try {
+      final user = FirebaseAuth.instance.currentUser!;
+      final userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      await FirebaseFirestore.instance.collection('feedback').add({
+        'feedback': feedback,
+        'rating': _rating,
+        'createdAt': FieldValue.serverTimestamp(),
+        'username': userData.data()?['username'] ?? 'Unknown',
+      });
+    } catch (error) {
+      print('Error sending message: $error');
+    }
 
     setState(() {
       _rating = 0;
@@ -57,11 +77,43 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
+  void _moreActions() {
+    showMenu(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      color: Colors.blueGrey,
+      context: context,
+      position: const RelativeRect.fromLTRB(1000, 80, 0, 0),
+      items: [
+        PopupMenuItem(
+          padding: const EdgeInsets.all(10),
+          value: 'show_reviews',
+          child: const Text('Show all reviews', style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    ).then(
+      (value) {
+        if (value == 'show_reviews') {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const EventReviewScreen();
+          }));
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Feedback'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: _moreActions,
+          )
+        ],
       ),
       body: SingleChildScrollView(
         // Makes the whole screen scrollable

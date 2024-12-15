@@ -78,14 +78,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
   );
 }
 
-void moreActions(){
+void _moreActions(){
   showMenu(
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      color: Colors.blueGrey,
       context: context,
       position: RelativeRect.fromLTRB(1000, 80, 0, 0), // Positioning of the menu
       items: [
         PopupMenuItem(
+          padding: EdgeInsets.all(10),
           value: 'clear_all',
-          child: Text('Clear All Notifications'),
+          child: Text('Clear All Notifications', style: TextStyle(color: Colors.white)),
         ),
       ],
     ).then((value) {
@@ -102,7 +107,7 @@ void moreActions(){
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
-            onPressed: moreActions,
+            onPressed: _moreActions,
           )
         ],
       ),
