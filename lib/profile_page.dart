@@ -125,6 +125,11 @@ class ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {},
+        ),
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
