@@ -36,7 +36,7 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.people,
                     label: 'Guests',
                     onTap: () {
-                      print('Guests tapped');
+                      Navigator.of(context).pushNamed('guest_list');
                     },
                   ),
                   _buildFeatureItem(
