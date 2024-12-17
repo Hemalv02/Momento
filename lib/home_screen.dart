@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:momento/allocated_screen/chat_screen.dart';
 import 'package:momento/allocated_screen/feedback_screen.dart';
 import 'package:momento/allocated_screen/notifications_screen.dart';
 import 'package:momento/controller/expenses.dart';
-import 'package:momento/screen/auth.dart';
+import 'package:momento/log_in/login.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
             title: 'Logout',
             icon: Icons.logout,
             color: Colors.grey,
-            screen: AuthScreen(),
+            screen: Login(),
           ),
         ],
       ),
@@ -70,16 +70,17 @@ class HomeScreen extends StatelessWidget {
     required Widget screen,
   }) {
     return GestureDetector(
-      
-      onTap: () {
+      onTap: () async {
         if (title == 'Logout') {
-          FirebaseAuth.instance.signOut();
+          await Supabase.instance.client.auth.signOut();
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('login', (route) => false);
         }
-        if(title!='Logout') {
+        if (title != 'Logout') {
           Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => screen),
-        );
+            context,
+            MaterialPageRoute(builder: (context) => screen),
+          );
         }
       },
       child: Card(

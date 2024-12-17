@@ -1,15 +1,14 @@
 import 'package:momento/allocated_screen/message_bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ChatMessages extends StatelessWidget {
   const ChatMessages({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authenticatedUser = FirebaseAuth.instance.currentUser!;
-
+    final user = Supabase.instance.client.auth.currentUser;
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('chat')
@@ -61,14 +60,14 @@ class ChatMessages extends StatelessWidget {
             if (nextUserIsSame) {
               return MessageBubble.next(
                 message: chatMessage['text'],
-                isMe: authenticatedUser.uid == currentMessageUserId,
+                isMe: user!.id == currentMessageUserId,
               );
             } else {
               return MessageBubble.first(
                 userImage: chatMessage['userImage'],
                 username: chatMessage['username'],
                 message: chatMessage['text'],
-                isMe: authenticatedUser.uid == currentMessageUserId,
+                isMe: user!.id == currentMessageUserId,
               );
             }
           },
@@ -77,44 +76,3 @@ class ChatMessages extends StatelessWidget {
     );
   }
 }
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
-
-// class ChatMessages extends StatelessWidget {
-//   const ChatMessages({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder(
-//       stream: FirebaseFirestore.instance
-//           .collection('chat')
-//           .orderBy('createdAt', descending: true)
-//           .snapshots(),
-//       builder: (context, chatSnapshot) {
-//         if (chatSnapshot.connectionState == ConnectionState.waiting) {
-//           return const Center(
-//             child: CircularProgressIndicator(),
-//           );
-//         }
-//         if (!chatSnapshot.hasData || chatSnapshot.data!.docs.isEmpty) {
-//           return const Center(
-//             child: Text('No messages yet'),
-//           );
-//         }
-//         if (chatSnapshot.hasError) {
-//           return const Center(
-//             child: Text('An error occurred!'),
-//           );
-//         }
-//         final chatDocs = chatSnapshot.data!.docs;
-//         return ListView.builder(
-//           reverse: true, // Ensures the newest message appears at the bottom
-//           itemCount: chatDocs.length,
-//           itemBuilder: (ctx, index) => Text(
-//             chatDocs[index].data()['text'] ?? 'No text available',
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }

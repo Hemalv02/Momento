@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:momento/allocated_screen/event_review.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -39,10 +39,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
 
     try {
-      final user = FirebaseAuth.instance.currentUser!;
+       final supabase = Supabase.instance.client;
+      final user = supabase.auth.currentUser;
       final userData = await FirebaseFirestore.instance
           .collection('users')
-          .doc(user.uid)
+          .doc(user!.id)
           .get();
 
       await FirebaseFirestore.instance.collection('feedback').add({

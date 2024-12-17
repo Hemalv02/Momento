@@ -13,3 +13,4 @@ class PasswordEvent extends LoginEvents {
 
   const PasswordEvent({required this.password});
 }
+

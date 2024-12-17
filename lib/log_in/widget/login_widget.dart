@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Color bgColor=Colors.black;
-Color textColor=Colors.white;
-AppBar buildAppBar(bool isDark, String title) {
-  bgColor= isDark ? Colors.black :Colors.white;
-  textColor=isDark?Colors.white:Colors.black;
+
+Color _bgColor = Colors.black;
+Color _textColor = Colors.white;
+AppBar buildAppBar(Color  bgColor,Color textColor , String title) {
+  _bgColor = bgColor;
+  _textColor = textColor;
 
   return AppBar(
     centerTitle: true,
@@ -14,9 +15,7 @@ AppBar buildAppBar(bool isDark, String title) {
     title: Text(
       title,
       style: TextStyle(
-          fontSize: 16.sp,
-          fontWeight: FontWeight.normal,
-          color: textColor),
+          fontSize: 16.sp, fontWeight: FontWeight.normal, color: textColor),
     ),
     bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
@@ -66,7 +65,8 @@ Widget reusableText(String text) {
   );
 }
 
-Widget buildTextField(String text, String textType) {
+
+Widget buildTextField(String text, String textType, void Function(String value)? func) {
   return Container(
     width: 325.w,
     height: 50.h,
@@ -83,13 +83,14 @@ Widget buildTextField(String text, String textType) {
           // height: 16.w,
           margin: EdgeInsets.only(left: 17.w),
           child: Icon(
-            textType == 'email' ? Icons.email : Icons.lock,
+            textType == 'password' ? Icons.lock : Icons.person,
           ),
         ),
         Container(
           width: 270.w,
           height: 50.h,
           child: TextField(
+            onChanged: (value)=> func!(value),
             autocorrect: false,
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -115,12 +116,12 @@ Widget buildTextField(String text, String textType) {
               hintStyle: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.normal,
-                color: textColor.withAlpha(180),
+                color: _textColor.withAlpha(180),
               ),
               contentPadding: EdgeInsets.only(left: 20.w),
             ),
             keyboardType: TextInputType.multiline,
-            obscureText: textType == 'email' ? false : true,
+            obscureText: textType == 'password' ? true : false,
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.normal,
@@ -133,7 +134,7 @@ Widget buildTextField(String text, String textType) {
   );
 }
 
-Widget forgotPassword(){
+Widget forgotPassword() {
   return Container(
     width: 260.w,
     height: 44.h,
@@ -154,20 +155,22 @@ Widget forgotPassword(){
   );
 }
 
-Widget buildLogInAndSignUpButton(String buttonName){
+Widget buildLogInAndSignUpButton(String buttonName, void Function()? function) {
   return GestureDetector(
-    onTap: () {
-      
-    },
+    onTap: function,
     child: Container(
       width: 325.w,
       height: 50.h,
-      margin: EdgeInsets.only(top: buttonName=="Log in"?40.h:20.h),
+      margin: EdgeInsets.only(top: buttonName == "Log in" ? 40.h : 20.h),
       decoration: BoxDecoration(
-        color: buttonName=="Log In"?Colors.indigo:bgColor,
+        color: buttonName == "Don't have an account? Sign up"
+            ? _bgColor
+            : Colors.indigo,
         borderRadius: BorderRadius.circular(15.w),
         border: Border.all(
-          color: buttonName=="Log In"?Colors.transparent:Colors.grey,
+          color: buttonName == "Don't have an account? Sign up"
+              ? Colors.grey
+              : Colors.transparent,
         ),
         boxShadow: [
           BoxShadow(
@@ -184,7 +187,9 @@ Widget buildLogInAndSignUpButton(String buttonName){
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.normal,
-            color: buttonName=="Log In"?bgColor:textColor,
+            color: buttonName == "Don't have an account? Sign up"
+                ? _textColor
+                : _bgColor,
           ),
         ),
       ),
