@@ -74,7 +74,7 @@ class _LoginState extends State<Login> {
                   }),
                   SizedBox(height: 15.h),
                   signUpButton("Don't have an account? Sign up", () {
-                    Navigator.of(context).pushNamed('register');
+                    Navigator.of(context).pushNamed('signup');
                   }),
                 ],
               ),
