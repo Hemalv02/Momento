@@ -1,5 +1,6 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/onboarding/bloc/onboarding_bloc.dart';
@@ -42,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           1,
                           context,
                           "Next",
-                          "Momento - Your Event, Your Way!",
+                          "Your Event, Your Way!",
                           "Stay organized, save time, and create memories that last forever.",
                           "assets/images/welcome1.png"),
                       _page(
@@ -57,7 +58,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           context,
                           "Get Started",
                           "Your Journey Starts Here!",
-                          "Sign up to create your first event in minutes",
+                          "Join Us to Experience the Best Event Management App.",
                           "assets/images/welcome3.png"),
                     ],
                   ),
@@ -69,7 +70,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       decorator: DotsDecorator(
                         color: Colors.grey,
-                        activeColor: Colors.blue,
+                        activeColor: const Color(0xFF003675),
                         size: const Size.square(8),
                         activeSize: const Size(18, 8),
                         activeShape: RoundedRectangleBorder(
@@ -86,81 +87,94 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _page(int index, BuildContext context, String buttonName, String title,
       String subTitle, String imagepath) {
-    return Column(
-      children: [
-        SizedBox(
-          width: 345.w,
-          height: 345.h,
-          child: Image.asset(
-            imagepath,
-            fit: BoxFit.contain, // Ensure the image scales proportionally
-          ),
-        ),
-        const Spacer(),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.white));
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          // Add vertical spacing at the top to move the image down
+          const Spacer(),
+          SizedBox(
+            width: 345.w,
+            height: 320.h,
+            child: Image.asset(
+              imagepath,
+              fit: BoxFit.contain, // Ensure the image scales proportionally
             ),
           ),
-        ),
-        SizedBox(height: 10.h),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30.w),
-          child: Text(
-            subTitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            if (index == 3) {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('login', (route) => false);
-            } else {
-              _controller.animateToPage(index,
-                  duration: const Duration(milliseconds: 1000),
-                  curve: Curves.easeIn);
-            }
-          },
-          child: Container(
-            width: 325.w,
-            height: 50.h,
-            margin: EdgeInsets.only(
-                top: 100.h, left: 25.w, right: 25.w, bottom: 20.h),
-            decoration: BoxDecoration(
-              color: const Color(0xFF003675), // Updated button color
-              borderRadius: BorderRadius.circular(15.w),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withAlpha(25),
-                  blurRadius: 2,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                buttonName,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.white,
-                ),
+          const SizedBox(
+            height: 2,
+          ), // Consistent spacing between image and text
+          // Subtitle with consistent alignment
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        )
-      ],
+          const Spacer(), // Space between title and subtitle
+          // Space between subtitle and button
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.w),
+            child: Text(
+              subTitle,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+          // Button with fixed alignment and spacing
+          const Spacer(),
+          GestureDetector(
+            onTap: () {
+              if (index == 3) {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('login', (route) => false);
+              } else {
+                _controller.animateToPage(index,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut);
+              }
+            },
+            child: Container(
+              width: 325.w,
+              height: 50.h,
+              margin: EdgeInsets.only(
+                  top: 50.h, left: 25.w, right: 25.w, bottom: 20.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFF003675),
+                borderRadius: BorderRadius.circular(15.w),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withAlpha(25),
+                    blurRadius: 2,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  buttonName,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
