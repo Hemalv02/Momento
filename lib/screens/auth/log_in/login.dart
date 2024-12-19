@@ -17,58 +17,66 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    Color bgColor = isDark ? Colors.black : Colors.white;
-    Color textColor = isDark ? Colors.white : Colors.black;
     return BlocBuilder<LoginBloc, LogInState>(
       builder: (context, state) {
-        return Container(
-          color: bgColor,
-          child: SafeArea(
-            child: Scaffold(
-              backgroundColor: bgColor,
-              appBar: buildAppBar(bgColor, textColor, "Log In"),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    buildThirdPartyLogin(context),
-                    reusableText("Or use your email account to login"),
-                    Container(
-                      margin: EdgeInsets.only(top: 36.h),
-                      padding: EdgeInsets.only(left: 25.w, right: 25.w),
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Log In"),
+            backgroundColor: const Color(0xFF003675),
+            foregroundColor: Colors.white,
+            centerTitle: true,
+          ),
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.only(top: 35.h),
+              padding: EdgeInsets.only(left: 25.w, right: 25.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          reusableText("Email"),
-                          SizedBox(height: 5.h),
-                          buildTextField("Enter your email", "email", (value) {
-                            context
-                                .read<LoginBloc>()
-                                .add(EmailEvent(email: value));
-                          }),
-                          SizedBox(height: 5.h),
-                          reusableText("Password"),
-                          SizedBox(height: 5.h),
-                          buildTextField("Enter your password", "password",
-                              (value) {
-                            context
-                                .read<LoginBloc>()
-                                .add(PasswordEvent(password: value));
-                          }),
-                          forgotPassword(),
-                          buildLogInAndSignUpButton("Log In", () {
-                            LoginController(context: context)
-                                .handleLogIn("email");
-                          }),
-                          buildLogInAndSignUpButton(
-                              "Don't have an account? Sign up", () {
-                            Navigator.of(context).pushNamed('register');
-                          }),
-                        ],
+                    children: [
+                      Text(
+                        "Welcome back!",
+                        style: TextStyle(
+                            fontSize: 32.sp,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Roboto',
+                            color: Colors.grey.shade800),
                       ),
-                    ),
-                  ],
-                ),
+                      Text("We are so excited to see you again!",
+                          style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto',
+                              color: Colors.grey.shade600)),
+                    ],
+                  )),
+                  SizedBox(height: 30.h),
+                  reusableText("Email"),
+                  SizedBox(height: 5.h),
+                  buildTextField("Enter your email", "email", (value) {
+                    context.read<LoginBloc>().add(EmailEvent(email: value));
+                  }),
+                  SizedBox(height: 15.h),
+                  reusableText("Password"),
+                  SizedBox(height: 5.h),
+                  buildTextField("Enter your password", "password", (value) {
+                    context
+                        .read<LoginBloc>()
+                        .add(PasswordEvent(password: value));
+                  }),
+                  forgotPassword(),
+                  SizedBox(height: 8.h),
+                  loginButton("Log In", () {
+                    LoginController(context: context).handleLogIn("email");
+                  }),
+                  SizedBox(height: 15.h),
+                  signUpButton("Don't have an account? Sign up", () {
+                    Navigator.of(context).pushNamed('register');
+                  }),
+                ],
               ),
             ),
           ),
