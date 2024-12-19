@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/onboarding/bloc/onboarding_bloc.dart';
 import 'package:momento/screens/onboarding/bloc/onboarding_event.dart';
 import 'package:momento/screens/onboarding/bloc/onboarding_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -134,10 +135,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           // Button with fixed alignment and spacing
           const Spacer(),
           GestureDetector(
-            onTap: () {
+            onTap: () async {
               if (index == 3) {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('login', (route) => false);
+                // Save onboarding state
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('isOnboardingCompleted', true);
+
+                // Use a local capture of the context to avoid async BuildContext issues
+                if (context.mounted) {
+                  final navigator = Navigator.of(context);
+                  navigator.pushNamedAndRemoveUntil('login', (route) => false);
+                }
               } else {
                 _controller.animateToPage(index,
                     duration: const Duration(milliseconds: 500),
