@@ -21,11 +21,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.white,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          body: BlocBuilder<OnboardingBloc, OnboardingState>(
-              builder: (context, state) {
+      color: Colors.white,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: BlocBuilder<OnboardingBloc, OnboardingState>(
+          builder: (context, state) {
             return Container(
               margin: EdgeInsets.only(top: 34.h),
               width: 375.w,
@@ -82,8 +82,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ],
               ),
             );
-          }),
-        ));
+          },
+        ),
+      ),
+    );
   }
 
   Widget _page(int index, BuildContext context, String buttonName, String title,
@@ -94,20 +96,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Add vertical spacing at the top to move the image down
           const Spacer(),
           SizedBox(
             width: 345.w,
             height: 320.h,
             child: Image.asset(
               imagepath,
-              fit: BoxFit.contain, // Ensure the image scales proportionally
+              fit: BoxFit.contain,
             ),
           ),
           const SizedBox(
             height: 2,
-          ), // Consistent spacing between image and text
-          // Subtitle with consistent alignment
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Text(
@@ -119,8 +119,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          const Spacer(), // Space between title and subtitle
-          // Space between subtitle and button
+          const Spacer(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.w),
             child: Text(
@@ -132,23 +131,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          // Button with fixed alignment and spacing
           const Spacer(),
           GestureDetector(
             onTap: () async {
               if (index == 3) {
-                // Save onboarding state
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setBool('isOnboardingCompleted', true);
-
-                // Use a local capture of the context to avoid async BuildContext issues
                 if (context.mounted) {
-                  final navigator = Navigator.of(context);
-                  navigator.pushNamedAndRemoveUntil('login', (route) => false);
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('login', (route) => false);
                 }
               } else {
                 _controller.animateToPage(index,
-                    duration: const Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 800),
                     curve: Curves.easeInOut);
               }
             },
