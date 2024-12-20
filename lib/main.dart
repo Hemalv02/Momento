@@ -4,7 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/bloc_provider.dart';
+import 'package:momento/screens/auth/reset_password/reset_password.dart';
+import 'package:momento/screens/auth/forgot_password/forgot_password.dart';
 import 'package:momento/screens/auth/log_in/login.dart';
+import 'package:momento/screens/auth/otp_verify/otp_verify.dart';
 import 'package:momento/screens/auth/sign_up/signup.dart';
 import 'package:momento/screens/onboarding/onboarding_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +51,9 @@ class MomentoApp extends StatelessWidget {
             'onboarding': (context) => const OnboardingScreen(),
             'login': (context) => const Login(),
             'signup': (context) => const SignUp(),
+            'forgot_password': (context) => const ForgotPassword(),
+            'otp_verify': (context) => const OTPVerification(),
+            'reset_password': (context) => const ResetPassword(),
           },
           initialRoute: initialRoute,
         ),

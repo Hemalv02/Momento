@@ -67,7 +67,9 @@ class _LoginState extends State<Login> {
                         .read<LoginBloc>()
                         .add(PasswordEvent(password: value));
                   }),
-                  forgotPassword(),
+                  forgotPassword(() {
+                    Navigator.of(context).pushNamed('forgot_password');
+                  }),
                   SizedBox(height: 8.h),
                   loginButton("Log In", () {
                     LoginController(context: context).handleLogIn("email");

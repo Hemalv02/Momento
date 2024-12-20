@@ -50,13 +50,13 @@ Widget buildTextField(
   );
 }
 
-Widget forgotPassword() {
+Widget forgotPassword(void Function()? func) {
   return Container(
     width: 260.w,
     height: 30.h,
     margin: EdgeInsets.only(top: 10.h, left: 5.w),
     child: GestureDetector(
-      onTap: () {},
+      onTap: func,
       child: Text(
         'Forgot Your Password?',
         style: TextStyle(
