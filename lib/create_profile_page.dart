@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class CreateProfilePage extends StatelessWidget {
   const CreateProfilePage({super.key});
@@ -33,8 +36,28 @@ class NewProfilePageState extends State<NewProfilePage> {
             actions: [
               TextButton(
                 child: const Text('OK'),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.of(context).pop();
+                  String url = "http://10.0.2.2:8000/create-profile";
+                  final Map<String, dynamic> jsonBody = {
+                    "Username": "Anindya42001",
+                    "Email": "sanindya50@gmail.com",
+                    "Name": name,
+                    "DOB": dob!.toLocal().toString().split(' ')[0],
+                    "Phone": phone1,
+                    "Address": address1
+                  };
+                  try {
+                    await http.post(
+                      Uri.parse(url),
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: jsonEncode(jsonBody),
+                    );
+                  } catch (e) {
+                    print("Error");
+                  }
                 },
               ),
             ],

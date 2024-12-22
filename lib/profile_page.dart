@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProfilePageBuilder extends StatelessWidget {
   const ProfilePageBuilder({super.key});
@@ -18,11 +20,12 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  String name = 'Anindya Kundu';
-  String email = 'sanindya50@gmail.com';
-  DateTime? dob = DateTime(2001, 5, 15);
-  String phone1 = '+8801844467391';
-  String address1 = 'Lalmatia, Dhaka';
+  String username = "Anindya42001";
+  String name = '';
+  String email = '';
+  DateTime? dob = DateTime.now();
+  String phone1 = '';
+  String address1 = '';
 
   void _editProfile() {
     showDialog(
@@ -101,7 +104,7 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
                 TextButton(
                   child: const Text('Save'),
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       name = updatedName;
                       email = updatedEmail;
@@ -109,6 +112,27 @@ class ProfilePageState extends State<ProfilePage> {
                       phone1 = updatedPhone1;
                       address1 = updatedAddress1;
                     });
+                    String url =
+                        "http://10.0.2.2:8000/update-profile/$username";
+                    final Map<String, dynamic> jsonBody = {
+                      "Username": username,
+                      "Email": email,
+                      "Name": name,
+                      "DOB": dob!.toLocal().toString().split(' ')[0],
+                      "Phone": phone1,
+                      "Address": address1
+                    };
+                    try {
+                      await http.put(
+                        Uri.parse(url),
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: jsonEncode(jsonBody),
+                      );
+                    } catch (e) {
+                      print("Error");
+                    }
                     Navigator.of(context).pop();
                   },
                 ),
@@ -120,16 +144,35 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void filldata() async {
+    String url = "http://10.0.2.2:8000/get-profile/$username";
+    final response = await http.get(Uri.parse(url));
+    try {
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      setState(() {
+        name = jsonResponse["data"][0]["Name"];
+        email = jsonResponse["data"][0]["Email"];
+        dob = DateTime.parse(jsonResponse["data"][0]["DOB"]);
+        phone1 = jsonResponse["data"][0]["Phone"];
+        address1 = jsonResponse["data"][0]["Address"];
+      });
+    } catch (e) {
+      print("An error occurred: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    filldata();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
-        ),
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
