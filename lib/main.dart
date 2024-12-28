@@ -11,6 +11,7 @@ import 'package:momento/screens/auth/reset_password/reset_password.dart';
 import 'package:momento/screens/auth/sign_up/signup.dart';
 import 'package:momento/screens/events/create_event.dart';
 import 'package:momento/screens/events/event_home.dart';
+import 'package:momento/screens/events/ticket_scanner.dart';
 import 'package:momento/screens/home.dart';
 import 'package:momento/screens/onboarding/onboarding_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +61,7 @@ class MomentoApp extends StatelessWidget {
             'home': (context) => const HomeScreen(),
             'create_event': (context) => const CreateEventScreen(),
             'event_home': (context) => const EventHome(),
+            'ticket_scanner': (context) => const QRScannerPage(),
           },
           //initialRoute: initialRoute,
           initialRoute: 'event_home',

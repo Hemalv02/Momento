@@ -50,7 +50,7 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.qr_code_scanner,
                     label: 'Scanner',
                     onTap: () {
-                      print('Scanner tapped');
+                      Navigator.of(context).pushNamed('ticket_scanner');
                     },
                   ),
                   _buildFeatureItem(
