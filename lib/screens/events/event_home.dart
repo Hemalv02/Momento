@@ -71,7 +71,7 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.schedule,
                     label: 'Schedule',
                     onTap: () {
-                      print('Schedule tapped');
+                      Navigator.of(context).pushNamed('event_schedule');
                     },
                   ),
                   _buildFeatureItem(
