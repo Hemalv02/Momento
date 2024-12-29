@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:momento/screens/events/guest_add.dart';
 
 class GuestList extends StatefulWidget {
   const GuestList({super.key});
@@ -8,6 +9,9 @@ class GuestList extends StatefulWidget {
 }
 
 class _GuestListState extends State<GuestList> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+
   final List<Map<String, String>> guestList = [
     {
       'name': 'John Doe',
@@ -91,7 +95,7 @@ class _GuestListState extends State<GuestList> {
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => showGuestModal(context),
         backgroundColor: const Color(0xFF003675),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
@@ -110,7 +114,7 @@ class _GuestListState extends State<GuestList> {
             child: Card(
               margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
               color: Color.fromARGB(
-                  255, 208, 218, 235), // Light blue background for visibility
+                  255, 228, 232, 238), // Light blue background for visibility
               child: ListTile(
                 onTap: () => _toggleSelection(
                     index), // Only toggle selection when not long pressed
@@ -196,6 +200,7 @@ class _GuestListState extends State<GuestList> {
           );
         },
       ),
+      resizeToAvoidBottomInset: true,
     );
   }
 }

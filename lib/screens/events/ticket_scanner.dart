@@ -52,6 +52,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
         backgroundColor: const Color(0xFF003675),
         foregroundColor: Colors.white,
       ),
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           MobileScanner(
