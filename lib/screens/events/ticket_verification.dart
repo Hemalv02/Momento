@@ -87,8 +87,8 @@ class _TicketVerificationScreenState extends State<TicketVerificationScreen> {
                   : isVerified
                       ? "Ticket Verified"
                       : "Verification Failed",
-              style: const TextStyle(
-                fontSize: 24,
+              style: TextStyle(
+                fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
@@ -102,8 +102,8 @@ class _TicketVerificationScreenState extends State<TicketVerificationScreen> {
                       ? "Congratulations! Your ticket has been verified."
                       : "Sorry! This ticket is invalid.",
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 16.sp,
                 color: Colors.grey,
               ),
             ),
@@ -125,9 +125,9 @@ class _TicketVerificationScreenState extends State<TicketVerificationScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 "Back to Scan",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(color: Colors.white, fontSize: 16.sp),
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/events/guest_add.dart';
 
 class GuestList extends StatefulWidget {
@@ -135,10 +136,11 @@ class _GuestListState extends State<GuestList> {
                     : null, // Show checkbox only for long-pressed item
                 title: Text(
                   guest['name']!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color(0xFF003675), // Dark blue color for the name
+                    fontSize: 18.sp,
+                    color:
+                        const Color(0xFF003675), // Dark blue color for the name
                   ),
                 ),
                 subtitle: Column(

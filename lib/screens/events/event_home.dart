@@ -153,8 +153,8 @@ class _EventHomeState extends State<EventHome> {
                 ? '${label.substring(0, 10)}...'
                 : label, // Trim long labels
             textAlign: TextAlign.center,
-            style: const TextStyle(
-                fontSize: 12, color: Colors.black87), // Smaller text
+            style: TextStyle(
+                fontSize: 12.sp, color: Colors.black87), // Smaller text
           ),
         ],
       ),
