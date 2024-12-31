@@ -147,7 +147,7 @@ class _EventHomeState extends State<EventHome> {
             child: Icon(icon,
                 color: const Color(0xFF003675), size: 24), // Smaller icon size
           ),
-          SizedBox(height: 8.h),
+          // SizedBox(height: 8.h),
           Text(
             label.length > 10
                 ? '${label.substring(0, 10)}...'

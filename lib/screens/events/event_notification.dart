@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:momento/screens/events/notification_add.dart';
 
 class EventNotification extends StatefulWidget {
   const EventNotification({super.key});
@@ -119,7 +120,7 @@ class _EventNotificationState extends State<EventNotification> {
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => showNotificationModal(context),
         backgroundColor: const Color(0xFF003675),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
@@ -169,47 +170,47 @@ class _EventNotificationState extends State<EventNotification> {
                     padding: const EdgeInsets.only(right: 20),
                     child: const Icon(Icons.delete, color: Colors.white),
                   ),
-                  child: Card(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    color: Colors.grey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            notification['title'],
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.sp,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              notification['title'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                formattedDate,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
+                            SizedBox(height: 8.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  formattedDate,
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                formattedTime,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
+                                Text(
+                                  formattedTime,
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      Container(
+                        height: 1.h,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                      )
+                    ],
                   ),
                 );
               },
