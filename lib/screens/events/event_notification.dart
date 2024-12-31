@@ -85,10 +85,10 @@ class _EventNotificationState extends State<EventNotification> {
       ),
       color: Colors.blueGrey,
       context: context,
-      position:
-          RelativeRect.fromLTRB(1000, 80, 0, 0), // Positioning of the menu
+      position: const RelativeRect.fromLTRB(
+          1000, 80, 0, 0), // Positioning of the menu
       items: [
-        PopupMenuItem(
+        const PopupMenuItem(
           padding: EdgeInsets.all(10),
           value: 'clear_all',
           child: Text('Clear All Notifications',
@@ -107,12 +107,21 @@ class _EventNotificationState extends State<EventNotification> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifications'),
+        backgroundColor: const Color(0xFF003675),
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: _moreActions,
           )
         ],
+      ),
+      backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: const Color(0xFF003675),
+        foregroundColor: Colors.white,
+        child: const Icon(Icons.add),
       ),
       body: _notifications.isEmpty
           ? const Center(
@@ -148,24 +157,25 @@ class _EventNotificationState extends State<EventNotification> {
                     );
                   },
                   background: Container(
-                    color: Colors.red,
+                    color: const Color(0xFF003675),
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.only(left: 20),
                     child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   secondaryBackground: Container(
-                    color: Colors.red,
+                    color: const Color(0xFF003675),
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 20),
                     child: const Icon(Icons.delete, color: Colors.white),
                   ),
                   child: Card(
                     margin:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    color: Colors.grey,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -184,13 +194,13 @@ class _EventNotificationState extends State<EventNotification> {
                             children: [
                               Text(
                                 formattedDate,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 14,
                                 ),
                               ),
                               Text(
                                 formattedTime,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 14,
                                 ),
                               ),

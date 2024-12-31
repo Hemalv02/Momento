@@ -93,20 +93,20 @@ class _ScheduleModalState extends State<ScheduleModal> {
         Container(
           margin: const EdgeInsets.only(top: 8),
           width: 40,
-          height: 4,
+          height: 4.h,
           decoration: BoxDecoration(
             color: Colors.grey[300],
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(16, 16, 20, 8),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'Add Schedule',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF003675),
               ),
@@ -148,7 +148,7 @@ class _ScheduleModalState extends State<ScheduleModal> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     TextFormField(
                       controller: _descriptionController,
                       decoration: InputDecoration(
@@ -174,7 +174,7 @@ class _ScheduleModalState extends State<ScheduleModal> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Row(
                       children: [
                         Expanded(
@@ -197,7 +197,7 @@ class _ScheduleModalState extends State<ScheduleModal> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF003675),

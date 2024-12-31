@@ -196,24 +196,24 @@ class _DatePickerTextFieldState extends State<DatePickerTextField> {
       focusNode: _focusNode, // Assign the FocusNode to the TextField
       readOnly: true,
       onTap: () => _selectDate(context),
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-        prefixIcon: Icon(
+        prefixIcon: const Icon(
           Icons.calendar_today,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          borderSide: BorderSide(color: Color(0xFF003675), width: 2),
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          borderSide: BorderSide(color: const Color(0xFF003675), width: 2.w),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          borderSide: BorderSide(color: Colors.red, width: 2),
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          borderSide: BorderSide(color: Colors.red, width: 2.w),
         ),
         hintText: "Select your date of birth",
         hintStyle: TextStyle(
-          fontSize: 16,
+          fontSize: 16.sp,
           fontWeight: FontWeight.normal,
           //color: _textColor.withAlpha(180),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/events/schedule_add.dart';
 
 final List<Map<String, dynamic>> events = [
@@ -117,10 +118,10 @@ class EventSchedule extends StatelessWidget {
                 children: [
                   Text(
                     day['date'],
-                    style: const TextStyle(
-                      fontSize: 20.0,
+                    style: TextStyle(
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF003675),
+                      color: const Color(0xFF003675),
                     ),
                   ),
                   const SizedBox(height: 8.0),
@@ -133,8 +134,8 @@ class EventSchedule extends StatelessWidget {
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 4.0),
-                    width: 16.0,
-                    height: 16.0,
+                    width: 16.w,
+                    height: 16.h,
                     decoration: const BoxDecoration(
                       color: Color(0xFF003675),
                       shape: BoxShape.circle,
@@ -178,8 +179,8 @@ class TimelineTile extends StatelessWidget {
                 color: const Color(0xFF003675),
               ),
               Container(
-                width: 2.0,
-                height: 40.0,
+                width: 2.w,
+                height: 40.h,
                 color: const Color(0xFF003675),
               ),
             ],
@@ -192,15 +193,15 @@ class TimelineTile extends StatelessWidget {
                 Text(
                   event['time'],
                   style: TextStyle(
-                    fontSize: 16.0,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.grey[700],
                   ),
                 ),
                 Text(
                   event['name'],
-                  style: const TextStyle(
-                    fontSize: 18.0,
+                  style: TextStyle(
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -208,7 +209,7 @@ class TimelineTile extends StatelessWidget {
                 Text(
                   event['description'],
                   style: TextStyle(
-                    fontSize: 14.0,
+                    fontSize: 14.sp,
                     color: Colors.grey[600],
                   ),
                 ),

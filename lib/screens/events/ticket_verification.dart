@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TicketVerificationScreen extends StatefulWidget {
   final String qrResult; // The scanned QR result
@@ -78,7 +79,7 @@ class _TicketVerificationScreenState extends State<TicketVerificationScreen> {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             // Title
             Text(
               isAlreadyScanned
@@ -92,7 +93,7 @@ class _TicketVerificationScreenState extends State<TicketVerificationScreen> {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             // Message
             Text(
               isAlreadyScanned
@@ -106,7 +107,7 @@ class _TicketVerificationScreenState extends State<TicketVerificationScreen> {
                 color: Colors.grey,
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 30.h),
             // Button to go back
             ElevatedButton(
               onPressed: () {

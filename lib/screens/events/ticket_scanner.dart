@@ -73,7 +73,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
               width: 220.h,
               margin: const EdgeInsets.only(top: 200),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF003675), width: 2),
+                border: Border.all(color: const Color(0xFF003675), width: 2.w),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -96,8 +96,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
                   FloatingActionButton(
                     onPressed: _manualScan,
                     backgroundColor: Colors.white,
-                    shape: const CircleBorder(
-                      side: BorderSide(color: Color(0xFF003675), width: 2),
+                    shape: CircleBorder(
+                      side: BorderSide(
+                          color: const Color(0xFF003675), width: 2.w),
                     ),
                     child: const Icon(
                       Icons.camera_alt,

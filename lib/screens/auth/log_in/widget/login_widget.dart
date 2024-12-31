@@ -93,9 +93,9 @@ Widget signUpButton(String buttonName, void Function()? function) {
       // backgroundColor: const Color(0xFFA7C4F7),
       foregroundColor: const Color(0XFF003675),
       minimumSize: const Size(double.infinity, 56),
-      side: const BorderSide(
-        width: 2,
-        color: Color(0xFF003675),
+      side: BorderSide(
+        width: 2.w,
+        color: const Color(0xFF003675),
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),

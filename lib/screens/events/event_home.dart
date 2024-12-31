@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
@@ -25,8 +26,8 @@ class _EventHomeState extends State<EventHome> {
               padding: const EdgeInsets.all(16.0),
               child: GridView.count(
                 crossAxisCount: 4, // Four items per row
-                mainAxisSpacing: 24, // Increased space between rows
-                crossAxisSpacing: 16,
+                mainAxisSpacing: 24.h, // Increased space between rows
+                crossAxisSpacing: 16.w,
                 childAspectRatio: 0.9, // Adjusted for better fit
                 shrinkWrap: true, // Fix for infinite height
                 physics:
@@ -146,7 +147,7 @@ class _EventHomeState extends State<EventHome> {
             child: Icon(icon,
                 color: const Color(0xFF003675), size: 24), // Smaller icon size
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             label.length > 10
                 ? '${label.substring(0, 10)}...'
