@@ -78,7 +78,7 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.notifications,
                     label: 'Notify',
                     onTap: () {
-                      print('Notify tapped');
+                      Navigator.of(context).pushNamed('event_notification');
                     },
                   ),
                   _buildFeatureItem(
