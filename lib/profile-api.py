@@ -16,6 +16,8 @@ class User(BaseModel):
     Phone:str
     Address:str
     Email:str
+    Gender:str
+    Occupation:str
 
 @app.post("/create-profile")
 async def create_profile(user:User):

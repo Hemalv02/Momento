@@ -4,20 +4,19 @@ class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Settings'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              // back navigation logic
-            },
-          ),
-          backgroundColor: Colors.blueAccent,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            // back navigation logic
+          },
         ),
-        body: const SettingsBody(),
+        backgroundColor: Colors.blueAccent,
       ),
+      body: const SettingsBody(),
     );
   }
 }
@@ -58,7 +57,7 @@ class SettingsBody extends StatelessWidget {
           title: 'Contact Us',
           subtitle: 'Support, Queries, Feedback',
           onTap: () {
-            // Navigate to Contact Us Page
+            Navigator.pushNamed(context, '/feedbackpage');
           },
         ),
         // About the Developers

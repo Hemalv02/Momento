@@ -26,117 +26,253 @@ class ProfilePageState extends State<ProfilePage> {
   DateTime? dob = DateTime.now();
   String phone1 = '';
   String address1 = '';
+  String gender = '';
+  String occupation = '';
+
+  // Define lists of options for dropdowns
+  final List<String> genderOptions = ['Male', 'Female'];
+  final List<String> occupationOptions = [
+    'Student',
+    'Educator/Teacher',
+    'Healthcare Professional',
+    'Engineer/Technologist',
+    'Artist/Creative Professional',
+    'Entrepreneur/Business Owner',
+    'Sales/Marketing Professional',
+    'Freelancer/Consultant',
+    'Government Employee',
+    'Lawyer/Legal Professional',
+    'Finance/Accounting Professional',
+    'Researcher/Scientist',
+    'Social Worker/Nonprofit Professional',
+    'Retired',
+    'Other'
+  ];
 
   void _editProfile() {
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (BuildContext context) {
         String updatedName = name;
         String updatedEmail = email;
         DateTime? updatedDob = dob;
         String updatedPhone1 = phone1;
         String updatedAddress1 = address1;
+        String updatedGender = gender;
+        String updatedOccupation = occupation;
+
         return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: const Text('Edit Profile'),
-              content: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    TextField(
-                      decoration: const InputDecoration(labelText: 'Name'),
-                      onChanged: (value) => updatedName = value,
-                      controller: TextEditingController(text: name),
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(labelText: 'Email'),
-                      onChanged: (value) => updatedEmail = value,
-                      controller: TextEditingController(text: email),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Date of Birth',
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.calendar_today),
-                          onPressed: () async {
-                            final selectedDate = await showDatePicker(
-                              context: context,
-                              initialDate: updatedDob ?? DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime(2100),
-                            );
-                            if (selectedDate != null) {
-                              setDialogState(() {
-                                updatedDob = selectedDate;
-                              });
-                            }
-                          },
+          builder: (context, setModalState) {
+            return Container(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                top: 16,
+                left: 16,
+                right: 16,
+              ),
+              height: MediaQuery.of(context).size.height * 0.9,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Edit Profile',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      readOnly: true,
-                      controller: TextEditingController(
-                        text: updatedDob != null
-                            ? updatedDob!.toLocal().toString().split(' ')[0]
-                            : "",
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          TextField(
+                            decoration: const InputDecoration(
+                              labelText: 'Name',
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (value) => updatedName = value,
+                            controller: TextEditingController(text: name),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (value) => updatedEmail = value,
+                            controller: TextEditingController(text: email),
+                          ),
+                          const SizedBox(height: 16),
+                          // Dropdown for Gender
+                          DropdownButtonFormField<String>(
+                            decoration: const InputDecoration(
+                              labelText: 'Gender',
+                              border: OutlineInputBorder(),
+                            ),
+                            value: updatedGender.isEmpty ? null : updatedGender,
+                            hint: const Text('Select Gender'),
+                            items: genderOptions.map((String gender) {
+                              return DropdownMenuItem<String>(
+                                value: gender,
+                                child: Text(gender),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setModalState(() {
+                                updatedGender = newValue ?? '';
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          // Dropdown for Occupation
+                          DropdownButtonFormField<String>(
+                            decoration: const InputDecoration(
+                              labelText: 'Occupation',
+                              border: OutlineInputBorder(),
+                            ),
+                            value: updatedOccupation.isEmpty
+                                ? null
+                                : updatedOccupation,
+                            hint: const Text('Select Occupation'),
+                            items: occupationOptions.map((String occupation) {
+                              return DropdownMenuItem<String>(
+                                value: occupation,
+                                child: Text(occupation),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setModalState(() {
+                                updatedOccupation = newValue ?? '';
+                              });
+                            },
+                            isExpanded: true,
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: 'Date of Birth',
+                              border: const OutlineInputBorder(),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.calendar_today),
+                                onPressed: () async {
+                                  final selectedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: updatedDob ?? DateTime.now(),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime(2100),
+                                  );
+                                  if (selectedDate != null) {
+                                    setModalState(() {
+                                      updatedDob = selectedDate;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                            readOnly: true,
+                            controller: TextEditingController(
+                              text: updatedDob != null
+                                  ? updatedDob!
+                                      .toLocal()
+                                      .toString()
+                                      .split(' ')[0]
+                                  : "",
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            decoration: const InputDecoration(
+                              labelText: 'Phone Number',
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (value) => updatedPhone1 = value,
+                            controller: TextEditingController(text: phone1),
+                            keyboardType: TextInputType.phone,
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            decoration: const InputDecoration(
+                              labelText: 'Address',
+                              border: OutlineInputBorder(),
+                            ),
+                            onChanged: (value) => updatedAddress1 = value,
+                            controller: TextEditingController(text: address1),
+                            maxLines: 3,
+                          ),
+                        ],
                       ),
                     ),
-                    TextField(
-                      decoration:
-                          const InputDecoration(labelText: 'Phone Number'),
-                      onChanged: (value) => updatedPhone1 = value,
-                      controller: TextEditingController(text: phone1),
-                      keyboardType: TextInputType.phone,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancel'),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              setState(() {
+                                name = updatedName;
+                                email = updatedEmail;
+                                dob = updatedDob;
+                                phone1 = updatedPhone1;
+                                address1 = updatedAddress1;
+                                gender = updatedGender;
+                                occupation = updatedOccupation;
+                              });
+                              String url =
+                                  "http://10.0.2.2:8000/update-profile/$username";
+                              final Map<String, dynamic> jsonBody = {
+                                "Username": username,
+                                "Email": email,
+                                "Name": name,
+                                "DOB": dob!.toLocal().toString().split(' ')[0],
+                                "Phone": phone1,
+                                "Address": address1,
+                                "Gender": gender,
+                                "Occupation": occupation
+                              };
+                              try {
+                                await http.put(
+                                  Uri.parse(url),
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: jsonEncode(jsonBody),
+                                );
+                                Navigator.pop(context);
+                              } catch (e) {
+                                print("Error updating profile: $e");
+                              }
+                            },
+                            child: const Text('Save Changes'),
+                          ),
+                        ),
+                      ],
                     ),
-                    TextField(
-                      decoration: const InputDecoration(labelText: 'Address'),
-                      onChanged: (value) => updatedAddress1 = value,
-                      controller: TextEditingController(text: address1),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              actions: [
-                TextButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text('Save'),
-                  onPressed: () async {
-                    setState(() {
-                      name = updatedName;
-                      email = updatedEmail;
-                      dob = updatedDob;
-                      phone1 = updatedPhone1;
-                      address1 = updatedAddress1;
-                    });
-                    String url =
-                        "http://10.0.2.2:8000/update-profile/$username";
-                    final Map<String, dynamic> jsonBody = {
-                      "Username": username,
-                      "Email": email,
-                      "Name": name,
-                      "DOB": dob!.toLocal().toString().split(' ')[0],
-                      "Phone": phone1,
-                      "Address": address1
-                    };
-                    try {
-                      await http.put(
-                        Uri.parse(url),
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: jsonEncode(jsonBody),
-                      );
-                    } catch (e) {
-                      print("Error");
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
             );
           },
         );
@@ -155,6 +291,8 @@ class ProfilePageState extends State<ProfilePage> {
         dob = DateTime.parse(jsonResponse["data"][0]["DOB"]);
         phone1 = jsonResponse["data"][0]["Phone"];
         address1 = jsonResponse["data"][0]["Address"];
+        gender = jsonResponse["data"][0]["Gender"]; // New field
+        occupation = jsonResponse["data"][0]["Occupation"]; // New field
       });
     } catch (e) {
       print("An error occurred: $e");
@@ -177,11 +315,14 @@ class ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/settingspage');
+            },
           ),
         ],
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -190,29 +331,57 @@ class ProfilePageState extends State<ProfilePage> {
               radius: 50,
               backgroundImage: AssetImage('images/anindya.jpg'),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
             Text(
               name,
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 20),
-            ProfileDetail(title: 'Name', value: name),
-            ProfileDetail(title: 'Email', value: email),
+            const SizedBox(height: 24),
             ProfileDetail(
-              title: 'Date Of Birth',
-              value: dob != null
-                  ? dob!.toLocal().toString().split(' ')[0]
-                  : 'Not set',
+              title: 'Personal Information',
+              icon: Icons.person,
+              details: [
+                DetailItem(label: 'Username', value: username),
+                DetailItem(label: 'Name', value: name),
+                DetailItem(label: 'Email', value: email),
+                DetailItem(label: 'Gender', value: gender),
+                DetailItem(label: 'Occupation', value: occupation),
+              ],
             ),
-            ProfileDetail(title: 'Phone Number', value: phone1),
-            ProfileDetail(title: 'Address', value: address1),
-            const SizedBox(height: 20),
-            ElevatedButton(
+            const SizedBox(height: 16),
+            ProfileDetail(
+              title: 'Contact Information',
+              icon: Icons.contact_phone,
+              details: [
+                DetailItem(label: 'Phone Number', value: phone1),
+                DetailItem(label: 'Address', value: address1),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ProfileDetail(
+              title: 'Additional Information',
+              icon: Icons.info,
+              details: [
+                DetailItem(
+                  label: 'Date of Birth',
+                  value: dob != null
+                      ? dob!.toLocal().toString().split(' ')[0]
+                      : 'Not set',
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
               onPressed: _editProfile,
-              child: const Text('Edit Profile'),
+              icon: const Icon(Icons.edit),
+              label: const Text('Edit Profile'),
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              ),
             ),
           ],
         ),
@@ -221,36 +390,75 @@ class ProfilePageState extends State<ProfilePage> {
   }
 }
 
-class ProfileDetail extends StatelessWidget {
-  final String title;
+class DetailItem {
+  final String label;
   final String value;
 
-  const ProfileDetail({super.key, required this.title, required this.value});
+  DetailItem({required this.label, required this.value});
+}
+
+class ProfileDetail extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final List<DetailItem> details;
+
+  const ProfileDetail({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.details,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: Colors.blue),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black54,
-            ),
-          ),
-          const Divider(),
-        ],
+            const SizedBox(height: 16),
+            ...details.map((detail) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        detail.label,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        detail.value,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
+        ),
       ),
     );
   }
