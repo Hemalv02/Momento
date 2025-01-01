@@ -15,6 +15,7 @@ import 'package:momento/screens/events/event_notification.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/guest_list.dart';
 import 'package:momento/screens/events/ticket_scanner.dart';
+import 'package:momento/screens/events/todo_page.dart';
 import 'package:momento/screens/home.dart';
 import 'package:momento/screens/onboarding/onboarding_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,10 +32,13 @@ void main() {
 Future<void> _initializeApp() async {
   final prefs = await SharedPreferences.getInstance();
   final isOnboardingCompleted = prefs.getBool('isOnboardingCompleted') ?? false;
+  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
   FlutterNativeSplash.remove();
-  runApp(
-      MomentoApp(initialRoute: isOnboardingCompleted ? 'login' : 'onboarding'));
+  runApp(MomentoApp(
+      initialRoute: isOnboardingCompleted
+          ? (isLoggedIn ? 'home' : 'login')
+          : 'onboarding'));
 }
 
 class MomentoApp extends StatelessWidget {
@@ -68,9 +72,10 @@ class MomentoApp extends StatelessWidget {
             'guest_list': (context) => const GuestList(),
             'event_schedule': (context) => const EventSchedule(),
             'event_notification': (context) => const EventNotification(),
+            'todo_page': (context) => const ToDoPage(),
           },
-          //initialRoute: initialRoute,
-          initialRoute: 'event_home',
+          initialRoute: initialRoute,
+          //initialRoute: 'event_home',
         ),
       ),
     );
