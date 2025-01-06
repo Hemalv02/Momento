@@ -4,11 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/bloc_provider.dart';
-import 'package:momento/screens/auth/forgot_password/forgot_password.dart';
-import 'package:momento/screens/auth/log_in/login.dart';
-import 'package:momento/screens/auth/otp_verify/otp_verify.dart';
-import 'package:momento/screens/auth/reset_password/reset_password.dart';
-import 'package:momento/screens/auth/sign_up/signup.dart';
+import 'package:momento/screens/auth_v2/forgot_password/forgot_password.dart';
+import 'package:momento/screens/auth_v2/login/jwt_token.dart';
+import 'package:momento/screens/auth_v2/login/login.dart';
+import 'package:momento/screens/auth_v2/otp_verify/otp_verify.dart';
+import 'package:momento/screens/auth_v2/reset_password/reset_password.dart';
+import 'package:momento/screens/auth_v2/signup/signup.dart';
 import 'package:momento/screens/events/create_event.dart';
 import 'package:momento/screens/events/event_home.dart';
 import 'package:momento/screens/events/event_notification.dart';
@@ -32,7 +33,9 @@ void main() {
 Future<void> _initializeApp() async {
   final prefs = await SharedPreferences.getInstance();
   final isOnboardingCompleted = prefs.getBool('isOnboardingCompleted') ?? false;
-  final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  final tokenValidator = TokenValidator();
+  bool isValid = await tokenValidator.isTokenValid();
+  final isLoggedIn = isValid;
 
   FlutterNativeSplash.remove();
   runApp(MomentoApp(
@@ -60,8 +63,9 @@ class MomentoApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           routes: {
             'onboarding': (context) => const OnboardingScreen(),
-            'login': (context) => const Login(),
-            'signup': (context) => const SignUp(),
+            'login': (context) => const LoginScreen(),
+            'signup': (context) => const SignUpScreen(),
+            // 'signup_otp': (context) => const SignUpOtpVerification(),
             'forgot_password': (context) => const ForgotPassword(),
             'otp_verify': (context) => const OTPVerification(),
             'reset_password': (context) => const ResetPassword(),

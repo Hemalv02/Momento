@@ -44,6 +44,10 @@ dependencies:
   intl: ^0.20.1
   mobile_scanner: ^6.0.2
   flutter_launcher_icons: ^0.14.2
+  bloc: ^8.1.4
+  equatable: ^2.0.7
+  dio: ^5.7.0
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +85,7 @@ flutter:
     - assets/images/welcome1.png
     - assets/icons/google.png
     - assets/icons/facebook.png
+    - assets/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
