@@ -1,41 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/bloc_provider.dart';
-import 'package:momento/home_screen.dart';
-import 'package:momento/log_in/login.dart';
-import 'package:momento/register/register.dart';
-import 'package:momento/view/themedata.dart';
-import 'package:momento/view/dark_themedata.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:momento/welcome/welcome.dart';
-import 'firebase_options.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:momento/screens/auth_v2/forgot_password/forgot_password.dart';
+import 'package:momento/screens/auth_v2/login/jwt_token.dart';
+import 'package:momento/screens/auth_v2/login/login.dart';
+import 'package:momento/screens/auth_v2/otp_verify/otp_verify.dart';
+import 'package:momento/screens/auth_v2/reset_password/reset_password.dart';
+import 'package:momento/screens/auth_v2/signup/signup.dart';
+import 'package:momento/screens/events/chat/api_service.dart';
+import 'package:momento/screens/events/create_event.dart';
+import 'package:momento/screens/events/event_home.dart';
+import 'package:momento/screens/events/event_notification.dart';
+import 'package:momento/screens/events/event_schedule.dart';
+import 'package:momento/screens/events/guest_list.dart';
+import 'package:momento/screens/events/ticket_scanner.dart';
+import 'package:momento/screens/events/todo_page.dart';
+import 'package:momento/screens/home.dart';
+import 'package:momento/screens/onboarding/onboarding_screens.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await dotenv.load();
-  String supabaseURl = dotenv.env['SUPABASE_URL'] ?? '';
-  String supabaseAnonKey = dotenv.env['SUPABASE_KEY'] ?? '';
-  Supabase.initialize(
-    url: supabaseURl,
-    anonKey: supabaseAnonKey,
-    //debug: true,
-  );
-  print('Supabase URL: $supabaseURl');
-  print('Supabase Anon Key: $supabaseAnonKey');
-  final supabase = Supabase.instance.client;
-  print('Supabase Initialized: $supabase');
-
-  runApp(MyApp());
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white));
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await initializeSupabase();
+  final supabase=Supabase.instance.client;
+  
+  _initializeApp();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<void> _initializeApp() async {
+  final prefs = await SharedPreferences.getInstance();
+  final isOnboardingCompleted = prefs.getBool('isOnboardingCompleted') ?? false;
+  final tokenValidator = TokenValidator();
+  bool isValid = await tokenValidator.isTokenValid();
+  final isLoggedIn = isValid;
+
+  FlutterNativeSplash.remove();
+  runApp(MomentoApp(
+      initialRoute: isOnboardingCompleted
+          ? (isLoggedIn ? 'home' : 'login')
+          : 'onboarding'));
+}
+
+class MomentoApp extends StatelessWidget {
+  final String initialRoute;
+
+  const MomentoApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +60,30 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
         builder: (context, child) => MaterialApp(
           title: 'Momento',
-          theme: themeData,
-          darkTheme: darkThemeData,
-          themeMode: ThemeMode.system,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
           debugShowCheckedModeBanner: false,
           routes: {
-            'login': (context) => const Login(),
-            'home': (context) => HomeScreen(),
-            'register': (context) => const Register(), // Add this route
+            'onboarding': (context) => const OnboardingScreen(),
+            'login': (context) => const LoginScreen(),
+            'signup': (context) => const SignUpScreen(),
+            // 'signup_otp': (context) => const SignUpOtpVerification(),
+            'forgot_password': (context) => const ForgotPassword(),
+            'otp_verify': (context) => const OTPVerification(),
+            'reset_password': (context) => const ResetPassword(),
+            'home': (context) => const HomeScreen(),
+            'create_event': (context) => const CreateEventScreen(),
+            'event_home': (context) => const EventHome(),
+            'ticket_scanner': (context) => const QRScannerPage(),
+            'guest_list': (context) => const GuestList(),
+            'event_schedule': (context) => const EventSchedule(),
+            'event_notification': (context) => const EventNotification(),
+            'todo_page': (context) => const ToDoPage(),
           },
-          home: const Welcome(),
-          
+          initialRoute: initialRoute,
+          //initialRoute: 'event_home',
         ),
       ),
     );
