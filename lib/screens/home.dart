@@ -7,7 +7,6 @@ import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_bloc.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_event.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

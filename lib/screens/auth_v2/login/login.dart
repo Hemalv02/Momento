@@ -7,7 +7,6 @@ import 'package:momento/screens/auth_v2/login/bloc/login_bloc.dart';
 import 'package:momento/screens/auth_v2/login/bloc/login_event.dart';
 import 'package:momento/screens/auth_v2/login/bloc/login_states.dart';
 import 'package:momento/services/auth_api.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

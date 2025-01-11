@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momento/screens/events/bloc/create_event_event.dart';
-import 'package:momento/screens/events/bloc/create_event_state.dart';
+import 'package:momento/screens/events/create_event_bloc/create_event_event.dart';
+import 'package:momento/screens/events/create_event_bloc/create_event_state.dart';
 import 'package:momento/services/event_api.dart';
 
 class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {

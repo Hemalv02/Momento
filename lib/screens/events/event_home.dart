@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
+import 'package:momento/screens/events/guest_list.dart';
 
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
@@ -9,6 +11,24 @@ class EventHome extends StatefulWidget {
 }
 
 class _EventHomeState extends State<EventHome> {
+  bool isInitialized = false;
+  late int eventId;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!isInitialized) {
+      // Access ModalRoute here
+      final event = ModalRoute.of(context)?.settings.arguments;
+      if (event is Event) {
+        setState(() {
+          eventId = event.id;
+        });
+      }
+      isInitialized = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +57,9 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.people,
                     label: 'Guests',
                     onTap: () {
-                      Navigator.of(context).pushNamed('guest_list');
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => GuestList(eventId: eventId),
+                      ));
                     },
                   ),
                   _buildFeatureItem(

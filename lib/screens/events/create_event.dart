@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:momento/screens/auth/sign_up/loading.dart';
-import 'package:momento/screens/events/bloc/create_event_bloc.dart';
-import 'package:momento/screens/events/bloc/create_event_event.dart';
-import 'package:momento/screens/events/bloc/create_event_state.dart';
+import 'package:momento/screens/events/create_event_bloc/create_event_bloc.dart';
+import 'package:momento/screens/events/create_event_bloc/create_event_event.dart';
+import 'package:momento/screens/events/create_event_bloc/create_event_state.dart';
 import 'package:momento/services/event_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

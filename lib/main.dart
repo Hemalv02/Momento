@@ -14,7 +14,6 @@ import 'package:momento/screens/events/create_event.dart';
 import 'package:momento/screens/events/event_home.dart';
 import 'package:momento/screens/events/event_notification.dart';
 import 'package:momento/screens/events/event_schedule.dart';
-import 'package:momento/screens/events/guest_list.dart';
 import 'package:momento/screens/events/ticket_scanner.dart';
 import 'package:momento/screens/events/todo_page.dart';
 import 'package:momento/screens/home.dart';
@@ -76,7 +75,7 @@ class MomentoApp extends StatelessWidget {
             'create_event': (context) => const CreateEventScreen(),
             'event_home': (context) => const EventHome(),
             'ticket_scanner': (context) => const QRScannerPage(),
-            'guest_list': (context) => const GuestList(),
+            // 'guest_list': (context) => const GuestList(),
             'event_schedule': (context) => const EventSchedule(),
             'event_notification': (context) => const EventNotification(),
             'todo_page': (context) => const ToDoPage(),
