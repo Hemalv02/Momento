@@ -116,14 +116,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     // If no errors, proceed with form submission
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Submit form data here
       context.read<CreateEventBloc>().add(
-            CreateEventSubmitted(eventName.text, organizedBy.text,
-                startDateTime, endDateTime, eventDescription.text, userId),
+            CreateEventSubmitted(
+              eventName.text,
+              organizedBy.text,
+              startDateTime,
+              endDateTime,
+              eventDescription.text,
+              userId,
+            ),
           );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Event created successfully!')),
-      );
     }
   }
 
@@ -141,8 +143,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         body: BlocConsumer<CreateEventBloc, CreateEventState>(
           listener: (context, state) {
             if (state is CreateEventSuccess) {
-              // Navigate to OTP verification screen
-              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Event created successfully.")),
+              );
+              Future.delayed(const Duration(seconds: 1));
+              Navigator.of(context).pop(true);
             }
             if (state is CreateEventFailure) {
               ScaffoldMessenger.of(context).showSnackBar(

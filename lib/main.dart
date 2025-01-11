@@ -21,10 +21,13 @@ import 'package:momento/screens/home.dart';
 import 'package:momento/screens/onboarding/onboarding_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+late SharedPreferences prefs;
+
+void main() async {
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white));
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  prefs = await SharedPreferences.getInstance();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   _initializeApp();
