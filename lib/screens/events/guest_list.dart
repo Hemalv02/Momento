@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_bloc.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_event.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_state.dart';
@@ -51,8 +51,14 @@ class _GuestListState extends State<GuestList> {
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            showGuestModal(context);
-            // Implement guest addition logic here
+            showGuestModal(
+              context,
+              widget.eventId,
+              () {
+                // Trigger a refresh after modal pop
+                _onRefresh();
+              },
+            );
           },
           foregroundColor: Colors.white,
           backgroundColor: const Color(0xFF003675),
