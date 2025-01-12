@@ -21,10 +21,10 @@ Future<Map<String, String>> fetchSupabaseConfig() async {
 
 
 Future<void> initializeSupabase() async {
-  final config = await fetchSupabaseConfig();
+  // final config = await fetchSupabaseConfig();
 
   await Supabase.initialize(
-    url: config['url']!,
-    anonKey: config['public_key']!,
+    url: /*config['url']!*/"https://nlbwkaysyyfkqxyvftjs.supabase.co",
+    anonKey: /*config['public_key']!*/"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sYndrYXlzeXlma3F4eXZmdGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU2MTgyMzcsImV4cCI6MjA1MTE5NDIzN30.BN3HO_6NVR1JQVtEd52b2VAoWc8UHdGXqy3-Dg390Rk",
   );
 }

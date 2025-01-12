@@ -11,6 +11,7 @@ import 'package:momento/screens/auth_v2/otp_verify/otp_verify.dart';
 import 'package:momento/screens/auth_v2/reset_password/reset_password.dart';
 import 'package:momento/screens/auth_v2/signup/signup.dart';
 import 'package:momento/screens/events/chat/api_service.dart';
+import 'package:momento/screens/events/chat/chat_screen.dart';
 import 'package:momento/screens/events/create_event.dart';
 import 'package:momento/screens/events/event_home.dart';
 import 'package:momento/screens/events/event_notification.dart';
@@ -73,7 +74,7 @@ class MomentoApp extends StatelessWidget {
             'forgot_password': (context) => const ForgotPassword(),
             'otp_verify': (context) => const OTPVerification(),
             'reset_password': (context) => const ResetPassword(),
-            'home': (context) => const HomeScreen(),
+            'home': (context) => const /*HomeScreen()*/ChatScreen(eventId: 1),
             'create_event': (context) => const CreateEventScreen(),
             'event_home': (context) => const EventHome(),
             'ticket_scanner': (context) => const QRScannerPage(),

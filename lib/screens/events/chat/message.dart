@@ -30,7 +30,7 @@ class Message {
   })  : id = map['id'],
         profileId = map['profile_id'],
         content = map['content'],
-        eventId=map['eventId'],
+        eventId=map['event_id'],
         createdAt = DateTime.parse(map['created_at']),
         isMine = myUserId == map['profile_id'];
 }

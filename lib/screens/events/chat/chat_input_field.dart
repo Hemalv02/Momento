@@ -8,7 +8,7 @@ class ChatInputField extends StatelessWidget {
 
   void _submitMessage(BuildContext context, String text) async {
     final supabase = Supabase.instance.client;
-    final myUserId = supabase.auth.currentUser?.id;
+    const myUserId = "668308c8-ae99-49a9-a1ba-91b3c4348c88";
 
     if (myUserId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -27,9 +27,9 @@ class ChatInputField extends StatelessWidget {
         'profile_id': myUserId,
         'content': text,
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Message sent!')),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('Message sent!')),
+      // );
     } on PostgrestException catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${error.message}')),

@@ -18,11 +18,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late final Stream<List<Message>> _messagesStream;
   final Map<String, Profile> _profileCache = {};
-      final supabase = Supabase.instance.client;
+  final supabase = Supabase.instance.client;
+  String? _selectedMessageId;
 
   void initState() {
-
-    final myUserId = supabase.auth.currentUser?.id;
+    const myUserId = "668308c8-ae99-49a9-a1ba-91b3c4348c88";
 
     // Ensure event_id is defined and available here
     _messagesStream = supabase
@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
         .eq('event_id', widget.eventId)
         .order('created_at') // Order by creation time
         .map((maps) => maps
-            .map((map) => Message.fromMap(map: map, myUserId: myUserId!))
+            .map((map) => Message.fromMap(map: map, myUserId: myUserId))
             .toList());
     super.initState();
   }
@@ -100,14 +100,21 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, index) {
                     final message = messages[index];
                     final isFirstMessage = index == 0 ||
-                        message.profileId != messages[index - 1].profileId; 
-                    
+                        message.profileId != messages[index - 1].profileId;
 
                     return ChatBubble(
                       message: message.content,
                       isSentByMe: message.isMine,
                       isFirstMessage: isFirstMessage,
                       avatarImage: 'assets/default_avatar.png',
+                      timestamp: message.createdAt, // Pass the timestamp here
+                      showTimestamp: _selectedMessageId == message.id,
+                      onTap: () {
+                        setState(() {
+                          _selectedMessageId =
+                              _selectedMessageId == message.id ? null : message.id;
+                        });
+                      },
                     );
                   },
                 );
