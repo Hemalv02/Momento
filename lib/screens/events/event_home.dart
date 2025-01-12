@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:momento/screens/events/event_co_organizer.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/guest_list.dart';
 
@@ -122,7 +123,11 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.group_add,
                     label: 'Organizers',
                     onTap: () {
-                      print('Organizers tapped');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                EventCoOrganizer(eventId: eventId)),
+                      );
                     },
                   ),
                   _buildFeatureItem(
