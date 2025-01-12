@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/main.dart';
 import 'package:momento/screens/events/co_organizer_add.dart';
 import 'package:momento/screens/events/fetch_organizer_bloc/fetch_organizer_bloc.dart';
@@ -129,12 +130,19 @@ class CoorganizerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8),
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
       color: const Color.fromARGB(255, 240, 246, 252),
       child: ListTile(
+        leading: CircleAvatar(
+          radius: 25.r,
+          backgroundColor: Color(0xFF003675),
+          foregroundColor: Colors.white,
+          child: Text(coorganizer.username[0]),
+          // backgroundColor: Colors.primaries[index % Colors.primaries.length],
+        ),
         contentPadding: const EdgeInsets.all(16),
         title: Text(
           coorganizer.username,

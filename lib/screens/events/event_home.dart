@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:momento/screens/events/budget_bloc/budget_api_service.dart';
+import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
+import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/guest_list.dart';
@@ -81,7 +85,14 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.monetization_on,
                     label: 'Budget',
                     onTap: () {
-                      print('Budget tapped');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                                  create: (context) =>
+                                      BudgetBloc(BudgetApiService()),
+                                  child: EventBudget(eventId: eventId),
+                                )),
+                      );
                     },
                   ),
                   _buildFeatureItem(
