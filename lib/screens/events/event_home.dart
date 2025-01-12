@@ -107,14 +107,23 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.question_answer,
                     label: 'Q&A',
                     onTap: () {
-                      print('Q&A tapped');
+                      Navigator.of(context).pushNamed('chat');
                     },
                   ),
                   _buildFeatureItem(
-                    icon: Icons.help_center,
-                    label: 'Help',
+                    icon: Icons.group_add,
+                    label: 'Organizers',
                     onTap: () {
-                      print('Help tapped');
+                      print('Organizers tapped');
+                    },
+                  ),
+                  _buildFeatureItem(
+                    icon: Icons.reviews,
+                    label: 'Reviews',
+                    onTap: () {
+                                                      Navigator.of(context).pushNamed('submit_reviews_screen');
+
+                      print('Event Review tapped');
                     },
                   ),
                 ],

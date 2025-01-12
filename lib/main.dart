@@ -17,6 +17,8 @@ import 'package:momento/screens/events/event_home.dart';
 import 'package:momento/screens/events/event_notification.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/guest_list.dart';
+import 'package:momento/screens/events/review/reviews_screen.dart';
+import 'package:momento/screens/events/review/submit_review_screen.dart';
 import 'package:momento/screens/events/ticket_scanner.dart';
 import 'package:momento/screens/events/todo_page.dart';
 import 'package:momento/screens/home.dart';
@@ -45,7 +47,7 @@ Future<void> _initializeApp() async {
   FlutterNativeSplash.remove();
   runApp(MomentoApp(
       initialRoute: isOnboardingCompleted
-          ? (isLoggedIn ? 'home' : 'login')
+          ? (isLoggedIn ? 'event_home' : 'login')
           : 'onboarding'));
 }
 
@@ -74,7 +76,7 @@ class MomentoApp extends StatelessWidget {
             'forgot_password': (context) => const ForgotPassword(),
             'otp_verify': (context) => const OTPVerification(),
             'reset_password': (context) => const ResetPassword(),
-            'home': (context) => const /*HomeScreen()*/ChatScreen(eventId: 1),
+            'home': (context) => const HomeScreen(),
             'create_event': (context) => const CreateEventScreen(),
             'event_home': (context) => const EventHome(),
             'ticket_scanner': (context) => const QRScannerPage(),
@@ -82,6 +84,9 @@ class MomentoApp extends StatelessWidget {
             'event_schedule': (context) => const EventSchedule(),
             'event_notification': (context) => const EventNotification(),
             'todo_page': (context) => const ToDoPage(),
+            'chat':(context)=>const ChatScreen(eventId: 1,),
+            'submit_reviews_screen':(context)=>const SubmitReviewScreen(eventId: 1,),
+            'reviews_screen':(context)=>const ReviewsScreen(eventId: 1,),
           },
           initialRoute: initialRoute,
           //initialRoute: 'event_home',

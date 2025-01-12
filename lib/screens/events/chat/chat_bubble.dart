@@ -1,3 +1,237 @@
+// // import 'package:flutter/material.dart';
+// // import 'package:intl/intl.dart';
+
+// // class ChatBubble extends StatelessWidget {
+// //   final String message;
+// //   final bool isSentByMe;
+// //   final bool isFirstMessage;
+// //   final String avatarImage;
+// //   final DateTime timestamp;
+
+// //   const ChatBubble({
+// //     super.key,
+// //     required this.message,
+// //     required this.isSentByMe,
+// //     required this.isFirstMessage,
+// //     required this.avatarImage,
+// //     required this.timestamp,
+// //   });
+
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     final timeString = DateFormat('hh:mm a').format(timestamp);
+
+// //     return Padding(
+// //       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+// //       child: Row(
+// //         crossAxisAlignment: CrossAxisAlignment.end,
+// //         mainAxisAlignment:
+// //             isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+// //         children: [
+// //           if (!isSentByMe && isFirstMessage)
+// //             CircleAvatar(
+// //               radius: 22,
+// //               backgroundImage: AssetImage(avatarImage),
+// //             ),
+// //           if (!isSentByMe && !isFirstMessage) const SizedBox(width: 44),
+// //           if (!isSentByMe) const SizedBox(width: 8),
+// //           Flexible(
+// //             child: Column(
+// //               crossAxisAlignment:
+// //                   isSentByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+// //               children: [
+// //                 Container(
+// //                   padding: const EdgeInsets.symmetric(
+// //                     vertical: 12,
+// //                     horizontal: 16,
+// //                   ),
+// //                   decoration: BoxDecoration(
+// //                     gradient: isSentByMe
+// //                         ? const LinearGradient(
+// //                             colors: [
+// //                               Color(0xFF003675),
+// //                               Colors.blue,
+// //                               Colors.lightBlueAccent,
+// //                             ],
+// //                             begin: Alignment.topLeft,
+// //                             end: Alignment.bottomRight,
+// //                           )
+// //                         : LinearGradient(
+// //                             colors: [
+// //                               Colors.grey[300]!,
+// //                               Colors.grey[200]!,
+// //                             ],
+// //                             begin: Alignment.topLeft,
+// //                             end: Alignment.bottomRight,
+// //                           ),
+// //                     borderRadius: BorderRadius.only(
+// //                       topLeft: Radius.circular(
+// //                           isSentByMe ? 12 : (isFirstMessage ? 0 : 12)),
+// //                       topRight: Radius.circular(
+// //                           isSentByMe ? (isFirstMessage ? 0 : 12) : 12),
+// //                       bottomLeft: const Radius.circular(12),
+// //                       bottomRight: const Radius.circular(12),
+// //                     ),
+// //                   ),
+// //                   child: Text(
+// //                     message,
+// //                     style: TextStyle(
+// //                       fontSize: 15,
+// //                       color: isSentByMe ? Colors.white : Colors.black87,
+// //                     ),
+// //                   ),
+// //                 ),
+// //                 const SizedBox(height: 4),
+// //                 Text(
+// //                   timeString,
+// //                   style: TextStyle(
+// //                     fontSize: 12,
+// //                     color: Colors.grey[600],
+// //                   ),
+// //                 ),
+// //               ],
+// //             ),
+// //           ),
+// //           if (isSentByMe) const SizedBox(width: 8),
+// //           if (isSentByMe && isFirstMessage)
+// //             CircleAvatar(
+// //               radius: 22,
+// //               backgroundImage: AssetImage(avatarImage),
+// //             ),
+// //           if (isSentByMe && !isFirstMessage) const SizedBox(width: 44),
+// //         ],
+// //       ),
+// //     );
+// //   }
+// // }
+// // import 'package:flutter/material.dart';
+// // import 'package:intl/intl.dart';
+
+// // class ChatBubble extends StatefulWidget {
+// //   final String message;
+// //   final bool isSentByMe;
+// //   final bool isFirstMessage;
+// //   final String avatarImage;
+// //   final DateTime timestamp;
+
+// //   const ChatBubble({
+// //     super.key,
+// //     required this.message,
+// //     required this.isSentByMe,
+// //     required this.isFirstMessage,
+// //     required this.avatarImage,
+// //     required this.timestamp,
+// //   });
+
+// //   @override
+// //   State<ChatBubble> createState() => _ChatBubbleState();
+// // }
+
+// // class _ChatBubbleState extends State<ChatBubble> {
+// //   bool _showTimestamp = false;
+
+// //   void _toggleTimestamp() {
+// //     setState(() {
+// //       _showTimestamp = !_showTimestamp;
+// //     });
+// //   }
+
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     final timeString = DateFormat('hh:mm a').format(widget.timestamp);
+
+// //     return GestureDetector(
+// //       onTap: _toggleTimestamp,
+// //       child: Padding(
+// //         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+// //         child: Row(
+// //           crossAxisAlignment: CrossAxisAlignment.end,
+// //           mainAxisAlignment:
+// //               widget.isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+// //           children: [
+// //             if (!widget.isSentByMe && widget.isFirstMessage)
+// //               CircleAvatar(
+// //                 radius: 22,
+// //                 backgroundImage: AssetImage(widget.avatarImage),
+// //               ),
+// //             if (!widget.isSentByMe && !widget.isFirstMessage)
+// //               const SizedBox(width: 44),
+// //             if (!widget.isSentByMe) const SizedBox(width: 8),
+// //             Flexible(
+// //               child: Column(
+// //                 crossAxisAlignment: widget.isSentByMe
+// //                     ? CrossAxisAlignment.end
+// //                     : CrossAxisAlignment.start,
+// //                 children: [
+// //                   Container(
+// //                     padding: const EdgeInsets.symmetric(
+// //                       vertical: 12,
+// //                       horizontal: 16,
+// //                     ),
+// //                     decoration: BoxDecoration(
+// //                       gradient: widget.isSentByMe
+// //                           ? const LinearGradient(
+// //                               colors: [
+// //                                 Color(0xFF003675),
+// //                                 Colors.blue,
+// //                                 Colors.lightBlueAccent,
+// //                               ],
+// //                               begin: Alignment.topLeft,
+// //                               end: Alignment.bottomRight,
+// //                             )
+// //                           : LinearGradient(
+// //                               colors: [
+// //                                 Colors.grey[300]!,
+// //                                 Colors.grey[200]!,
+// //                               ],
+// //                               begin: Alignment.topLeft,
+// //                               end: Alignment.bottomRight,
+// //                             ),
+// //                       borderRadius: BorderRadius.only(
+// //                         topLeft: Radius.circular(
+// //                             widget.isSentByMe ? 12 : (widget.isFirstMessage ? 0 : 12)),
+// //                         topRight: Radius.circular(
+// //                             widget.isSentByMe ? (widget.isFirstMessage ? 0 : 12) : 12),
+// //                         bottomLeft: const Radius.circular(12),
+// //                         bottomRight: const Radius.circular(12),
+// //                       ),
+// //                     ),
+// //                     child: Text(
+// //                       widget.message,
+// //                       style: TextStyle(
+// //                         fontSize: 15,
+// //                         color: widget.isSentByMe ? Colors.white : Colors.black87,
+// //                       ),
+// //                     ),
+// //                   ),
+// //                   if (_showTimestamp)
+// //                     Padding(
+// //                       padding: const EdgeInsets.only(top: 4),
+// //                       child: Text(
+// //                         timeString,
+// //                         style: TextStyle(
+// //                           fontSize: 12,
+// //                           color: Colors.grey[600],
+// //                         ),
+// //                       ),
+// //                     ),
+// //                 ],
+// //               ),
+// //             ),
+// //             if (widget.isSentByMe) const SizedBox(width: 8),
+// //             if (widget.isSentByMe && widget.isFirstMessage)
+// //               CircleAvatar(
+// //                 radius: 22,
+// //                 backgroundImage: AssetImage(widget.avatarImage),
+// //               ),
+// //             if (widget.isSentByMe && !widget.isFirstMessage)
+// //               const SizedBox(width: 44),
+// //           ],
+// //         ),
+// //       ),
+// //     );
+// //   }
+// // }
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 
@@ -7,6 +241,8 @@
 //   final bool isFirstMessage;
 //   final String avatarImage;
 //   final DateTime timestamp;
+//   final bool showTimestamp;
+//   final VoidCallback onTap;
 
 //   const ChatBubble({
 //     super.key,
@@ -15,151 +251,34 @@
 //     required this.isFirstMessage,
 //     required this.avatarImage,
 //     required this.timestamp,
+//     required this.showTimestamp,
+//     required this.onTap,
 //   });
 
 //   @override
 //   Widget build(BuildContext context) {
 //     final timeString = DateFormat('hh:mm a').format(timestamp);
 
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-//       child: Row(
-//         crossAxisAlignment: CrossAxisAlignment.end,
-//         mainAxisAlignment:
-//             isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-//         children: [
-//           if (!isSentByMe && isFirstMessage)
-//             CircleAvatar(
-//               radius: 22,
-//               backgroundImage: AssetImage(avatarImage),
-//             ),
-//           if (!isSentByMe && !isFirstMessage) const SizedBox(width: 44),
-//           if (!isSentByMe) const SizedBox(width: 8),
-//           Flexible(
-//             child: Column(
-//               crossAxisAlignment:
-//                   isSentByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-//               children: [
-//                 Container(
-//                   padding: const EdgeInsets.symmetric(
-//                     vertical: 12,
-//                     horizontal: 16,
-//                   ),
-//                   decoration: BoxDecoration(
-//                     gradient: isSentByMe
-//                         ? const LinearGradient(
-//                             colors: [
-//                               Color(0xFF003675),
-//                               Colors.blue,
-//                               Colors.lightBlueAccent,
-//                             ],
-//                             begin: Alignment.topLeft,
-//                             end: Alignment.bottomRight,
-//                           )
-//                         : LinearGradient(
-//                             colors: [
-//                               Colors.grey[300]!,
-//                               Colors.grey[200]!,
-//                             ],
-//                             begin: Alignment.topLeft,
-//                             end: Alignment.bottomRight,
-//                           ),
-//                     borderRadius: BorderRadius.only(
-//                       topLeft: Radius.circular(
-//                           isSentByMe ? 12 : (isFirstMessage ? 0 : 12)),
-//                       topRight: Radius.circular(
-//                           isSentByMe ? (isFirstMessage ? 0 : 12) : 12),
-//                       bottomLeft: const Radius.circular(12),
-//                       bottomRight: const Radius.circular(12),
-//                     ),
-//                   ),
-//                   child: Text(
-//                     message,
-//                     style: TextStyle(
-//                       fontSize: 15,
-//                       color: isSentByMe ? Colors.white : Colors.black87,
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 4),
-//                 Text(
-//                   timeString,
-//                   style: TextStyle(
-//                     fontSize: 12,
-//                     color: Colors.grey[600],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           if (isSentByMe) const SizedBox(width: 8),
-//           if (isSentByMe && isFirstMessage)
-//             CircleAvatar(
-//               radius: 22,
-//               backgroundImage: AssetImage(avatarImage),
-//             ),
-//           if (isSentByMe && !isFirstMessage) const SizedBox(width: 44),
-//         ],
-//       ),
-//     );
-//   }
-// }
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-
-// class ChatBubble extends StatefulWidget {
-//   final String message;
-//   final bool isSentByMe;
-//   final bool isFirstMessage;
-//   final String avatarImage;
-//   final DateTime timestamp;
-
-//   const ChatBubble({
-//     super.key,
-//     required this.message,
-//     required this.isSentByMe,
-//     required this.isFirstMessage,
-//     required this.avatarImage,
-//     required this.timestamp,
-//   });
-
-//   @override
-//   State<ChatBubble> createState() => _ChatBubbleState();
-// }
-
-// class _ChatBubbleState extends State<ChatBubble> {
-//   bool _showTimestamp = false;
-
-//   void _toggleTimestamp() {
-//     setState(() {
-//       _showTimestamp = !_showTimestamp;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final timeString = DateFormat('hh:mm a').format(widget.timestamp);
-
 //     return GestureDetector(
-//       onTap: _toggleTimestamp,
+//       onTap: onTap,
 //       child: Padding(
 //         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
 //         child: Row(
 //           crossAxisAlignment: CrossAxisAlignment.end,
 //           mainAxisAlignment:
-//               widget.isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+//               isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
 //           children: [
-//             if (!widget.isSentByMe && widget.isFirstMessage)
+//             if (!isSentByMe && isFirstMessage)
 //               CircleAvatar(
 //                 radius: 22,
-//                 backgroundImage: AssetImage(widget.avatarImage),
+//                 backgroundImage: AssetImage(avatarImage),
 //               ),
-//             if (!widget.isSentByMe && !widget.isFirstMessage)
+//             if (!isSentByMe && !isFirstMessage)
 //               const SizedBox(width: 44),
-//             if (!widget.isSentByMe) const SizedBox(width: 8),
+//             if (!isSentByMe) const SizedBox(width: 8),
 //             Flexible(
 //               child: Column(
-//                 crossAxisAlignment: widget.isSentByMe
+//                 crossAxisAlignment: isSentByMe
 //                     ? CrossAxisAlignment.end
 //                     : CrossAxisAlignment.start,
 //                 children: [
@@ -169,7 +288,7 @@
 //                       horizontal: 16,
 //                     ),
 //                     decoration: BoxDecoration(
-//                       gradient: widget.isSentByMe
+//                       gradient: isSentByMe
 //                           ? const LinearGradient(
 //                               colors: [
 //                                 Color(0xFF003675),
@@ -189,22 +308,22 @@
 //                             ),
 //                       borderRadius: BorderRadius.only(
 //                         topLeft: Radius.circular(
-//                             widget.isSentByMe ? 12 : (widget.isFirstMessage ? 0 : 12)),
+//                             isSentByMe ? 12 : (isFirstMessage ? 0 : 12)),
 //                         topRight: Radius.circular(
-//                             widget.isSentByMe ? (widget.isFirstMessage ? 0 : 12) : 12),
+//                             isSentByMe ? (isFirstMessage ? 0 : 12) : 12),
 //                         bottomLeft: const Radius.circular(12),
 //                         bottomRight: const Radius.circular(12),
 //                       ),
 //                     ),
 //                     child: Text(
-//                       widget.message,
+//                       message,
 //                       style: TextStyle(
 //                         fontSize: 15,
-//                         color: widget.isSentByMe ? Colors.white : Colors.black87,
+//                         color: isSentByMe ? Colors.white : Colors.black87,
 //                       ),
 //                     ),
 //                   ),
-//                   if (_showTimestamp)
+//                   if (showTimestamp)
 //                     Padding(
 //                       padding: const EdgeInsets.only(top: 4),
 //                       child: Text(
@@ -218,13 +337,13 @@
 //                 ],
 //               ),
 //             ),
-//             if (widget.isSentByMe) const SizedBox(width: 8),
-//             if (widget.isSentByMe && widget.isFirstMessage)
+//             if (isSentByMe) const SizedBox(width: 8),
+//             if (isSentByMe && isFirstMessage)
 //               CircleAvatar(
 //                 radius: 22,
-//                 backgroundImage: AssetImage(widget.avatarImage),
+//                 backgroundImage: AssetImage(avatarImage),
 //               ),
-//             if (widget.isSentByMe && !widget.isFirstMessage)
+//             if (isSentByMe && !isFirstMessage)
 //               const SizedBox(width: 44),
 //           ],
 //         ),
@@ -236,118 +355,121 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ChatBubble extends StatelessWidget {
-  final String message;
-  final bool isSentByMe;
-  final bool isFirstMessage;
-  final String avatarImage;
-  final DateTime timestamp;
-  final bool showTimestamp;
-  final VoidCallback onTap;
+ final String message;
+ final bool isSentByMe; 
+ final bool isFirstMessage;
+ final String avatarImage;
+ final DateTime timestamp;
+ final bool showTimestamp;
+ final VoidCallback onTap;
+ final String username;
 
-  const ChatBubble({
-    super.key,
-    required this.message,
-    required this.isSentByMe,
-    required this.isFirstMessage,
-    required this.avatarImage,
-    required this.timestamp,
-    required this.showTimestamp,
-    required this.onTap,
-  });
+ const ChatBubble({
+   super.key,
+   required this.message,
+   required this.isSentByMe,
+   required this.isFirstMessage, 
+   required this.avatarImage,
+   required this.timestamp,
+   required this.showTimestamp,
+   required this.onTap,
+   required this.username,
+ });
 
-  @override
-  Widget build(BuildContext context) {
-    final timeString = DateFormat('hh:mm a').format(timestamp);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment:
-              isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
-            if (!isSentByMe && isFirstMessage)
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: AssetImage(avatarImage),
-              ),
-            if (!isSentByMe && !isFirstMessage)
-              const SizedBox(width: 44),
-            if (!isSentByMe) const SizedBox(width: 8),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: isSentByMe
-                    ? CrossAxisAlignment.end
-                    : CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: isSentByMe
-                          ? const LinearGradient(
-                              colors: [
-                                Color(0xFF003675),
-                                Colors.blue,
-                                Colors.lightBlueAccent,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            )
-                          : LinearGradient(
-                              colors: [
-                                Colors.grey[300]!,
-                                Colors.grey[200]!,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(
-                            isSentByMe ? 12 : (isFirstMessage ? 0 : 12)),
-                        topRight: Radius.circular(
-                            isSentByMe ? (isFirstMessage ? 0 : 12) : 12),
-                        bottomLeft: const Radius.circular(12),
-                        bottomRight: const Radius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      message,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: isSentByMe ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ),
-                  if (showTimestamp)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        timeString,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            if (isSentByMe) const SizedBox(width: 8),
-            if (isSentByMe && isFirstMessage)
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: AssetImage(avatarImage),
-              ),
-            if (isSentByMe && !isFirstMessage)
-              const SizedBox(width: 44),
-          ],
-        ),
-      ),
-    );
-  }
+ @override
+ Widget build(BuildContext context) {
+   return GestureDetector(
+     onTap: onTap,
+     child: Column(
+       crossAxisAlignment: 
+           isSentByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+       children: [
+         if (isFirstMessage) ...[
+           Padding(
+             padding: EdgeInsets.only(
+               left: isSentByMe ? 0 : 50,
+               right: isSentByMe ? 50 : 0,
+               bottom: 4,
+             ),
+             child: Text(
+               username,
+               style: TextStyle(
+                 fontSize: 12,
+                 color: Colors.grey[600],
+               ),
+             ),
+           ),
+         ],
+         Row(
+           mainAxisAlignment: 
+               isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             if (!isSentByMe && isFirstMessage)
+               CircleAvatar(
+                 radius: 22,
+                 backgroundImage: AssetImage(avatarImage),
+               ),
+             if (!isSentByMe && !isFirstMessage) const SizedBox(width: 44),
+             if (!isSentByMe) const SizedBox(width: 6),
+             
+             if (isSentByMe && isFirstMessage)
+               CircleAvatar(
+                 radius: 22,
+                 backgroundImage: AssetImage(avatarImage),
+               ),
+             if (isSentByMe && !isFirstMessage) const SizedBox(width: 44),
+             if (isSentByMe) const SizedBox(width: 6),
+             
+             Flexible(
+               child: Container(
+                 margin: const EdgeInsets.symmetric(vertical: 5),
+                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                 decoration: BoxDecoration(
+                   gradient: isSentByMe
+                       ? const LinearGradient(
+                           colors: [Color(0xFF003675), Colors.blue, Colors.lightBlueAccent],
+                           begin: Alignment.topLeft,
+                           end: Alignment.bottomRight,
+                         )
+                       : LinearGradient(
+                           colors: [Colors.grey[300]!, Colors.grey[200]!],
+                           begin: Alignment.topLeft,
+                           end: Alignment.bottomRight,
+                         ),
+                   borderRadius: BorderRadius.only(
+                     topLeft: Radius.circular(
+                         isFirstMessage ? (isSentByMe ? 12 : 0) : 6),  
+                     topRight: Radius.circular(
+                         isFirstMessage ? (isSentByMe ? 0 : 12) : 6),
+                     bottomLeft: const Radius.circular(12),
+                     bottomRight: const Radius.circular(12),
+                   ),
+                 ),
+                 child: Text(
+                   message,
+                   style: TextStyle(
+                     fontSize: 15,
+                     color: isSentByMe ? Colors.white : Colors.black87,
+                   ),
+                 ),
+               ),
+             ),
+           ],
+         ),
+         if (showTimestamp)
+           Padding(
+             padding: const EdgeInsets.only(top: 4),
+             child: Text(
+               DateFormat('MMM d, h:mm a').format(timestamp),
+               style: TextStyle(
+                 fontSize: 12,
+                 color: Colors.grey[600],
+               ),
+             ),
+           ),
+       ],
+     ),
+   );
+ }
 }
