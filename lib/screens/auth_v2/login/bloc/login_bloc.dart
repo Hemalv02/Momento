@@ -25,7 +25,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await prefs.setString('token', response.token);
       await prefs.setString('userId', response.userId);
       await prefs.setString('email', response.email);
-
+      await prefs.setString('username', response.username);
       emit(LoginSuccess(response.token, response.userId, response.email));
     } catch (e) {
       if (e is ApiException) {

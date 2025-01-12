@@ -8,7 +8,7 @@ class ApiService {
   Future<LoginResponse> loginUser(String email, String password) async {
     try {
       final response = await _dio.post(
-        "https://8bzqcx5t-8000.inc1.devtunnels.ms/auth/login",
+        "https://frtz47r1-8000.inc1.devtunnels.ms/auth/login",
         data: {
           'email': email,
           'password': password,
@@ -20,6 +20,7 @@ class ApiService {
         token: response.data['access_token'],
         userId: response.data['user_id'],
         email: response.data['email'],
+        username: response.data['username'],
       );
     } on DioException catch (e) {
       // Handle DioError explicitly
@@ -41,7 +42,7 @@ class ApiService {
       String username, String email, String password) async {
     try {
       final response = await _dio.post(
-        "https://8bzqcx5t-8000.inc1.devtunnels.ms/auth/register",
+        "https://frtz47r1-8000.inc1.devtunnels.ms/auth/register",
         data: {
           "username": username,
           "email": email,
@@ -71,7 +72,7 @@ class ApiService {
       String email, String otp, String otpType) async {
     try {
       final response = await _dio.post(
-        "https://8bzqcx5t-8000.inc1.devtunnels.ms/auth/verify-otp",
+        "https://frtz47r1-8000.inc1.devtunnels.ms/auth/verify-otp",
         data: {
           "email": email,
           "otp": otp,
@@ -128,7 +129,11 @@ class LoginResponse {
   final String token;
   final String userId;
   final String email;
-
-  LoginResponse(
-      {required this.token, required this.userId, required this.email});
+  final String username;
+  LoginResponse({
+    required this.token,
+    required this.userId,
+    required this.email,
+    required this.username,
+  });
 }

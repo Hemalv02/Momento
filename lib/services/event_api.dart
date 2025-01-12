@@ -14,7 +14,7 @@ class EventApiService {
       String createdBy) async {
     try {
       final response = await _dio.post(
-        "https://8bzqcx5t-8000.inc1.devtunnels.ms/event/create",
+        "https://frtz47r1-8000.inc1.devtunnels.ms/event/create",
         data: {
           'event_name': name,
           'organized_by': organizedBy,

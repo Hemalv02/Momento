@@ -10,6 +10,7 @@ import 'package:momento/screens/auth_v2/login/login.dart';
 import 'package:momento/screens/auth_v2/otp_verify/otp_verify.dart';
 import 'package:momento/screens/auth_v2/reset_password/reset_password.dart';
 import 'package:momento/screens/auth_v2/signup/signup.dart';
+import 'package:momento/screens/contact_us_page.dart';
 import 'package:momento/screens/events/create_event.dart';
 import 'package:momento/screens/events/event_home.dart';
 import 'package:momento/screens/events/event_notification.dart';
@@ -18,7 +19,11 @@ import 'package:momento/screens/events/guest_list.dart';
 import 'package:momento/screens/events/ticket_scanner.dart';
 import 'package:momento/screens/events/todo_page.dart';
 import 'package:momento/screens/home.dart';
+import 'package:momento/screens/create_profile_screen.dart';
+import 'package:momento/screens/home_structure.dart';
 import 'package:momento/screens/onboarding/onboarding_screens.dart';
+import 'package:momento/screens/page_selector.dart';
+import 'package:momento/screens/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -40,7 +45,7 @@ Future<void> _initializeApp() async {
   FlutterNativeSplash.remove();
   runApp(MomentoApp(
       initialRoute: isOnboardingCompleted
-          ? (isLoggedIn ? 'home' : 'login')
+          ? (isLoggedIn ? 'home_structure' : 'login')
           : 'onboarding'));
 }
 
@@ -77,6 +82,11 @@ class MomentoApp extends StatelessWidget {
             'event_schedule': (context) => const EventSchedule(),
             'event_notification': (context) => const EventNotification(),
             'todo_page': (context) => const ToDoPage(),
+            'create_profile': (context) => const CreateProfilePage(),
+            'home_structure': (context) => const HomeStructure(),
+            'page_selector': (context) => const PageSelector(),
+            'settingspage': (context) => const SettingsPage(),
+            'feedbackpage': (context) => const FeedbackPage(),
           },
           initialRoute: initialRoute,
           //initialRoute: 'event_home',
