@@ -15,10 +15,10 @@ import 'package:momento/screens/events/event_home.dart';
 import 'package:momento/screens/events/event_notification.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/ticket_scanner.dart';
-import 'package:momento/screens/events/todo_page.dart';
 import 'package:momento/screens/home.dart';
 import 'package:momento/screens/onboarding/onboarding_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 late SharedPreferences prefs;
 
@@ -28,7 +28,11 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
+  await Supabase.initialize(
+    url: 'https://nlbwkaysyyfkqxyvftjs.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sYndrYXlzeXlma3F4eXZmdGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU2MTgyMzcsImV4cCI6MjA1MTE5NDIzN30.BN3HO_6NVR1JQVtEd52b2VAoWc8UHdGXqy3-Dg390Rk',
+  );
   _initializeApp();
 }
 
@@ -78,7 +82,7 @@ class MomentoApp extends StatelessWidget {
             // 'guest_list': (context) => const GuestList(),
             'event_schedule': (context) => const EventSchedule(),
             'event_notification': (context) => const EventNotification(),
-            'todo_page': (context) => const ToDoPage(),
+            //'todo_page': (context) => const ToDoPage(),
           },
           initialRoute: initialRoute,
           //initialRoute: 'event_home',

@@ -5,6 +5,7 @@ import 'package:momento/screens/events/budget_bloc/budget_api_service.dart';
 import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
+import 'package:momento/screens/events/event_qa.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/guest_list.dart';
 
@@ -71,7 +72,15 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.checklist,
                     label: 'To-Do',
                     onTap: () {
-                      print('To-Do tapped');
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => BlocProvider(
+                      //       create: (context) =>
+                      //           FetchTodoBloc(apiService: TodoApiService()),
+                      //       child: ToDoPage(eventId: eventId),
+                      //     ),
+                      //   ),
+                      // );
                     },
                   ),
                   _buildFeatureItem(
@@ -87,11 +96,11 @@ class _EventHomeState extends State<EventHome> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                                  create: (context) =>
-                                      BudgetBloc(BudgetApiService()),
-                                  child: EventBudget(eventId: eventId),
-                                )),
+                          builder: (context) => BlocProvider(
+                            create: (context) => BudgetBloc(BudgetApiService()),
+                            child: EventBudget(eventId: eventId),
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -145,7 +154,13 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.question_answer,
                     label: 'Q&A',
                     onTap: () {
-                      print('Q&A tapped');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              QuestionsScreen(eventId: eventId),
+                        ),
+                      );
                     },
                   ),
                   _buildFeatureItem(
