@@ -6,6 +6,7 @@ import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
 import 'package:momento/screens/events/event_qa.dart';
+import 'package:momento/screens/events/event_summary.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/guest_list.dart';
 
@@ -129,7 +130,11 @@ class _EventHomeState extends State<EventHome> {
                     icon: Icons.bar_chart,
                     label: 'Reports',
                     onTap: () {
-                      print('Reports tapped');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const TransactionSummaryWidget()),
+                      );
                     },
                   ),
                   _buildFeatureItem(
