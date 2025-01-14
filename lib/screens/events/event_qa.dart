@@ -219,107 +219,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   }
 }
 
-class _QuestionCard extends StatelessWidget {
-  final Question question;
-  final String username;
-
-  const _QuestionCard({
-    required this.question,
-    required this.username,
-  });
-
-  Future<int> _getReplyCount(int questionId) async {
-    try {
-      final response = await Supabase.instance.client
-          .from('event_answers')
-          .select()
-          .eq('question_id', questionId);
-
-      // Return the length of the response array
-      return response.length;
-    } catch (error) {
-      // Log the error for debugging purposes
-      debugPrint('Error fetching reply count: $error');
-      return 0; // Default to 0 replies if there's an error
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: const Color(0xFF003675).withOpacity(0.08),
-      elevation: 0,
-      margin: const EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  child: Text(
-                    username.isNotEmpty ? username[0].toUpperCase() : 'U',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      username.isNotEmpty ? username : 'Unknown User',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      format(question.createdAt, locale: 'en_short'),
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              question.question,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 12),
-            const Divider(),
-            FutureBuilder<int>(
-              future: _getReplyCount(question.id),
-              builder: (context, snapshot) {
-                final replyCount = snapshot.data ?? 0;
-                final replyText =
-                    replyCount > 0 ? 'Replies ($replyCount)' : 'Reply';
-
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            QaReplyScreen(questionId: question.id),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    replyText,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // class _QuestionCard extends StatelessWidget {
 //   final Question question;
 //   final String username;
@@ -328,6 +227,22 @@ class _QuestionCard extends StatelessWidget {
 //     required this.question,
 //     required this.username,
 //   });
+
+//   Future<int> _getReplyCount(int questionId) async {
+//     try {
+//       final response = await Supabase.instance.client
+//           .from('event_answers')
+//           .select()
+//           .eq('question_id', questionId);
+
+//       // Return the length of the response array
+//       return response.length;
+//     } catch (error) {
+//       // Log the error for debugging purposes
+//       debugPrint('Error fetching reply count: $error');
+//       return 0; // Default to 0 replies if there's an error
+//     }
+//   }
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -372,19 +287,285 @@ class _QuestionCard extends StatelessWidget {
 //             ),
 //             const SizedBox(height: 12),
 //             const Divider(),
-//             InkWell(
-//               onTap: () {
-//                 Navigator.of(context).push(
-//                   MaterialPageRoute(
-//                       builder: (context) =>
-//                           QaReplyScreen(questionId: question.id)),
+//             FutureBuilder<int>(
+//               future: _getReplyCount(question.id),
+//               builder: (context, snapshot) {
+//                 final replyCount = snapshot.data ?? 0;
+//                 final replyText =
+//                     replyCount > 0 ? 'Replies ($replyCount)' : 'Reply';
+
+//                 return InkWell(
+//                   onTap: () {
+//                     Navigator.of(context).push(
+//                       MaterialPageRoute(
+//                         builder: (context) =>
+//                             QaReplyScreen(questionId: question.id),
+//                       ),
+//                     );
+//                   },
+//                   child: Text(
+//                     replyText,
+//                     style: const TextStyle(
+//                       color: Colors.grey,
+//                       fontSize: 14,
+//                     ),
+//                   ),
 //                 );
-//                 // Handle add class comment
 //               },
-//               child: const Text(
-//                 "Reply",
-//                 style: TextStyle(color: Colors.grey, fontSize: 14),
-//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class _QuestionCard extends StatelessWidget {
+  final Question question;
+  final String username;
+
+  const _QuestionCard({
+    required this.question,
+    required this.username,
+  });
+
+  Future<int> _getReplyCount(int questionId) async {
+    try {
+      final response = await Supabase.instance.client
+          .from('event_answers')
+          .select()
+          .eq('question_id', questionId);
+
+      // Return the length of the response array
+      return response.length;
+    } catch (error) {
+      // Log the error for debugging purposes
+      debugPrint('Error fetching reply count: $error');
+      return 0; // Default to 0 replies if there's an error
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: const Color(0xFF003675).withAlpha(20),
+      elevation: 0, // Slight elevation for a more modern look
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // User Info Row
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  child: Text(
+                    username.isNotEmpty ? username[0].toUpperCase() : 'U',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      username.isNotEmpty ? username : 'Unknown User',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Color(0xFF003675),
+                      ),
+                    ),
+                    Text(
+                      format(question.createdAt, locale: 'en_short'),
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Question Text
+            Text(
+              question.question,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Divider
+            const Divider(
+              color: Colors.grey,
+              thickness: 0.8,
+            ),
+
+            // Reply Section
+            FutureBuilder<int>(
+              future: _getReplyCount(question.id),
+              builder: (context, snapshot) {
+                final replyCount = snapshot.data ?? 0;
+                final replyText =
+                    replyCount > 0 ? 'Replies ($replyCount)' : 'Reply';
+
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            QaReplyScreen(questionId: question.id),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        replyText,
+                        style: const TextStyle(
+                          color: Color(0xFF003675),
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 14,
+                        color: Color(0xFF003675),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+// class _QuestionCard extends StatelessWidget {
+//   final Question question;
+//   final String username;
+
+//   const _QuestionCard({
+//     required this.question,
+//     required this.username,
+//   });
+
+//   Future<int> _getReplyCount(int questionId) async {
+//     try {
+//       final response = await Supabase.instance.client
+//           .from('event_answers')
+//           .select()
+//           .eq('question_id', questionId);
+
+//       // Return the length of the response array
+//       return response.length;
+//     } catch (error) {
+//       // Log the error for debugging purposes
+//       debugPrint('Error fetching reply count: $error');
+//       return 0; // Default to 0 replies if there's an error
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Card(
+//       color: const Color(0xFF003675).withAlpha(20),
+//       elevation: 0,
+//       margin: const EdgeInsets.all(8),
+//       child: Padding(
+//         padding: const EdgeInsets.all(12.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               children: [
+//                 CircleAvatar(
+//                   backgroundColor: Colors.grey,
+//                   child: Text(
+//                     username.isNotEmpty ? username[0].toUpperCase() : 'U',
+//                     style: const TextStyle(color: Colors.white),
+//                   ),
+//                 ),
+//                 const SizedBox(width: 8),
+//                 Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(
+//                       username.isNotEmpty ? username : 'Unknown User',
+//                       style: const TextStyle(fontWeight: FontWeight.bold),
+//                     ),
+//                     Text(
+//                       format(question.createdAt, locale: 'en_short'),
+//                       style: const TextStyle(color: Colors.grey),
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//             const SizedBox(height: 12),
+//             Text(
+//               question.question,
+//               style: const TextStyle(fontSize: 16),
+//             ),
+//             const SizedBox(height: 12),
+//             const Divider(),
+//             FutureBuilder<int>(
+//               future: _getReplyCount(question.id),
+//               builder: (context, snapshot) {
+//                 final replyCount = snapshot.data ?? 0;
+//                 final replyText =
+//                     replyCount > 0 ? 'Replies ($replyCount)' : 'Reply';
+
+//                 return InkWell(
+//                   onTap: () {
+//                     Navigator.of(context).push(
+//                       MaterialPageRoute(
+//                         builder: (context) =>
+//                             QaReplyScreen(questionId: question.id),
+//                       ),
+//                     );
+//                   },
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.end,
+//                     children: [
+//                       Text(
+//                         replyText,
+//                         style: const TextStyle(
+//                           color: Color(0xFF003675),
+//                           fontSize: 14,
+//                           fontWeight: FontWeight.bold,
+//                         ),
+//                       ),
+//                       const SizedBox(width: 4),
+//                      const Icon(
+//                         Icons.arrow_forward_ios,
+//                         size: 14,
+//                         color: Color(0xFF003675),
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               },
 //             ),
 //           ],
 //         ),

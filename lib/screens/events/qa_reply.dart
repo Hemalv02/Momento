@@ -222,34 +222,42 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
   }
 
   Widget _buildCommentInputField() {
-    return Column(
-      children: [
-        const Divider(height: 1),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _commentController,
-                  decoration: const InputDecoration(
-                    hintText: "Add Reply",
-                    border: InputBorder.none,
-                  ),
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (value) => _submitReply(),
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _commentController,
+              decoration: InputDecoration(
+                hintText: "Add a reply...",
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
                 ),
               ),
-              const SizedBox(width: 8),
-              IconButton(
-                icon: const Icon(Icons.send),
-                color: const Color(0xFF003675),
-                onPressed: _submitReply,
-              ),
-            ],
+              textInputAction: TextInputAction.send,
+              onSubmitted: (value) => _submitReply(),
+            ),
           ),
-        ),
-      ],
+          const SizedBox(width: 8),
+          CircleAvatar(
+            backgroundColor: const Color(0xFF003675),
+            foregroundColor: Colors.white,
+            child: IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: _submitReply,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
