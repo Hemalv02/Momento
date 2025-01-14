@@ -254,7 +254,7 @@ class _EventHomeState extends State<EventHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Event Dashboard'),
         backgroundColor: const Color(0xFF003675),
@@ -486,22 +486,22 @@ class _EventHomeState extends State<EventHome> {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFF003675).withOpacity(0.8),
           borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(13),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black.withAlpha(13),
+          //     blurRadius: 10,
+          //     offset: const Offset(0, 4),
+          //   ),
+          // ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              color: const Color(0xFF003675),
+              color: Colors.white,
               size: 28,
             ),
             SizedBox(height: 8.h),
@@ -510,7 +510,7 @@ class _EventHomeState extends State<EventHome> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12.sp,
-                color: Colors.black87,
+                color: Colors.white,
                 fontWeight: FontWeight.normal,
               ),
             ),

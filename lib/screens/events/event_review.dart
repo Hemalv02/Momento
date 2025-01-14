@@ -17,6 +17,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   Map<int, int> _ratingsCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
   List<Map<String, dynamic>> _reviews = [];
   bool _isLoading = true;
+  String _errorMessage = '';
 
   @override
   void initState() {
@@ -26,33 +27,36 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
 
   Future<void> _fetchReviews() async {
     try {
-      final response = await supabase
-          .from('reviews')
-          .select()
-          .eq('event_id', widget.eventId);
+      setState(() {
+        _isLoading = true;
+        _errorMessage = '';
+      });
 
-      final data = response as List<dynamic>;
+      // Fetch reviews for the specific event
+      final reviewsResponse = await supabase
+          .from('reviews')
+          .select('*, users(username)')
+          .eq('event_id', widget.eventId)
+          .order('created_at', ascending: false);
+
+      // Initialize ratings count
       Map<int, int> ratingsCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
 
-      final reviews = await Future.wait(data.map((review) async {
-        final userResponse = await supabase
-            .from('users')
-            .select('username')
-            .eq('id', review['user_id'])
-            .single();
-        final username = userResponse['username'] ?? 'Unknown';
-
+      // Process reviews
+      final List<Map<String, dynamic>> processedReviews =
+          reviewsResponse.map((review) {
         final int rating = (review['rating'] as num).toInt();
-        ratingsCount[rating] = ratingsCount[rating]! + 1;
+        ratingsCount[rating] = (ratingsCount[rating] ?? 0) + 1;
 
         return {
-          'user': username,
+          'user': review['users']['username'] ?? 'Unknown',
           'content': review['review_text'],
           'rating': rating.toDouble(),
         };
-      }));
+      }).toList();
 
-      final totalReviews = reviews.length;
+      // Calculate average rating
+      final totalReviews = processedReviews.length;
       final averageRating = totalReviews == 0
           ? 0.0
           : ratingsCount.entries.fold<double>(
@@ -61,8 +65,9 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
               ) /
               totalReviews;
 
+      // Update state
       setState(() {
-        _reviews = reviews.cast<Map<String, dynamic>>();
+        _reviews = processedReviews;
         _averageRating = averageRating;
         _ratingsCount = ratingsCount;
         _isLoading = false;
@@ -70,9 +75,12 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
     } catch (error) {
       setState(() {
         _isLoading = false;
+        _errorMessage = 'Failed to load reviews: $error';
       });
+
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load reviews: $error')),
+        SnackBar(content: Text(_errorMessage)),
       );
     }
   }
@@ -80,41 +88,48 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   Widget _buildRatingBar(int star, int totalReviews) {
     final count = _ratingsCount[star] ?? 0;
     final percentage = totalReviews > 0 ? (count / totalReviews) : 0.0;
+    final baseColor = const Color(0xFF003675);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          Text('$star star',
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Stack(
-              children: [
-                Container(
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                FractionallySizedBox(
-                  widthFactor: percentage,
-                  child: Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 60, 76, 103),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ],
+          Text(
+            '$star star',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: baseColor.withOpacity(0.7),
             ),
           ),
-          const SizedBox(width: 8),
-          SizedBox(
-              width: 40,
-              child: Text('${(percentage * 100).toStringAsFixed(0)}%')),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: percentage,
+                backgroundColor: baseColor.withOpacity(0.1),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(baseColor.withOpacity(0.7)),
+                minHeight: 8,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            '${(percentage * 100).toStringAsFixed(0)}%',
+            style: TextStyle(
+              color: baseColor.withOpacity(0.7),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            '($count)',
+            style: TextStyle(
+              color: baseColor.withOpacity(0.7),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
@@ -124,55 +139,102 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
   Widget build(BuildContext context) {
     final totalReviews =
         _ratingsCount.values.fold<int>(0, (sum, count) => sum + count);
+    final baseColor = const Color(0xFF003675);
+
+    // If there's an error, show error widget
+    if (_errorMessage.isNotEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Reviews'),
+          backgroundColor: baseColor,
+          foregroundColor: Colors.white,
+        ),
+        body: Center(
+          child: Text(
+            _errorMessage,
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Reviews"),
-        backgroundColor: const Color(0xFF003675),
+        title: const Text("Event Reviews"),
+        backgroundColor: baseColor,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: CircularProgressIndicator(
+                color: baseColor,
+              ),
+            )
           : ListView(
               padding: const EdgeInsets.all(16.0),
               children: [
-                const Text(
-                  "Average Rating",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF003675),
+                // Average Rating Section
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: baseColor.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Average Rating",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: baseColor,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Text(
+                            _averageRating.toStringAsFixed(1),
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: baseColor,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          RatingBarIndicator(
+                            rating: _averageRating,
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber.shade600,
+                            ),
+                            itemCount: 5,
+                            itemSize: 30,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Based on $totalReviews reviews',
+                        style: TextStyle(
+                          color: baseColor.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    RatingBarIndicator(
-                      rating: _averageRating,
-                      itemBuilder: (context, _) => const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      itemCount: 5,
-                      itemSize: 30,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      _averageRating.toStringAsFixed(1),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Color(0xFF003675),
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 20),
+
+                // Ratings Breakdown
                 Text(
-                  "Ratings Breakdown (Total Reviews: $totalReviews)",
-                  style: const TextStyle(
-                    fontSize: 22,
+                  "Ratings Breakdown",
+                  style: TextStyle(
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF003675),
+                    color: baseColor,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -181,52 +243,85 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                   (index) => _buildRatingBar(5 - index, totalReviews),
                 ),
                 const SizedBox(height: 20),
-                const Text(
+
+                // User Reviews
+                Text(
                   "User Reviews",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF003675),
+                    color: baseColor,
                   ),
                 ),
                 const SizedBox(height: 10),
-                ...List.generate(
-                  _reviews.length,
-                  (index) {
-                    final review = _reviews[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                _reviews.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No reviews yet',
+                          style: TextStyle(color: baseColor.withOpacity(0.6)),
+                        ),
+                      )
+                    : Column(
+                        children: List.generate(
+                          _reviews.length,
+                          (index) {
+                            final review = _reviews[index];
+                            return Container(
+                              margin: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Color(0xFF003675).withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: baseColor.withOpacity(0.1),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            review['user'],
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: baseColor,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                        RatingBarIndicator(
+                                          rating: review['rating'],
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber.shade600,
+                                          ),
+                                          itemCount: 5,
+                                          itemSize: 20,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      review['content'],
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                      elevation: 4,
-                      shadowColor: Colors.blueAccent,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(12),
-                        title: Text(
-                          review['user'],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        subtitle: Text(
-                          review['content'],
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        trailing: RatingBarIndicator(
-                          rating: review['rating'],
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          itemCount: 5,
-                          itemSize: 20,
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ],
             ),
     );
