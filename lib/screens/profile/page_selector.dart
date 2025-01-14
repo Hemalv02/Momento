@@ -17,7 +17,7 @@ class _PageSelectorState extends State<PageSelector> {
     final prefs = await SharedPreferences.getInstance();
     final username = prefs.getString('username');
     String url =
-        "https://8bzqcx5t-8000.inc1.devtunnels.ms/profile/get-profile/$username";
+        "https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/profile/get-profile/$username";
     final response = await http.get(Uri.parse(url));
     final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
     if (jsonResponse['data'] != null && jsonResponse['data'].isEmpty) {

@@ -98,7 +98,7 @@ class NewProfilePageState extends State<NewProfilePage> {
         occupation.isNotEmpty) {
       final prefs = await SharedPreferences.getInstance();
       String url =
-          "https://8bzqcx5t-8000.inc1.devtunnels.ms/profile/create-profile";
+          "https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/profile/create-profile";
       final Map<String, dynamic> jsonBody = {
         "Username": prefs.getString('username'),
         "Email": prefs.getString('email'),

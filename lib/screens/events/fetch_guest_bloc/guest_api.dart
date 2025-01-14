@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GuestApiService {
-  final String baseUrl = "https://8bzqcx5t-8000.inc1.devtunnels.ms/guest";
+  final String baseUrl =
+      "https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/guest";
 
   Future<List<Guest>> fetchEvents(int eventId) async {
     try {
