@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,9 +11,7 @@ class CreateProfilePage extends StatelessWidget {
   const CreateProfilePage({super.key});
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: NewProfilePage(),
-    );
+    return const NewProfilePage();
   }
 }
 
@@ -176,12 +175,13 @@ class NewProfilePageState extends State<NewProfilePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color(0xFF003675),
+        foregroundColor: Colors.white,
       ),
       backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -219,7 +219,7 @@ class NewProfilePageState extends State<NewProfilePage> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   children: [
                     Container(
@@ -275,7 +275,7 @@ class NewProfilePageState extends State<NewProfilePage> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey.shade200),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 15.h),
                       child: DropdownButtonFormField<String>(
                         decoration: const InputDecoration(
                           labelText: 'Occupation',
@@ -376,6 +376,8 @@ class NewProfilePageState extends State<NewProfilePage> {
                       child: ElevatedButton(
                         onPressed: _saveProfile,
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF003675),
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
