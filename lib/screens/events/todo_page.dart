@@ -114,7 +114,7 @@ class ToDoPageState extends State<ToDoPage> {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundColor: Color(0xFF003675).withOpacity(0.2),
+              backgroundColor: const Color(0xFF003675).withAlpha(51),
               foregroundColor: Colors.black,
               child: Text('${tasks.length}'),
             ),
@@ -158,14 +158,14 @@ class AddTaskModal extends StatelessWidget {
   final VoidCallback onAddTask;
 
   const AddTaskModal({
-    Key? key,
+    super.key,
     required this.titleController,
     required this.descriptionController,
     required this.nameController,
     required this.selectedDate,
     required this.onDateSelected,
     required this.onAddTask,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -183,8 +183,8 @@ class AddTaskModal extends StatelessWidget {
         ),
         Container(
           alignment: Alignment.centerLeft,
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Padding(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: const Padding(
             padding: EdgeInsets.symmetric(vertical: 16),
             child: Text(
               'Add New Task',
@@ -205,7 +205,7 @@ class AddTaskModal extends StatelessWidget {
                 children: [
                   // Task Title Field
                   Container(
-                    margin: EdgeInsets.only(bottom: 5),
+                    margin:const EdgeInsets.only(bottom: 5),
                     child: Text(
                       'Task Title',
                       style: TextStyle(
@@ -217,25 +217,25 @@ class AddTaskModal extends StatelessWidget {
                   ),
                   TextField(
                     controller: titleController,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
+                    decoration: const InputDecoration(
+                      border:  OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
+                             BorderRadius.all(Radius.circular(15)),
                         borderSide: BorderSide(
-                            color: const Color(0xFF003675), width: 2),
+                            color:  Color(0xFF003675), width: 2),
                       ),
                       hintText: 'Enter task title',
                       hintStyle: TextStyle(fontSize: 16),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Task Description Field
                   Container(
-                    margin: EdgeInsets.only(bottom: 5),
+                    margin: const EdgeInsets.only(bottom: 5),
                     child: Text(
                       'Description',
                       style: TextStyle(
@@ -247,25 +247,25 @@ class AddTaskModal extends StatelessWidget {
                   ),
                   TextField(
                     controller: descriptionController,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
+                    decoration: const InputDecoration(
+                      border:  OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
+                             BorderRadius.all(Radius.circular(15)),
                         borderSide: BorderSide(
-                            color: const Color(0xFF003675), width: 2),
+                            color:  Color(0xFF003675), width: 2),
                       ),
                       hintText: 'Enter task description',
                       hintStyle: TextStyle(fontSize: 16),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Assigned To Field
                   Container(
-                    margin: EdgeInsets.only(bottom: 5),
+                    margin: const EdgeInsets.only(bottom: 5),
                     child: Text(
                       'Assigned To',
                       style: TextStyle(
@@ -277,21 +277,21 @@ class AddTaskModal extends StatelessWidget {
                   ),
                   TextField(
                     controller: nameController,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
+                    decoration: const InputDecoration(
+                      border:  OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
+                             BorderRadius.all(Radius.circular(15)),
                         borderSide: BorderSide(
-                            color: const Color(0xFF003675), width: 2),
+                            color:  Color(0xFF003675), width: 2),
                       ),
                       hintText: 'Enter assigned person\'s name',
                       hintStyle: TextStyle(fontSize: 16),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Due Date Picker
                   Row(
@@ -319,7 +319,7 @@ class AddTaskModal extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
                   // Submit Button
                   FilledButton(

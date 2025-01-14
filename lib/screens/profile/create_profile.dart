@@ -212,7 +212,7 @@ class NewProfilePageState extends State<NewProfilePage> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: Colors.grey.withAlpha(26),
                       spreadRadius: 5,
                       blurRadius: 7,
                       offset: const Offset(0, 3),
@@ -378,7 +378,7 @@ class NewProfilePageState extends State<NewProfilePage> {
                       child: ElevatedButton(
                         onPressed: _saveProfile,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF003675),
+                          backgroundColor: const Color(0xFF003675),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(

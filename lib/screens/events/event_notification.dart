@@ -15,23 +15,23 @@ class _EventNotificationState extends State<EventNotification> {
   final List<Map<String, dynamic>> _notifications = [
     {
       'title': 'New message from John',
-      'date': DateTime.now().subtract(Duration(hours: 2))
+      'date': DateTime.now().subtract(const Duration(hours: 2))
     },
     {
       'title': 'Your order has been shipped',
-      'date': DateTime.now().subtract(Duration(days: 1))
+      'date': DateTime.now().subtract(const Duration(days: 1))
     },
     {
       'title': 'Reminder: Meeting at 3 PM',
-      'date': DateTime.now().subtract(Duration(days: 2))
+      'date': DateTime.now().subtract(const Duration(days: 2))
     },
     {
       'title': 'Your weekly report is ready',
-      'date': DateTime.now().subtract(Duration(days: 5))
+      'date': DateTime.now().subtract(const Duration(days: 5))
     },
     {
       'title': 'Update available for your app',
-      'date': DateTime.now().subtract(Duration(days: 10))
+      'date': DateTime.now().subtract(const Duration(days: 10))
     },
   ];
 

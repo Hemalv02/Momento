@@ -46,3 +46,4 @@ class FetchEventBloc extends Bloc<FetchEventEvent, FetchEventState> {
     }
   }
 }
+
