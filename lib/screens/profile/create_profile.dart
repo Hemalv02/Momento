@@ -46,8 +46,8 @@ class NewProfilePageState extends State<NewProfilePage> {
   }
 
   Future<void> uploadImage(File imageFile, String username) async {
-    final uri =
-        Uri.parse('https://frtz47r1-8000.inc1.devtunnels.ms/profile/upload');
+    final uri = Uri.parse(
+        'https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/profile/upload');
     final request = http.MultipartRequest('POST', uri);
     // Attach the image file
     request.files.add(await http.MultipartFile.fromPath(
