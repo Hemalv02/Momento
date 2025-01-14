@@ -248,6 +248,7 @@ class NewProfilePageState extends State<NewProfilePage> {
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         decoration: const InputDecoration(
                           labelText: 'Gender',
                           border: InputBorder.none,
@@ -277,6 +278,7 @@ class NewProfilePageState extends State<NewProfilePage> {
                       ),
                       padding: EdgeInsets.symmetric(horizontal: 15.h),
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         decoration: const InputDecoration(
                           labelText: 'Occupation',
                           border: InputBorder.none,
