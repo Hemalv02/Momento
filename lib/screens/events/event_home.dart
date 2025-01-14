@@ -6,9 +6,222 @@ import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
 import 'package:momento/screens/events/event_qa.dart';
+import 'package:momento/screens/events/event_review.dart';
 import 'package:momento/screens/events/event_summary.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/guest_list.dart';
+
+//hemal ei ta comment out korle agerta paba
+
+// class EventHome extends StatefulWidget {
+//   const EventHome({super.key});
+
+//   @override
+//   State<EventHome> createState() => _EventHomeState();
+// }
+
+// class _EventHomeState extends State<EventHome> {
+//   bool isInitialized = false;
+//   late int eventId;
+
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+//     if (!isInitialized) {
+//       // Access ModalRoute here
+//       final event = ModalRoute.of(context)?.settings.arguments;
+//       if (event is Event) {
+//         setState(() {
+//           eventId = event.id;
+//         });
+//       }
+//       isInitialized = true;
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: AppBar(
+//         title: const Text('Event Dashboard'),
+//         backgroundColor: const Color(0xFF003675),
+//         foregroundColor: Colors.white,
+//       ),
+//       body: SingleChildScrollView(
+//         padding: const EdgeInsets.all(16),
+//         child: Column(
+//           children: [
+//             Padding(
+//               padding: const EdgeInsets.all(16.0),
+//               child: GridView.count(
+//                 crossAxisCount: 4, // Four items per row
+//                 mainAxisSpacing: 24.h, // Increased space between rows
+//                 crossAxisSpacing: 16.w,
+//                 childAspectRatio: 0.9, // Adjusted for better fit
+//                 shrinkWrap: true, // Fix for infinite height
+//                 physics:
+//                     const NeverScrollableScrollPhysics(), // Prevent nested scrolling
+//                 children: [
+//                   _buildFeatureItem(
+//                     icon: Icons.people,
+//                     label: 'Guests',
+//                     onTap: () {
+//                       Navigator.of(context).push(MaterialPageRoute(
+//                         builder: (context) => GuestList(eventId: eventId),
+//                       ));
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.checklist,
+//                     label: 'To-Do',
+//                     onTap: () {
+//                       // Navigator.of(context).push(
+//                       //   MaterialPageRoute(
+//                       //     builder: (context) => BlocProvider(
+//                       //       create: (context) =>
+//                       //           FetchTodoBloc(apiService: TodoApiService()),
+//                       //       child: ToDoPage(eventId: eventId),
+//                       //     ),
+//                       //   ),
+//                       // );
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.qr_code_scanner,
+//                     label: 'Scanner',
+//                     onTap: () {
+//                       Navigator.of(context).pushNamed('ticket_scanner');
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.monetization_on,
+//                     label: 'Budget',
+//                     onTap: () {
+//                       Navigator.of(context).push(
+//                         MaterialPageRoute(
+//                           builder: (context) => BlocProvider(
+//                             create: (context) => BudgetBloc(BudgetApiService()),
+//                             child: EventBudget(eventId: eventId),
+//                           ),
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.fastfood,
+//                     label: 'Food',
+//                     onTap: () {
+//                       print('Food tapped');
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.schedule,
+//                     label: 'Schedule',
+//                     onTap: () {
+//                       Navigator.of(context).pushNamed('event_schedule');
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.notifications,
+//                     label: 'Notify',
+//                     onTap: () {
+//                       Navigator.of(context).pushNamed('event_notification');
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.bar_chart,
+//                     label: 'Reports',
+//                     onTap: () {
+//                       Navigator.of(context).push(
+//                         MaterialPageRoute(
+//                             builder: (context) =>
+//                                 TransactionSummaryWidget(eventId: eventId)),
+//                       );
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.settings,
+//                     label: 'Settings',
+//                     onTap: () {
+//                       print('Settings tapped');
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.group_add,
+//                     label: 'Organizers',
+//                     onTap: () {
+//                       Navigator.of(context).push(
+//                         MaterialPageRoute(
+//                             builder: (context) =>
+//                                 EventCoOrganizer(eventId: eventId)),
+//                       );
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.question_answer,
+//                     label: 'Q&A',
+//                     onTap: () {
+//                       Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                           builder: (context) =>
+//                               QuestionsScreen(eventId: eventId),
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                   _buildFeatureItem(
+//                     icon: Icons.help_center,
+//                     label: 'Help',
+//                     onTap: () {
+//                       print('Help tapped');
+//                     },
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildFeatureItem({
+//     required IconData icon,
+//     required String label,
+//     required VoidCallback onTap,
+//   }) {
+//     return GestureDetector(
+//       onTap: onTap,
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Container(
+//             padding:
+//                 const EdgeInsets.all(12), // Reduced padding for smaller icons
+//             decoration: BoxDecoration(
+//               color: const Color(0xFF003675)
+//                   .withOpacity(0.1), // Light background for icons
+//               shape: BoxShape.circle,
+//             ),
+//             child: Icon(icon,
+//                 color: const Color(0xFF003675), size: 24), // Smaller icon size
+//           ),
+//           // SizedBox(height: 8.h),
+//           Text(
+//             label.length > 10
+//                 ? '${label.substring(0, 10)}...'
+//                 : label, // Trim long labels
+//             textAlign: TextAlign.center,
+//             style: TextStyle(
+//                 fontSize: 12.sp, color: Colors.black87), // Smaller text
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
@@ -25,7 +238,6 @@ class _EventHomeState extends State<EventHome> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!isInitialized) {
-      // Access ModalRoute here
       final event = ModalRoute.of(context)?.settings.arguments;
       if (event is Event) {
         setState(() {
@@ -39,147 +251,204 @@ class _EventHomeState extends State<EventHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text('Event Dashboard'),
         backgroundColor: const Color(0xFF003675),
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.count(
-                crossAxisCount: 4, // Four items per row
-                mainAxisSpacing: 24.h, // Increased space between rows
-                crossAxisSpacing: 16.w,
-                childAspectRatio: 0.9, // Adjusted for better fit
-                shrinkWrap: true, // Fix for infinite height
-                physics:
-                    const NeverScrollableScrollPhysics(), // Prevent nested scrolling
-                children: [
-                  _buildFeatureItem(
-                    icon: Icons.people,
-                    label: 'Guests',
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => GuestList(eventId: eventId),
-                      ));
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.checklist,
-                    label: 'To-Do',
-                    onTap: () {
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => BlocProvider(
-                      //       create: (context) =>
-                      //           FetchTodoBloc(apiService: TodoApiService()),
-                      //       child: ToDoPage(eventId: eventId),
-                      //     ),
-                      //   ),
-                      // );
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.qr_code_scanner,
-                    label: 'Scanner',
-                    onTap: () {
-                      Navigator.of(context).pushNamed('ticket_scanner');
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.monetization_on,
-                    label: 'Budget',
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                            create: (context) => BudgetBloc(BudgetApiService()),
-                            child: EventBudget(eventId: eventId),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.fastfood,
-                    label: 'Food',
-                    onTap: () {
-                      print('Food tapped');
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.schedule,
-                    label: 'Schedule',
-                    onTap: () {
-                      Navigator.of(context).pushNamed('event_schedule');
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.notifications,
-                    label: 'Notify',
-                    onTap: () {
-                      Navigator.of(context).pushNamed('event_notification');
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.bar_chart,
-                    label: 'Reports',
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                TransactionSummaryWidget(eventId: eventId)),
-                      );
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.settings,
-                    label: 'Settings',
-                    onTap: () {
-                      print('Settings tapped');
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.group_add,
-                    label: 'Organizers',
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                EventCoOrganizer(eventId: eventId)),
-                      );
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.question_answer,
-                    label: 'Q&A',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              QuestionsScreen(eventId: eventId),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildFeatureItem(
-                    icon: Icons.help_center,
-                    label: 'Help',
-                    onTap: () {
-                      print('Help tapped');
-                    },
-                  ),
-                ],
-              ),
-            ),
+            _buildHeader(),
+            _buildQuickActions(),
+            _buildEventManagement(),
+            _buildSettings(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+      decoration: const BoxDecoration(
+        color: Color(0xFF003675),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Your Events Await!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 5.h),
+              Text(
+                'Manage your event efficiently',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    return _buildSection(
+      'Quick Actions',
+      [
+        _buildFeatureItem(
+          icon: Icons.people,
+          label: 'Guests',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => GuestList(eventId: eventId)),
+          ),
+          isPrimary: true,
+        ),
+        _buildFeatureItem(
+          icon: Icons.checklist,
+          label: 'To-Do',
+          onTap: () {},
+          isPrimary: true,
+        ),
+        _buildFeatureItem(
+          icon: Icons.qr_code_scanner,
+          label: 'Scanner',
+          onTap: () => Navigator.of(context).pushNamed('ticket_scanner'),
+        ),
+        _buildFeatureItem(
+          icon: Icons.monetization_on,
+          label: 'Budget',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (context) => BudgetBloc(BudgetApiService()),
+                child: EventBudget(eventId: eventId),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEventManagement() {
+    return _buildSection(
+      'Event Management',
+      [
+        _buildFeatureItem(
+          icon: Icons.fastfood,
+          label: 'Food',
+          onTap: () {},
+        ),
+        _buildFeatureItem(
+          icon: Icons.schedule,
+          label: 'Schedule',
+          onTap: () => Navigator.of(context).pushNamed('event_schedule'),
+        ),
+        _buildFeatureItem(
+          icon: Icons.notifications,
+          label: 'Notify',
+          onTap: () => Navigator.of(context).pushNamed('event_notification'),
+        ),
+        _buildFeatureItem(
+          icon: Icons.bar_chart,
+          label: 'Reports',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => TransactionSummaryWidget(eventId: eventId),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettings() {
+    return _buildSection(
+      'Additional Options',
+      [
+        _buildFeatureItem(
+          icon: Icons.group_add,
+          label: 'Organizers',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => EventCoOrganizer(eventId: eventId),
+            ),
+          ),
+        ),
+        _buildFeatureItem(
+          icon: Icons.question_answer,
+          label: 'Q&A',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuestionsScreen(eventId: eventId),
+            ),
+          ),
+        ),
+        _buildFeatureItem(
+          icon: Icons.settings,
+          label: 'Settings',
+          onTap: () {},
+        ),
+        _buildFeatureItem(
+          icon: Icons.reviews,
+          label: 'Reviews',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReviewsScreen(eventId: eventId),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSection(String title, List<Widget> items) {
+    return Padding(
+      padding: EdgeInsets.all(16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF003675),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          GridView.count(
+            crossAxisCount: 4,
+            mainAxisSpacing: 16.h,
+            crossAxisSpacing: 16.w,
+            childAspectRatio: 0.9,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: items,
+          ),
+        ],
       ),
     );
   }
@@ -188,33 +457,42 @@ class _EventHomeState extends State<EventHome> {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
+    bool isPrimary = false,
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding:
-                const EdgeInsets.all(12), // Reduced padding for smaller icons
-            decoration: BoxDecoration(
-              color: const Color(0xFF003675)
-                  .withOpacity(0.1), // Light background for icons
-              shape: BoxShape.circle,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-            child: Icon(icon,
-                color: const Color(0xFF003675), size: 24), // Smaller icon size
-          ),
-          // SizedBox(height: 8.h),
-          Text(
-            label.length > 10
-                ? '${label.substring(0, 10)}...'
-                : label, // Trim long labels
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 12.sp, color: Colors.black87), // Smaller text
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: const Color(0xFF003675),
+              size: 28,
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              label.length > 10 ? '${label.substring(0, 10)}...' : label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: Colors.black87,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
