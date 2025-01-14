@@ -133,7 +133,7 @@ class _EventHomeState extends State<EventHome> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) =>
-                                const TransactionSummaryWidget()),
+                                TransactionSummaryWidget(eventId: eventId)),
                       );
                     },
                   ),

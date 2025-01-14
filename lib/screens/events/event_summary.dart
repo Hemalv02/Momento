@@ -3,7 +3,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TransactionSummaryWidget extends StatefulWidget {
-  const TransactionSummaryWidget({super.key});
+  final int eventId;
+
+  const TransactionSummaryWidget({super.key, required this.eventId});
 
   @override
   State<TransactionSummaryWidget> createState() =>
@@ -33,6 +35,7 @@ class _TransactionSummaryWidgetState extends State<TransactionSummaryWidget> {
       final response = await _supabase
           .from('event_transactions')
           .select()
+          .eq('event_id', widget.eventId)
           .order('date', ascending: false);
 
       // Reset totals

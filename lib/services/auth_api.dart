@@ -20,6 +20,7 @@ class ApiService {
         token: response.data['access_token'],
         userId: response.data['user_id'],
         email: response.data['email'],
+        username: response.data['username'],
       );
     } on DioException catch (e) {
       // Handle DioError explicitly
@@ -128,7 +129,11 @@ class LoginResponse {
   final String token;
   final String userId;
   final String email;
+  final String username;
 
   LoginResponse(
-      {required this.token, required this.userId, required this.email});
+      {required this.token,
+      required this.userId,
+      required this.email,
+      required this.username});
 }

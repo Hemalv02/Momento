@@ -4,19 +4,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/bloc_provider.dart';
+import 'package:momento/entry_screen.dart';
 import 'package:momento/screens/auth_v2/forgot_password/forgot_password.dart';
 import 'package:momento/screens/auth_v2/login/jwt_token.dart';
 import 'package:momento/screens/auth_v2/login/login.dart';
 import 'package:momento/screens/auth_v2/otp_verify/otp_verify.dart';
 import 'package:momento/screens/auth_v2/reset_password/reset_password.dart';
 import 'package:momento/screens/auth_v2/signup/signup.dart';
+import 'package:momento/screens/contact_us.dart';
 import 'package:momento/screens/events/create_event.dart';
 import 'package:momento/screens/events/event_home.dart';
 import 'package:momento/screens/events/event_notification.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/ticket_scanner.dart';
 import 'package:momento/screens/home.dart';
+import 'package:momento/screens/home_structure.dart';
 import 'package:momento/screens/onboarding/onboarding_screens.dart';
+import 'package:momento/screens/profile/create_profile.dart';
+import 'package:momento/screens/profile/page_selector.dart';
+import 'package:momento/screens/profile/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -46,7 +52,7 @@ Future<void> _initializeApp() async {
   FlutterNativeSplash.remove();
   runApp(MomentoApp(
       initialRoute: isOnboardingCompleted
-          ? (isLoggedIn ? 'home' : 'login')
+          ? (isLoggedIn ? 'home_structure' : 'login')
           : 'onboarding'));
 }
 
@@ -68,6 +74,7 @@ class MomentoApp extends StatelessWidget {
           ),
           debugShowCheckedModeBanner: false,
           routes: {
+            'entry': (context) => const EntryScreen(),
             'onboarding': (context) => const OnboardingScreen(),
             'login': (context) => const LoginScreen(),
             'signup': (context) => const SignUpScreen(),
@@ -82,6 +89,11 @@ class MomentoApp extends StatelessWidget {
             // 'guest_list': (context) => const GuestList(),
             'event_schedule': (context) => const EventSchedule(),
             'event_notification': (context) => const EventNotification(),
+            'create_profile': (context) => const CreateProfilePage(),
+            'home_structure': (context) => const HomeStructure(),
+            'page_selector': (context) => const PageSelector(),
+            'settingspage': (context) => const SettingsPage(),
+            'feedbackpage': (context) => const FeedbackPage(),
             //'todo_page': (context) => const ToDoPage(),
           },
           initialRoute: initialRoute,

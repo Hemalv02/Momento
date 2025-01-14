@@ -33,7 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
         body: BlocConsumer<LoginBloc, LoginState>(listener: (context, state) {
           if (state is LoginSuccess) {
             // Navigate to OTP verification screen
-            Navigator.of(context).pushReplacementNamed('home');
+            // Navigator.of(context).pushReplacementNamed('home');
+            Navigator.of(context).pushReplacementNamed('page_selector');
           }
           if (state is LoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
