@@ -90,7 +90,7 @@ class MomentoApp extends StatelessWidget {
             'create_profile': (context) => const CreateProfilePage(),
             'home_structure': (context) => const HomeStructure(),
             'page_selector': (context) => const PageSelector(),
-            'settingspage': (context) => const SettingsPage(),
+            'settingspage': (context) => const SettingsScreen(),
             'feedbackpage': (context) => const FeedbackPage(),
             //'todo_page': (context) => const ToDoPage(),
           },

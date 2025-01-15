@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:momento/screens/home.dart';
-import 'package:momento/screens/profile/profile_page.dart';
+import 'package:momento/screens/profile/create_profile.dart';
+import 'package:momento/screens/profile/settings.dart';
 
 class HomeStructure extends StatelessWidget {
   const HomeStructure({super.key});
@@ -20,7 +21,8 @@ class _TabbedPageState extends State<TabbedPage> {
   int _selectedIndex = 0;
   static const List<Widget> _pages = <Widget>[
     HomeScreen(),
-    ProfilePage(),
+    SettingsScreen(),
+    // CreateProfilePage()
   ];
   void _onItemTapped(int index) {
     setState(() {
@@ -40,11 +42,16 @@ class _TabbedPageState extends State<TabbedPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            label: 'Profile',
+            label: 'Account',
           ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        backgroundColor: Colors.white,
+        selectedItemColor: const Color(0xFF003675), // Your specified color
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8, // Adds a subtle shadow
       ),
     );
   }
