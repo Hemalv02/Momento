@@ -8,6 +8,7 @@ class EventApiService {
   Future<EventResponse> createEvent(
       String name,
       String organizedBy,
+      String location,
       DateTime startDate,
       DateTime endDate,
       String description,
@@ -18,6 +19,7 @@ class EventApiService {
         data: {
           'event_name': name,
           'organized_by': organizedBy,
+          'location': location,
           'start_date': startDate.toIso8601String(),
           'end_date': endDate.toIso8601String(),
           'description': description,

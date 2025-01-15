@@ -9,4 +9,3 @@ class RefreshEventsByCreator extends FetchEventEvent {
   final String createdBy;
   RefreshEventsByCreator(this.createdBy);
 }
-

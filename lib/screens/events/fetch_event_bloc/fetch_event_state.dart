@@ -4,6 +4,8 @@ abstract class FetchEventState {}
 
 class FetchEventInitial extends FetchEventState {}
 
+class FetchEventEmpty extends FetchEventState {}
+
 class FetchEventLoading extends FetchEventState {
   final List<Event>? previousEvents;
   FetchEventLoading({this.previousEvents});

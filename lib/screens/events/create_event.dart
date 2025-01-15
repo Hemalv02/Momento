@@ -25,6 +25,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   final TextEditingController eventName = TextEditingController();
   final TextEditingController organizedBy = TextEditingController();
   final TextEditingController eventDescription = TextEditingController();
+  final TextEditingController location = TextEditingController();
 
   final List<String> eventTypes = [
     "Conference",
@@ -120,6 +121,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             CreateEventSubmitted(
               eventName.text,
               organizedBy.text,
+              location.text,
               startDateTime,
               endDateTime,
               eventDescription.text,
@@ -173,6 +175,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
                         // Organized By
                         _buildTextField("Organized By", organizedBy),
+                        SizedBox(height: 10.h),
+
+                        // location
+                        _buildTextField("Location", location),
                         SizedBox(height: 10.h),
 
                         // Start Date & Time

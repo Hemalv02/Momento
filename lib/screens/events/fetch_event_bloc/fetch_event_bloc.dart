@@ -16,19 +16,20 @@ class FetchEventBloc extends Bloc<FetchEventEvent, FetchEventState> {
     emit(FetchEventLoading());
     try {
       final events = await apiService.fetchEvents(event.createdBy);
-      emit(FetchEventLoaded(events));
-    } catch (e) {
-      if (e is EventApiException) {
-        emit(FetchEventError(e.message));
+      if (events.isEmpty) {
+        emit(FetchEventEmpty()); // Emit empty state for empty list
       } else {
-        emit(FetchEventError("An unexpected error occurred"));
+        emit(FetchEventLoaded(events));
       }
+    } on EventApiException catch (e) {
+      emit(FetchEventError(e.message));
+    } catch (e) {
+      emit(FetchEventError('An unexpected error occurred'));
     }
   }
 
   Future<void> _onRefreshEventsByCreator(
       RefreshEventsByCreator event, Emitter<FetchEventState> emit) async {
-    // Get current events if available
     final currentEvents =
         state is FetchEventLoaded ? (state as FetchEventLoaded).events : null;
 
@@ -36,14 +37,15 @@ class FetchEventBloc extends Bloc<FetchEventEvent, FetchEventState> {
 
     try {
       final events = await apiService.fetchEvents(event.createdBy);
-      emit(FetchEventLoaded(events));
-    } catch (e) {
-      if (e is EventApiException) {
-        emit(FetchEventError(e.message));
+      if (events.isEmpty) {
+        emit(FetchEventEmpty()); // Emit empty state for empty list
       } else {
-        emit(FetchEventError("An unexpected error occurred"));
+        emit(FetchEventLoaded(events));
       }
+    } on EventApiException catch (e) {
+      emit(FetchEventError(e.message));
+    } catch (e) {
+      emit(FetchEventError('An unexpected error occurred'));
     }
   }
 }
-

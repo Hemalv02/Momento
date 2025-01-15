@@ -17,6 +17,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
       final response = await apiService.createEvent(
           event.name,
           event.organizedBy,
+          event.location,
           event.startDate,
           event.endDate,
           event.description,

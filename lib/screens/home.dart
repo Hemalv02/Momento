@@ -105,8 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     IconButton(
-                      icon: const Icon(Icons.sort_rounded),
-                      onPressed: () {},
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () {
+                        _onRefresh();
+                      },
                     ),
                   ],
                 ),
@@ -167,15 +169,88 @@ class _HomeScreenState extends State<HomeScreen> {
                     return EventCard(event: filteredEvents[index]);
                   },
                 );
-              }
-
-              if (state is FetchEventLoading) {
+              } else if (state is FetchEventLoading) {
                 return _buildLoadingList();
               } else if (state is FetchEventError) {
                 return Center(
                   child: Text(
                     state.message,
                     style: const TextStyle(color: Colors.red),
+                  ),
+                );
+              } else if (state is FetchEventEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.event_busy,
+                        size: 64.sp,
+                        color: Colors.grey[400],
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'No Events Yet',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 32.w),
+                        child: Text(
+                          'Create your first event by tapping the + button below',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (state is FetchEventError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red[300],
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Error',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red[300],
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          state.message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          fetchEventBloc.add(FetchEventsByCreator(creatorId));
+                        },
+                        child: Text('Try Again'),
+                      ),
+                    ],
                   ),
                 );
               }
@@ -192,8 +267,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<Future<FetchEventState>> _onRefresh() async {
     fetchEventBloc.add(RefreshEventsByCreator(creatorId));
-    return fetchEventBloc.stream.firstWhere(
-        (state) => state is FetchEventLoaded || state is FetchEventError);
+    return fetchEventBloc.stream.firstWhere((state) =>
+        state is FetchEventLoaded ||
+        state is FetchEventError ||
+        state is FetchEventEmpty);
   }
 
   Widget _buildLoadingList() {
@@ -364,8 +441,8 @@ class EventCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        const Text(
-                          "event.location",
+                        Text(
+                          event.location,
                         ),
                       ],
                     ),
