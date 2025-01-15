@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/auth/log_in/bloc/login_bloc.dart';
 import 'package:momento/screens/auth/log_in/bloc/login_events.dart';
 import 'package:momento/screens/auth/log_in/bloc/login_states.dart';
-import 'package:momento/screens/auth/log_in/login_controller.dart';
+import 'package:momento/screens/auth/log_in/widget/login_controller.dart';
 import 'package:momento/screens/auth/log_in/widget/login_widget.dart';
 
 class Login extends StatefulWidget {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momento/screens/auth/sign_up/signup_services.dart';
 import 'package:momento/utils/flutter_toaster.dart';
 import 'package:momento/screens/auth/log_in/password_validator.dart';
 import 'package:momento/screens/auth/sign_up/bloc/signup_bloc.dart';
@@ -15,7 +14,6 @@ class SignUpController {
     String password = state.password;
     String confirmPassword = state.confirmPassword;
     String userName = state.userName;
-    bool isChecked = state.isChecked;
 
     String? _errorTextEmail = validateEmailStructure(email);
     String? _errorTextPassword = validatePasswordStructure(password);
@@ -56,24 +54,19 @@ class SignUpController {
       return;
     }
 
-    if (!isChecked) {
+    // final supabase = Supabase.instance.client;
+
+    try {
       toastInfo(
-          message: "Please agree to the terms and conditions.",
+          message: "Registration Completed.",
           backgroundColor: _bgColor,
           textColor: _textColor);
-      return;
+    } catch (e) {
+      // Handle registration errors
+      toastInfo(
+          message: e.toString(),
+          backgroundColor: _bgColor,
+          textColor: _textColor);
     }
-
-
-await SignupServices.performSignUpRequest(
-      email: email,
-      password: password,
-      userName: userName,
-      bgColor: _bgColor,
-      textColor: _textColor,
-      dateOfBirth: state.dateOfBirth,
-      name: state.name,
-      context: context,
-    );
   }
 }

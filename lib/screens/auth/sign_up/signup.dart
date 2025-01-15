@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:momento/screens/auth/log_in/widget/login_widget.dart';
 import 'package:momento/screens/auth/sign_up/bloc/signup_bloc.dart';
 import 'package:momento/screens/auth/sign_up/bloc/signup_states.dart';
@@ -67,9 +68,7 @@ class _SignUpState extends State<SignUp> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         reusableText("Name"),
-                        buildTextField("Enter your name", "name", (value) {
-                          context.read<SignUpBloc>().add(NameEvent(value));
-                        }),
+                        buildTextField("Enter your name", "name", (value) {}),
                         SizedBox(height: 6.h),
                         reusableText("User name"),
                         buildTextField("Enter your username", "username",
@@ -98,12 +97,35 @@ class _SignUpState extends State<SignUp> {
                               .read<SignUpBloc>()
                               .add(ConfirmPasswordEvent(value));
                         }),
-                        buildCheckField("By creating an account, you agree to our Terms of Service and Privacy Policy", isChecked, (value) {
-                          isChecked = value;
-                          context.read<SignUpBloc>().add(CheckEvent(value));
-                        }),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment
+                              .center, // Ensures vertical alignment
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Checkbox(
+                              checkColor: Colors.white,
+                              activeColor: const Color(0xFF003675),
+                              value: isChecked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isChecked = value!;
+                                });
+                              },
+                            ),
+                            Expanded(
+                              // Allows text to wrap properly
+                              child: Text(
+                                "By creating an account, you agree to our Terms of Service and Privacy Policy",
+                                style: TextStyle(
+                                  fontSize: 12.sp, // Adjust font size if needed
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: 15.h),
                         loginButton("Sign Up", () {
+                          //LoginController(context: context).handleLogIn("email");
                           SignUpController(context: context)
                               .handleEmailSignUp();
                         }),
@@ -162,8 +184,6 @@ class _DatePickerTextFieldState extends State<DatePickerTextField> {
       setState(() {
         _selectedDate = pickedDate; // Update the selected date
         _controller.text = "${pickedDate.toLocal()}".split(' ')[0];
-        context.read<SignUpBloc>().add(DateOfBirthEvent(pickedDate));
-
         _focusNode.unfocus(); // Remove focus from the TextField
       });
     }
@@ -176,24 +196,24 @@ class _DatePickerTextFieldState extends State<DatePickerTextField> {
       focusNode: _focusNode, // Assign the FocusNode to the TextField
       readOnly: true,
       onTap: () => _selectDate(context),
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-        prefixIcon: Icon(
+        prefixIcon: const Icon(
           Icons.calendar_today,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          borderSide: BorderSide(color: Color(0xFF003675), width: 2),
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          borderSide: BorderSide(color: const Color(0xFF003675), width: 2.w),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          borderSide: BorderSide(color: Colors.red, width: 2),
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          borderSide: BorderSide(color: Colors.red, width: 2.w),
         ),
         hintText: "Select your date of birth",
         hintStyle: TextStyle(
-          fontSize: 16,
+          fontSize: 16.sp,
           fontWeight: FontWeight.normal,
           //color: _textColor.withAlpha(180),
         ),

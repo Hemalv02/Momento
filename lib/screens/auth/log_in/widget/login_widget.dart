@@ -50,31 +50,6 @@ Widget buildTextField(
   );
 }
 
-Widget buildCheckField(String text, bool isChecked, void Function(bool)? func) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.center, // Ensures vertical alignment
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: [
-      Checkbox(
-        value: isChecked,
-        onChanged: (value) => func!(value!),
-        activeColor: const Color(0xFF003675),
-        checkColor: Colors.white,
-      ),
-      Expanded(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 12.sp,
-            // fontWeight: FontWeight.normal,
-            // color: Colors.grey.shade700,
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
 Widget forgotPassword(void Function()? func) {
   return Container(
     width: 260.w,
@@ -118,9 +93,9 @@ Widget signUpButton(String buttonName, void Function()? function) {
       // backgroundColor: const Color(0xFFA7C4F7),
       foregroundColor: const Color(0XFF003675),
       minimumSize: const Size(double.infinity, 56),
-      side: const BorderSide(
-        width: 2,
-        color: Color(0xFF003675),
+      side: BorderSide(
+        width: 2.w,
+        color: const Color(0xFF003675),
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
