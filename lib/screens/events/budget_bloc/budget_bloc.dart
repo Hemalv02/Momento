@@ -37,7 +37,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
       final transactions =
           await _apiService.getTransactions(event.eventId, event.currentUserId);
       if (transactions.isEmpty) {
-        emit(BudgetError('No transactions available'));
+        emit(BudgetEmpty());
       } else {
         emit(TransactionsLoaded(transactions));
       }

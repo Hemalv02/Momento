@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class CoOrganizerApiService {
-  final String _baseUrl =
-      "https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/event";
+  final String _baseUrl = "https://fastapi-momento.vercel.app/event";
 
   Future<CoOrganizerResponse> addCoOrganizer(
       int eventId, String email, String currentUserId) async {

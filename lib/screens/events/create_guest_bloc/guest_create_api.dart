@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GuestCreateApiService {
-  final String _baseUrl = "https://8bzqcx5t-8000.inc1.devtunnels.ms";
+  final String _baseUrl = "https://fastapi-momento.vercel.app";
 
   Future<GuestResponse> createGuest(
     String name,

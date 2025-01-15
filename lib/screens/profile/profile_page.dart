@@ -65,8 +65,7 @@ class ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> uploadImage(File imageFile, String username) async {
-    final uri = Uri.parse(
-        'https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/profile/upload');
+    final uri = Uri.parse('https://fastapi-momento.vercel.app/profile/upload');
     final request = http.MultipartRequest('POST', uri);
 
     // Attach the image file
@@ -98,7 +97,7 @@ class ProfilePageState extends State<ProfilePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     username = prefs.getString("username")!;
     String url =
-        "https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/profile/update-profile/$username";
+        "https://fastapi-momento.vercel.app/profile/update-profile/$username";
     final Map<String, dynamic> jsonBody = {
       "Username": username,
       "Email": email,
@@ -363,7 +362,7 @@ class ProfilePageState extends State<ProfilePage> {
     //print("Called");
     try {
       String url =
-          "https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/profile/get-profile/$username";
+          "https://fastapi-momento.vercel.app/profile/get-profile/$username";
       final response =
           await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
       final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -378,7 +377,7 @@ class ProfilePageState extends State<ProfilePage> {
       });
       final response2 = await http.get(
         Uri.parse(
-            'https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/profile/get_profile_image/$username'),
+            'https://fastapi-momento.vercel.app/profile/get_profile_image/$username'),
       );
       if (response2.statusCode == 200) {
         _selectedImage = await _bytesToFile(response2.bodyBytes, username);

@@ -3,8 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:momento/screens/events/budget_bloc/budget_model.dart';
 
 class BudgetApiService {
-  final String baseUrl =
-      "https://fastapi-momento-qpa72d3hf-mominul-islam-hemals-projects.vercel.app/budget";
+  final String baseUrl = "https://fastapi-momento.vercel.app/budget";
 
   Future<Transaction> createTransaction(Transaction transaction) async {
     try {

@@ -65,6 +65,8 @@ class _EventBudgetState extends State<EventBudget> {
           builder: (context, state) {
             if (state is BudgetLoading) {
               return const Center(child: CircularProgressIndicator());
+            } else if (state is BudgetEmpty) {
+              return _buildEmptyState();
             } else if (state is BudgetError) {
               return Center(child: Text(state.message));
             } else if (state is TransactionsLoaded) {
@@ -146,6 +148,65 @@ class _EventBudgetState extends State<EventBudget> {
                 ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    final baseColor = const Color(0xFF003675);
+
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 800),
+      builder: (context, double value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 20 * (1 - value)),
+            child: child,
+          ),
+        );
+      },
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: baseColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.money,
+                  size: 64,
+                  color: baseColor.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'No transactions or budgets Yet',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: baseColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Tap the + button to add your first transaction or budget item',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: baseColor.withOpacity(0.6),
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
