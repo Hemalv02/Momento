@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:momento/screens/events/event_review_submit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReviewsScreen extends StatefulWidget {
@@ -165,6 +166,20 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
         backgroundColor: baseColor,
         foregroundColor: Colors.white,
         elevation: 0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xFF003675),
+        foregroundColor: Colors.white,
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SubmitReviewScreen(
+                eventId: widget.eventId,
+              ),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
       body: _isLoading
           ? Center(

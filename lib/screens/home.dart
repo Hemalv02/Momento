@@ -7,6 +7,8 @@ import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_bloc.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_event.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_state.dart';
+import 'package:momento/screens/events/user_dashboard.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -243,12 +245,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       ElevatedButton(
                         onPressed: () {
                           fetchEventBloc.add(FetchEventsByCreator(creatorId));
                         },
-                        child: Text('Try Again'),
+                        child: const Text('Try Again'),
                       ),
                     ],
                   ),
@@ -354,8 +356,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class EventCard extends StatelessWidget {
   final Event event;
+  final String userId = prefs.getString('userId')!;
 
-  const EventCard({
+  EventCard({
     super.key,
     required this.event,
   });
@@ -367,11 +370,22 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {
-        Navigator.of(context).pushNamed(
-          'event_home',
-          arguments: event,
-        ),
+      onTap: () async {
+        bool isGuest = await isUserEventOrganizerOrCoorganizer(
+            Supabase.instance.client, userId, event.id);
+
+        print(!isGuest);
+        if (!isGuest) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => GuestHome(
+                    eventId: event.id,
+                  )));
+        } else {
+          Navigator.of(context).pushNamed(
+            'event_home',
+            arguments: event,
+          );
+        }
       },
       child: Card(
         // clickable
@@ -507,5 +521,46 @@ class EventCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<bool> isUserEventOrganizerOrCoorganizer(
+    SupabaseClient supabase,
+    String userId,
+    int eventId,
+  ) async {
+    try {
+      // First, check if user is the event creator
+      final eventResponse = await supabase
+          .from('event') // assuming your events table is named 'events'
+          .select(
+              'created_by') // assuming the creator column is named 'created_by'
+          .eq('id', eventId)
+          .single();
+
+      // If user is the event creator, return true
+      if (eventResponse != null && eventResponse['created_by'] == userId) {
+        return true;
+      }
+
+      // If not the creator, check if user is a co-organizer
+      final coorganizerResponse = await supabase
+          .from('event_coorganizers')
+          .select('user_id')
+          .eq('event_id', eventId)
+          .eq('user_id', userId)
+          .single();
+
+      // Return true if user is found in co-organizers
+      return coorganizerResponse != null;
+    } catch (error) {
+      // Handle the case where no rows are found (not an error case)
+      if (error is PostgrestException && error.code == 'PGRST116') {
+        return false;
+      }
+
+      // Log other errors and rethrow
+      print('Error checking user event role: $error');
+      rethrow;
+    }
   }
 }
