@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:momento/main.dart';
+import 'package:momento/screens/about_us_page.dart';
 import 'package:momento/screens/contact_us.dart';
 import 'package:momento/screens/profile/profile_page.dart';
 import 'package:path/path.dart' as p;
@@ -37,9 +38,21 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           SettingsOption(
+            icon: Icons.info,
+            title: "About Us",
+            subtitle: "Know the developers of Momento",
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AboutUsPage(),
+                ),
+              );
+            },
+          ),
+          SettingsOption(
             icon: Icons.help_outline,
             title: "Contact Us",
-            subtitle: "Contact the developer of the apps.",
+            subtitle: "Contact the developers of the app",
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -57,8 +70,8 @@ class SettingsScreen extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text("Logout"),
-                  content: Text("Are you sure you want to log out?"),
+                  title: const Text("Logout"),
+                  content: const Text("Are you sure you want to log out?"),
                   actions: [
                     TextButton(
                       onPressed: () {
