@@ -5,6 +5,7 @@ import 'package:momento/screens/events/budget_bloc/budget_api_service.dart';
 import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
+import 'package:momento/screens/events/event_notification.dart';
 import 'package:momento/screens/events/event_qa.dart';
 import 'package:momento/screens/events/event_review.dart';
 import 'package:momento/screens/events/event_schedule.dart';
@@ -105,6 +106,16 @@ class _GuestHomeState extends State<GuestHome> {
             context,
             MaterialPageRoute(
               builder: (context) => ReviewsScreen(eventId: widget.eventId),
+            ),
+          ),
+        ),
+        _buildFeatureItem(
+          icon: Icons.notifications,
+          label: 'Notify',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const EventNotification(),
             ),
           ),
         ),

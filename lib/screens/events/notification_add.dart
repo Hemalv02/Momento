@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void showNotificationModal(BuildContext context) {
+final supabase = Supabase.instance.client;
+
+void showNotificationModal(BuildContext context, {required int eventId}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -16,7 +19,7 @@ void showNotificationModal(BuildContext context) {
         ),
         child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.5,
-          child: const NotificationModal(),
+          child: NotificationModal(eventId: eventId),
         ),
       );
     },
@@ -24,7 +27,8 @@ void showNotificationModal(BuildContext context) {
 }
 
 class NotificationModal extends StatefulWidget {
-  const NotificationModal({super.key});
+  final int eventId;
+  const NotificationModal({super.key, required this.eventId});
 
   @override
   State<NotificationModal> createState() => _NotificationModalState();
@@ -42,15 +46,22 @@ class _NotificationModalState extends State<NotificationModal> {
     super.dispose();
   }
 
-  void _handleSubmit() {
-    print('Submit button pressed');
+  Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
-      final notification = {
-        'title': _titleController.text,
-        'message': _messageController.text,
-      };
-      print(notification); // This should print the notification data.
-      Navigator.pop(context);
+      try {
+        await supabase.from('add_notifications').insert({
+          'event_id': widget.eventId,
+          'title': _titleController.text,
+          'message': _messageController.text,
+        });
+        if (mounted) Navigator.pop(context);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${e.toString()}')),
+          );
+        }
+      } finally {}
     }
   }
 

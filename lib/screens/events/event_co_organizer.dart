@@ -138,7 +138,7 @@ class CoorganizerCard extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           radius: 25.r,
-          backgroundColor: Color(0xFF003675),
+          backgroundColor: const Color(0xFF003675),
           foregroundColor: Colors.white,
           child: Text(coorganizer.username[0]),
           // backgroundColor: Colors.primaries[index % Colors.primaries.length],
