@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/main.dart';
+import 'package:momento/screens/profile/UserProfileViewPage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timeago/timeago.dart';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 
 class Reply {
   final int id;
@@ -51,6 +54,7 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
   final supabase = Supabase.instance.client;
   late final Stream<List<Reply>> _repliesStream;
   final Map<String, String> _usernamesCache = {};
+  final Map<String, Uint8List?> _profilePicsCache = {};
 
   @override
   void initState() {
@@ -84,6 +88,35 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
     } catch (error) {
       return 'Unknown User';
     }
+  }
+
+  Future<Uint8List?> _getProfilePicture(String username) async {
+    if (_profilePicsCache.containsKey(username)) {
+      return _profilePicsCache[username];
+    }
+
+    try {
+      final response = await supabase
+          .from('profile_pics')
+          .select('url')
+          .eq('username', username)
+          .single();
+
+      if (response != null && response['url'] != null) {
+        final url = response['url'];
+        final imageResponse = await http.get(Uri.parse(url));
+
+        if (imageResponse.statusCode == 200) {
+          _profilePicsCache[username] = imageResponse.bodyBytes;
+          return imageResponse.bodyBytes;
+        }
+      }
+    } catch (error) {
+      debugPrint('Error fetching profile picture: $error');
+    }
+
+    _profilePicsCache[username] = null;
+    return null;
   }
 
   Future<void> _submitReply() async {
@@ -159,16 +192,23 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
                         builder: (context, usernameSnapshot) {
                           final username =
                               usernameSnapshot.data ?? 'Loading...';
-                          return Column(
-                            children: [
-                              _buildCommentTile(
-                                name: username,
-                                date:
-                                    format(reply.createdAt, locale: 'en_short'),
-                                comment: reply.answer,
-                              ),
-                              SizedBox(height: 8.h),
-                            ],
+                          return FutureBuilder<Uint8List?>(
+                            future: _getProfilePicture(username),
+                            builder: (context, profilePicSnapshot) {
+                              final profilePic = profilePicSnapshot.data;
+                              return Column(
+                                children: [
+                                  _buildCommentTile(
+                                    name: username,
+                                    date: format(reply.createdAt,
+                                        locale: 'en_short'),
+                                    comment: reply.answer,
+                                    profilePic: profilePic,
+                                  ),
+                                  SizedBox(height: 8.h),
+                                ],
+                              );
+                            },
                           );
                         },
                       );
@@ -188,17 +228,45 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
     required String name,
     required String date,
     required String comment,
+    Uint8List? profilePic,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: const Color(0xFF003675),
-            foregroundColor: Colors.white,
-            child: Text(name[0].toUpperCase()),
+          GestureDetector(
+            onTap: () async {
+              final currentUserId = prefs.getString('userId')!;
+
+              // Get the user ID for this reply
+              final userIdResponse = await supabase
+                  .from('users')
+                  .select('id')
+                  .eq('username', name)
+                  .single();
+
+              final userIdForThisReply = userIdResponse['id'];
+
+              // Only navigate if it's not the current user
+              if (userIdForThisReply != currentUserId) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            UserProfileViewPage(viewedUsername: name)));
+              }
+            },
+            child: CircleAvatar(
+              radius: 20,
+              backgroundColor: profilePic == null
+                  ? const Color(0xFF003675)
+                  : Colors.transparent,
+              foregroundColor: Colors.white,
+              backgroundImage:
+                  profilePic != null ? MemoryImage(profilePic) : null,
+              child: profilePic == null ? Text(name[0].toUpperCase()) : null,
+            ),
           ),
           SizedBox(width: 8.h),
           Expanded(
