@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+final supabase = Supabase.instance.client;
 
-void showNotificationModal(BuildContext context) {
+void showNotificationModal(BuildContext context, {required int eventId}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -16,7 +18,7 @@ void showNotificationModal(BuildContext context) {
         ),
         child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.5,
-          child: const NotificationModal(),
+          child: NotificationModal(eventId: eventId),
         ),
       );
     },
@@ -24,7 +26,8 @@ void showNotificationModal(BuildContext context) {
 }
 
 class NotificationModal extends StatefulWidget {
-  const NotificationModal({super.key});
+  final int eventId;
+  const NotificationModal({super.key, required this.eventId});
 
   @override
   State<NotificationModal> createState() => _NotificationModalState();
@@ -34,7 +37,7 @@ class _NotificationModalState extends State<NotificationModal> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _messageController = TextEditingController();
-
+  bool _isLoading = false;
   @override
   void dispose() {
     _titleController.dispose();
@@ -42,18 +45,38 @@ class _NotificationModalState extends State<NotificationModal> {
     super.dispose();
   }
 
-  void _handleSubmit() {
-    print('Submit button pressed');
+  // void _handleSubmit() {
+  //   print('Submit button pressed');
+  //   if (_formKey.currentState!.validate()) {
+  //     final notification = {
+  //       'title': _titleController.text,
+  //       'message': _messageController.text,
+  //     };
+  //     print(notification); // This should print the notification data.
+  //     Navigator.pop(context);
+  //   }
+  // }
+Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
-      final notification = {
-        'title': _titleController.text,
-        'message': _messageController.text,
-      };
-      print(notification); // This should print the notification data.
-      Navigator.pop(context);
+      setState(() => _isLoading = true);
+      try {
+        await supabase.from('add_notifications').insert({
+          'event_id': widget.eventId,
+          'title': _titleController.text,
+          'message': _messageController.text,
+        });
+        if (mounted) Navigator.pop(context);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${e.toString()}')),
+          );
+        }
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -171,3 +194,103 @@ class _NotificationModalState extends State<NotificationModal> {
     );
   }
 }
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart';
+
+// final supabase = Supabase.instance.client;
+
+// void showNotificationModal(BuildContext context, int eventId) {
+//   showModalBottomSheet(
+//     context: context,
+//     isScrollControlled: true,
+//     backgroundColor: Colors.white,
+//     shape: const RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+//     ),
+//     builder: (BuildContext context) {
+//       return Padding(
+//         padding: EdgeInsets.only(
+//           bottom: MediaQuery.of(context).viewInsets.bottom,
+//         ),
+//         child: SizedBox(
+//           height: MediaQuery.of(context).size.height * 0.5,
+//           child: NotificationModal(eventId: eventId),
+//         ),
+//       );
+//     },
+//   );
+// }
+
+// class NotificationModal extends StatefulWidget {
+//   final int eventId;
+//   const NotificationModal({super.key, required this.eventId});
+
+//   @override
+//   State<NotificationModal> createState() => _NotificationModalState();
+// }
+
+// class _NotificationModalState extends State<NotificationModal> {
+//   final _formKey = GlobalKey<FormState>();
+//   final _titleController = TextEditingController();
+//   final _messageController = TextEditingController();
+//   bool _isLoading = false;
+
+//   @override
+//   void dispose() {
+//     _titleController.dispose();
+//     _messageController.dispose();
+//     super.dispose();
+//   }
+
+//   Future<void> _handleSubmit() async {
+//     if (_formKey.currentState!.validate()) {
+//       setState(() => _isLoading = true);
+//       try {
+//         await supabase.from('add_notifications').insert({
+//           'event_id': widget.eventId,
+//           'title': _titleController.text,
+//           'message': _messageController.text,
+//         });
+//         if (mounted) Navigator.pop(context);
+//       } catch (e) {
+//         if (mounted) {
+//           ScaffoldMessenger.of(context).showSnackBar(
+//             SnackBar(content: Text('Error: ${e.toString()}')),
+//           );
+//         }
+//       } finally {
+//         setState(() => _isLoading = false);
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // Rest of the build method remains the same, just update the ElevatedButton
+//     return Column(
+//       mainAxisSize: MainAxisSize.min,
+//       children: [
+//         // ... other widgets remain the same
+//         ElevatedButton(
+//           style: ElevatedButton.styleFrom(
+//             backgroundColor: const Color(0xFF003675),
+//             foregroundColor: Colors.white,
+//             padding: const EdgeInsets.symmetric(vertical: 16),
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(16.0),
+//             ),
+//           ),
+//           onPressed: _isLoading ? null : _handleSubmit,
+//           child: _isLoading
+//               ? const CircularProgressIndicator(color: Colors.white)
+//               : Text(
+//                   'Send Notification',
+//                   style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+//                 ),
+//         ),
+//       ],
+//     );
+//   }
+// }

@@ -549,7 +549,7 @@ class EventCard extends StatelessWidget {
           .eq('event_id', eventId)
           .eq('user_id', userId)
           .single();
-
+      
       // Return true if user is found in co-organizers
       return coorganizerResponse != null;
     } catch (error) {

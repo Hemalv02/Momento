@@ -6,6 +6,7 @@ import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
 import 'package:momento/screens/events/event_qa.dart';
+import 'package:momento/screens/events/notification_add.dart';
 import 'package:momento/screens/events/review/event_review.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/event_summary.dart';
@@ -391,7 +392,7 @@ class _EventHomeState extends State<EventHome> {
         _buildFeatureItem(
           icon: Icons.notifications,
           label: 'Notify',
-          onTap: () => Navigator.of(context).pushNamed('event_notification'),
+          onTap: () => showNotificationModal(context, eventId: eventId)
         ),
         _buildFeatureItem(
           icon: Icons.bar_chart,
