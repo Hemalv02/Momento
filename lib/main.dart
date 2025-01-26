@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/bloc_provider.dart';
+import 'package:momento/screens/about_us_page.dart';
 import 'package:momento/screens/auth_v2/forgot_password/forgot_password.dart';
 import 'package:momento/screens/auth_v2/login/jwt_token.dart';
 import 'package:momento/screens/auth_v2/login/login.dart';
@@ -93,6 +94,7 @@ class MomentoApp extends StatelessWidget {
             'settingspage': (context) => const SettingsScreen(),
             'feedbackpage': (context) => const FeedbackPage(),
             //'todo_page': (context) => const ToDoPage(),
+            'aboutuspage': (context) => AboutUsPage(),
           },
           initialRoute: initialRoute,
           //initialRoute: 'event_home',
