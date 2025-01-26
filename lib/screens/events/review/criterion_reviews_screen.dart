@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:momento/screens/profile/UserProfileViewPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:typed_data'; // Ensure this import matches your project structure
 
 class CriterionReviewsScreen extends StatefulWidget {
   final String criterion;
@@ -21,12 +25,42 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
   final supabase = Supabase.instance.client;
   late String rating;
   late String feedback;
+  final Map<String, Uint8List?> _profilePicsCache = {};
 
   @override
   void initState() {
     super.initState();
     rating = '${widget.criterion}_rating';
     feedback = '${widget.criterion}_feedback';
+  }
+
+  Future<Uint8List?> _getProfilePicture(String username) async {
+    if (_profilePicsCache.containsKey(username)) {
+      return _profilePicsCache[username];
+    }
+
+    try {
+      final response = await supabase
+          .from('profile_pics')
+          .select('url')
+          .eq('username', username)
+          .single();
+
+      if (response != null && response['url'] != null) {
+        final url = response['url'];
+        final imageResponse = await http.get(Uri.parse(url));
+
+        if (imageResponse.statusCode == 200) {
+          _profilePicsCache[username] = imageResponse.bodyBytes;
+          return imageResponse.bodyBytes;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching profile picture for $username: $e');
+    }
+
+    _profilePicsCache[username] = null;
+    return null;
   }
 
   Stream<List<Map<String, dynamic>>> _getReviewsStream() {
@@ -170,7 +204,6 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
-              // Ratings Breakdown
               const Text(
                 "Ratings Breakdown",
                 style: TextStyle(
@@ -198,8 +231,6 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // User Reviews
               const Text(
                 "User Reviews",
                 style: TextStyle(
@@ -233,17 +264,49 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Avatar
-                        CircleAvatar(
-                          radius: 24.r,
-                          backgroundColor: Colors.amber.shade100,
-                          foregroundColor: baseColor,
-                          child: Text(
-                            (review['username']?.isNotEmpty ?? false)
-                                ? review['username']![0].toUpperCase()
-                                : '?',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        // Profile Picture with Tap Functionality
+                        FutureBuilder<Uint8List?>(
+                          future: _getProfilePicture(review['username']),
+                          builder: (context, snapshot) {
+                            return GestureDetector(
+                              onTap: () async {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                final currUser = prefs.getString("username");
+                                if (currUser != review['username']) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UserProfileViewPage(
+                                        viewedUsername: review['username'],
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: CircleAvatar(
+                                radius: 24.r,
+                                backgroundColor: snapshot.data != null
+                                    ? Colors.transparent
+                                    : Colors.amber.shade100,
+                                foregroundColor: baseColor,
+                                backgroundImage: snapshot.data != null
+                                    ? MemoryImage(snapshot.data!)
+                                    : null,
+                                child: snapshot.data == null
+                                    ? Text(
+                                        (review['username']?.isNotEmpty ??
+                                                false)
+                                            ? review['username']![0]
+                                                .toUpperCase()
+                                            : '?',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : null,
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(width: 8),
                         // Review Content
