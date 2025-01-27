@@ -88,6 +88,7 @@ class _CoOrganizerModalState extends State<CoOrganizerModal> {
             ),
           );
         } else if (state is CoOrganizerFailure) {
+          Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.error),

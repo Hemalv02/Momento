@@ -6,6 +6,8 @@ import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_event.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_state.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/guest_api.dart';
 import 'package:momento/screens/events/guest_add.dart';
+import 'package:momento/utils/flutter_toaster.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GuestList extends StatefulWidget {
   final int eventId;
@@ -127,28 +129,82 @@ class GuestCard extends StatelessWidget {
     super.key,
     required this.guest,
   });
+  Future<void> onDelete(Guest guest, BuildContext context) async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      await supabase.from('guests').delete().eq('id', guest.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${guest.name} deleted')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      color: const Color.fromARGB(255, 240, 246, 252),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        title: Text(
-          guest.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Color(0xFF003675),
+    return Dismissible(
+      key: ValueKey(
+          guest.id), // Unique key for each item, assuming guest has an 'id'
+      direction: DismissDirection.startToEnd, // Swipe from right to left
+      onDismissed: (direction) {
+        // Handle deletion logic here
+        onDelete(guest,context); // Call a function to delete the guest (implement onDelete)
+      },
+      confirmDismiss: (direction) async {
+        return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Deletion'),
+            content: Text('Are you sure you want to remove ${guest.name}?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
+        );
+      },
+      background: Container(
+        color: const Color(0xFF003675),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      secondaryBackground: Container(
+        color: const Color(0xFF003675),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      child: Card(
+        margin: const EdgeInsets.all(8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
-        subtitle: Text(
-          guest.email,
-          style: const TextStyle(color: Colors.black87),
+        color: const Color.fromARGB(255, 240, 246, 252),
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(16),
+          title: Text(
+            guest.name, // Null handling for guest.name
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Color(0xFF003675),
+            ),
+          ),
+          subtitle: Text(
+            guest.email, // Null handling for guest.email
+            style: const TextStyle(color: Colors.black87),
+          ),
         ),
       ),
     );

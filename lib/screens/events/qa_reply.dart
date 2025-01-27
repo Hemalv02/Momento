@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/main.dart';
-import 'package:momento/screens/profile/UserProfileViewPage.dart';
+import 'package:momento/screens/profile/user_profile_view_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timeago/timeago.dart';
 import 'dart:typed_data';
