@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/events/event_qa.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/review/event_review.dart';
+// Add this import
+import 'package:momento/screens/events/review/review_summary_screen.dart';
 
 class GuestHome extends StatefulWidget {
   final int eventId;
@@ -112,6 +114,18 @@ class _GuestHomeState extends State<GuestHome> {
             ),
           ),
         ),
+        // Add new summary button
+        _buildFeatureItem(
+          // NEW BUTTON
+          icon: Icons.summarize,
+          label: 'Summary',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EventSummaryScreen(eventId: widget.eventId),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -132,7 +146,7 @@ class _GuestHomeState extends State<GuestHome> {
           ),
           SizedBox(height: 16.h),
           GridView.count(
-            crossAxisCount: 4,
+            crossAxisCount: 5, // Changed from 4 to 5
             mainAxisSpacing: 16.h,
             crossAxisSpacing: 16.w,
             childAspectRatio: 0.9,
@@ -149,7 +163,6 @@ class _GuestHomeState extends State<GuestHome> {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
-    // bool isPrimary = false,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -157,13 +170,6 @@ class _GuestHomeState extends State<GuestHome> {
         decoration: BoxDecoration(
           color: const Color(0xFF003675).withAlpha(204),
           borderRadius: BorderRadius.circular(15),
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black.withAlpha(13),
-          //     blurRadius: 10,
-          //     offset: const Offset(0, 4),
-          //   ),
-          // ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
