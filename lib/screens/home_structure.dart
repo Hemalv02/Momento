@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:momento/screens/home.dart';
 // import 'package:momento/screens/profile/create_profile.dart';
 import 'package:momento/screens/profile/settings.dart';
+import 'package:momento/screens/upcoming_events.dart';
 
 class HomeStructure extends StatelessWidget {
   const HomeStructure({super.key});
@@ -21,6 +22,7 @@ class _TabbedPageState extends State<TabbedPage> {
   int _selectedIndex = 0;
   static const List<Widget> _pages = <Widget>[
     HomeScreen(),
+    UpcomingEvents(),
     SettingsScreen(),
     // CreateProfilePage()
   ];
@@ -38,7 +40,11 @@ class _TabbedPageState extends State<TabbedPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Your Events',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.mail_outline),
+            label: 'Upcoming Events',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
