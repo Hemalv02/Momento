@@ -1,7 +1,10 @@
 // login_bloc.dart
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momento/services/auth_api.dart';
+import 'package:momento/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'login_event.dart';
 import 'login_states.dart';
 
@@ -26,6 +29,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await prefs.setString('userId', response.userId);
       await prefs.setString('email', response.email);
       await prefs.setString('username', response.username);
+      final notificationService = NotificationService(
+        supabase: Supabase.instance.client,
+        messaging: FirebaseMessaging.instance,
+      );
+
+      // Initialize when user logs in
+      await notificationService.initialize(response.userId);
 
       emit(LoginSuccess(response.token, response.userId, response.email));
     } catch (e) {
