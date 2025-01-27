@@ -21,13 +21,15 @@ class NotificationService {
         sound: true,
       );
 
-      // Save or update token
-      await saveOrUpdateFCMToken(userId);
-
-      // Listen for token refresh and update it in Supabase
-      _messaging.onTokenRefresh.listen((newToken) async {
+      if (userId.isNotEmpty) {
+        // Save or update token
         await saveOrUpdateFCMToken(userId);
-      });
+
+        // Listen for token refresh and update it in Supabase
+        _messaging.onTokenRefresh.listen((newToken) async {
+          await saveOrUpdateFCMToken(userId);
+        });
+      }
     } catch (e) {
       print('Error initializing notification service: $e');
       // Optionally report the error to a tracking service
