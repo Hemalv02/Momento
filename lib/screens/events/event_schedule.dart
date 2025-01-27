@@ -83,23 +83,30 @@ class EventSchedule extends StatelessWidget {
                         SizedBox(height: 12.h),
                         Column(
                           children: daySchedules.map((schedule) {
-                            return Dismissible(
-                              key: Key(schedule.id.toString()),
-                              background: Container(
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(right: 16),
-                                child: const Icon(Icons.delete,
-                                    color: Colors.white),
-                              ),
-                              onDismissed: (_) =>
-                                  _scheduleService.deleteSchedule(schedule.id!),
-                              child: TimelineTile(
-                                schedule: schedule,
-                                onTap: () =>
-                                    _showScheduleModal(context, schedule),
-                              ),
-                            );
+                            return isGuest
+                                ? TimelineTile(
+                                    schedule: schedule,
+                                    onTap:
+                                        () {}, // Disable tap action for guests
+                                  )
+                                : Dismissible(
+                                    key: Key(schedule.id.toString()),
+                                    background: Container(
+                                      color: Colors.red,
+                                      alignment: Alignment.centerRight,
+                                      padding: const EdgeInsets.only(right: 16),
+                                      child: const Icon(Icons.delete,
+                                          color: Colors.white),
+                                    ),
+                                    onDismissed: (_) =>
+                                        _scheduleService.deleteSchedule(
+                                            schedule.id!), // Allow deletion
+                                    child: TimelineTile(
+                                      schedule: schedule,
+                                      onTap: () => _showScheduleModal(
+                                          context, schedule), // Allow editing
+                                    ),
+                                  );
                           }).toList(),
                         ),
                         Container(
@@ -152,15 +159,16 @@ class EventSchedule extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8.h),
-          if (!isGuest)
-            Text(
-              'Tap the + button to add your first schedule',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
+          isGuest
+              ? Text(
+                  'Tap the + button to add your first schedule',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                )
+              : const Text(""),
         ],
       ),
     );
