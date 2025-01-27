@@ -319,7 +319,7 @@ class ProfilePageState extends State<ProfilePage> {
                                     context: context,
                                     initialDate: updatedDob ?? DateTime.now(),
                                     firstDate: DateTime(1900),
-                                    lastDate: DateTime(2100),
+                                    lastDate: DateTime.now(),
                                   );
                                   if (selectedDate != null) {
                                     setModalState(() {
