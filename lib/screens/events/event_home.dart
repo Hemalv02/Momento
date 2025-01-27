@@ -171,7 +171,10 @@ class _EventHomeState extends State<EventHome> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EventSchedule(eventId: eventId),
+                builder: (context) => EventSchedule(
+                  eventId: eventId,
+                  isGuest: false,
+                ),
               ),
             )
           },
@@ -228,7 +231,8 @@ class _EventHomeState extends State<EventHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReviewsScreen(eventId: eventId, isGuest: false),
+              builder: (context) =>
+                  ReviewsScreen(eventId: eventId, isGuest: false),
             ),
           ),
         ),

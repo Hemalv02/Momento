@@ -49,6 +49,7 @@ class Event {
   final DateTime endDate;
   final String description;
   final String createdBy;
+  final String role;
 
   Event({
     required this.id,
@@ -60,6 +61,7 @@ class Event {
     required this.endDate,
     required this.description,
     required this.createdBy,
+    required this.role,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -74,6 +76,7 @@ class Event {
         endDate: DateTime.parse(json['end_date']),
         description: json['description'],
         createdBy: json['created_by'],
+        role: json['role'],
       );
     } catch (e) {
       throw EventApiException('Error parsing event data: ${e.toString()}');

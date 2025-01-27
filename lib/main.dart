@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,8 +25,16 @@ import 'package:momento/screens/profile/page_selector.dart';
 import 'package:momento/screens/profile/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 late SharedPreferences prefs;
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message: ${message.messageId}');
+  print('Message Data: ${message.data}');
+}
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -38,6 +47,36 @@ void main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sYndrYXlzeXlma3F4eXZmdGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU2MTgyMzcsImV4cCI6MjA1MTE5NDIzN30.BN3HO_6NVR1JQVtEd52b2VAoWc8UHdGXqy3-Dg390Rk',
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  print('User granted permission: ${settings.authorizationStatus}');
+
+  // Set the background message handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  final token = await messaging.getToken();
+  print('Token: $token');
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Title: ${message.notification?.title}');
+    print('Body: ${message.notification?.body}');
+    print('Data: ${message.data}');
+    print('Android: ${message.notification?.android}');
+    print('Apple: ${message.notification?.apple}');
+  });
   _initializeApp();
 }
 

@@ -8,10 +8,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EventSchedule extends StatelessWidget {
   final int eventId;
+  final bool isGuest;
   final ScheduleService _scheduleService =
       ScheduleService(Supabase.instance.client);
 
-  EventSchedule({super.key, required this.eventId});
+  EventSchedule({super.key, required this.eventId, required this.isGuest});
 
   @override
   Widget build(BuildContext context) {
@@ -119,12 +120,14 @@ class EventSchedule extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showScheduleModal(context),
-        backgroundColor: const Color(0xFF003675),
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: isGuest
+          ? null
+          : FloatingActionButton(
+              onPressed: () => _showScheduleModal(context),
+              backgroundColor: const Color(0xFF003675),
+              foregroundColor: Colors.white,
+              child: const Icon(Icons.add),
+            ),
     );
   }
 
@@ -149,14 +152,15 @@ class EventSchedule extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8.h),
-          Text(
-            'Tap the + button to add your first schedule',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[600],
+          if (!isGuest)
+            Text(
+              'Tap the + button to add your first schedule',
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
         ],
       ),
     );
