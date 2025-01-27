@@ -6,8 +6,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReviewsScreen extends StatefulWidget {
   final int eventId;
+  final bool isGuest;
 
-  const ReviewsScreen({super.key, required this.eventId});
+  const ReviewsScreen({super.key, required this.eventId, required this.isGuest});
 
   @override
   State<ReviewsScreen> createState() => _ReviewsScreenState();
@@ -114,18 +115,21 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
         backgroundColor: baseColor,
         foregroundColor: Colors.white,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: baseColor,
-        foregroundColor: Colors.white,
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => SubmitReviewScreen(eventId: widget.eventId),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
+
+      floatingActionButton: widget.isGuest
+          ? FloatingActionButton(
+              backgroundColor: baseColor,
+              foregroundColor: Colors.white,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SubmitReviewScreen(eventId: widget.eventId),
+                  ),
+                );
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _reviewsStream(),
         builder: (context, snapshot) {

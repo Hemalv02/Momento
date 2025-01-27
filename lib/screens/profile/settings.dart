@@ -77,7 +77,7 @@ class SettingsScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("Cancel"),
+                      child:const Text("Cancel"),
                     ),
                     TextButton(
                       onPressed: () {
@@ -89,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                             'login', (Route<dynamic> route) => false);
                         // Perform logout logic here
                       },
-                      child: Text("Logout"),
+                      child: const Text("Logout"),
                     ),
                   ],
                 ),

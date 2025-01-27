@@ -60,10 +60,10 @@ class _SubmitReviewScreenState extends State<SubmitReviewScreen> {
         'app_usage_rating': _appUsageRating,
         'app_usage_feedback': _appUsageFeedbackController.text.trim(),
       });
-
+      if (mounted){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Review submitted successfully!")),
-      );
+      );}
 
       // Clear inputs after submission
       _foodRating = 0.0;
@@ -75,9 +75,10 @@ class _SubmitReviewScreenState extends State<SubmitReviewScreen> {
       _managementFeedbackController.clear();
       _appUsageFeedbackController.clear();
     } catch (error) {
+      if (mounted){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to submit review: $error")),
-      );
+      );}
     } finally {
       setState(() {
         _isSubmitting = false;

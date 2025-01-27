@@ -195,7 +195,7 @@ class _QuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF003675).withAlpha(20),
+      color: const Color(0xFF003675).withAlpha(23),
       elevation: 0,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       shape: RoundedRectangleBorder(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:momento/screens/events/event_notification.dart';
 import 'package:momento/screens/events/event_qa.dart';
 import 'package:momento/screens/events/review/event_review.dart';
 
@@ -94,17 +93,7 @@ class _GuestHomeState extends State<GuestHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReviewsScreen(eventId: widget.eventId),
-            ),
-          ),
-        ),
-        _buildFeatureItem(
-          icon: Icons.notifications,
-          label: 'Notify',
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const EventNotification(),
+              builder: (context) => ReviewsScreen(eventId: widget.eventId, isGuest: true),
             ),
           ),
         ),
@@ -145,13 +134,13 @@ class _GuestHomeState extends State<GuestHome> {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
-    bool isPrimary = false,
+    // bool isPrimary = false,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xFF003675).withOpacity(0.8),
+          color: const Color(0xFF003675).withAlpha(204),
           borderRadius: BorderRadius.circular(15),
           // boxShadow: [
           //   BoxShadow(

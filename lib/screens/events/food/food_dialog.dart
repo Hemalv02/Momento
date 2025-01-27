@@ -146,9 +146,10 @@ class _FoodDialogState extends State<FoodDialog> {
         }
         Navigator.pop(context);
       } catch (e) {
+        if(mounted){
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
-        );
+        );}
       }
     }
   }

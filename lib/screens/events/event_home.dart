@@ -12,7 +12,7 @@ import 'package:momento/screens/events/event_summary.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/food/food_list_screen.dart';
 import 'package:momento/screens/events/guest_list.dart';
-import 'package:momento/screens/events/notification_add.dart';
+import 'package:momento/screens/events/notifications/notification_add.dart';
 import 'package:momento/screens/events/todo_page.dart';
 
 class EventHome extends StatefulWidget {
@@ -228,7 +228,7 @@ class _EventHomeState extends State<EventHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReviewsScreen(eventId: eventId),
+              builder: (context) => ReviewsScreen(eventId: eventId, isGuest: false),
             ),
           ),
         ),
@@ -275,7 +275,7 @@ class _EventHomeState extends State<EventHome> {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xFF003675).withOpacity(0.8),
+          color: const Color(0xFF003675).withAlpha(204),
           borderRadius: BorderRadius.circular(15),
           // boxShadow: [
           //   BoxShadow(

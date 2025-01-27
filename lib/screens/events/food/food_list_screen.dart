@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/screens/events/food/food_bottom_sheet.dart';
-import 'package:momento/screens/events/food/food_dialog.dart';
+// import 'package:momento/screens/events/food/food_dialog.dart';
 import 'package:momento/screens/events/food/food_model.dart';
 import 'package:momento/screens/events/food/food_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -76,7 +76,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
       return _buildEmptyState();
     }
 
-    final baseColor = const Color(0xFF003675);
+    const baseColor = Color(0xFF003675);
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -107,8 +107,8 @@ class _FoodListScreenState extends State<FoodListScreen> {
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(
                   colors: [
-                    baseColor.withOpacity(0.05),
-                    baseColor.withOpacity(0.1),
+                    baseColor.withAlpha(13),
+                    baseColor.withAlpha(25),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -125,7 +125,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                         children: [
                           Text(
                             food.foodName,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
@@ -138,13 +138,13 @@ class _FoodListScreenState extends State<FoodListScreen> {
                               Icon(
                                 Icons.restaurant,
                                 size: 16,
-                                color: baseColor.withOpacity(0.6),
+                                color: baseColor.withAlpha(153),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 '${food.servingSize} servings',
                                 style: TextStyle(
-                                  color: baseColor.withOpacity(0.6),
+                                  color: baseColor.withAlpha(153),
                                   fontSize: 14,
                                 ),
                               ),
@@ -152,13 +152,13 @@ class _FoodListScreenState extends State<FoodListScreen> {
                               Icon(
                                 Icons.info_outline,
                                 size: 16,
-                                color: baseColor.withOpacity(0.6),
+                                color: baseColor.withAlpha(153),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 food.dietaryInfo,
                                 style: TextStyle(
-                                  color: baseColor.withOpacity(0.6),
+                                  color: baseColor.withAlpha(153),
                                   fontSize: 14,
                                 ),
                               ),
@@ -170,13 +170,13 @@ class _FoodListScreenState extends State<FoodListScreen> {
                               Icon(
                                 Icons.attach_money,
                                 size: 16,
-                                color: baseColor.withOpacity(0.6),
+                                color: baseColor.withAlpha(153),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 '${food.pricePerServing.toStringAsFixed(2)} per serving',
                                 style: TextStyle(
-                                  color: baseColor.withOpacity(0.6),
+                                  color: baseColor.withAlpha(153),
                                   fontSize: 14,
                                 ),
                               ),
@@ -187,7 +187,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                             Text(
                               food.description,
                               style: TextStyle(
-                                color: baseColor.withOpacity(0.6),
+                                color: baseColor.withAlpha(153),
                                 fontSize: 14,
                                 fontStyle: FontStyle.italic,
                               ),
@@ -203,7 +203,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () => _showFoodDialog(context, food: food),
-                          color: baseColor.withOpacity(0.6),
+                          color: baseColor.withAlpha(153),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -211,12 +211,12 @@ class _FoodListScreenState extends State<FoodListScreen> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: baseColor.withOpacity(0.1),
+                            color: baseColor.withAlpha(25),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             food.foodType,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
                               color: baseColor,
                               fontWeight: FontWeight.w500,
@@ -237,7 +237,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
 
 // Optional: Update the empty state to match the new color scheme
   Widget _buildEmptyState() {
-    final baseColor = const Color(0xFF003675);
+    const baseColor = Color(0xFF003675);
 
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: 1),
@@ -260,17 +260,17 @@ class _FoodListScreenState extends State<FoodListScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: baseColor.withOpacity(0.1),
+                  color: baseColor.withAlpha(25),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.restaurant_menu,
                   size: 64,
-                  color: baseColor.withOpacity(0.6),
+                  color: baseColor.withAlpha(153),
                 ),
               ),
               const SizedBox(height: 24),
-              Text(
+              const Text(
                 'No Food Items Yet',
                 style: TextStyle(
                   fontSize: 20,
@@ -284,7 +284,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: baseColor.withOpacity(0.6),
+                  color: baseColor.withAlpha(153),
                   height: 1.5,
                 ),
               ),
@@ -296,18 +296,18 @@ class _FoodListScreenState extends State<FoodListScreen> {
   }
 
 // Add this helper method to get colors for meal types
-  Color _getMealTypeColor(String mealType) {
-    switch (mealType.toLowerCase()) {
-      case 'breakfast':
-        return Colors.orange;
-      case 'lunch':
-        return Colors.green;
-      case 'dinner':
-        return Colors.purple;
-      default:
-        return Colors.blue;
-    }
-  }
+  // Color _getMealTypeColor(String mealType) {
+  //   switch (mealType.toLowerCase()) {
+  //     case 'breakfast':
+  //       return Colors.orange;
+  //     case 'lunch':
+  //       return Colors.green;
+  //     case 'dinner':
+  //       return Colors.purple;
+  //     default:
+  //       return Colors.blue;
+  //   }
+  // }
 
 // Update the empty state with a more polished design
 // Widget _buildEmptyState() {

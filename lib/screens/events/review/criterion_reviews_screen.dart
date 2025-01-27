@@ -46,7 +46,8 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
           .eq('username', username)
           .single();
 
-      if (response != null && response['url'] != null) {
+      // if (response != null && response['url'] != null) {
+      if (response['url'] != null) {
         final url = response['url'];
         final imageResponse = await http.get(Uri.parse(url));
 
@@ -98,7 +99,7 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
       int star, Map<int, int> ratingsCount, int totalReviews) {
     final count = ratingsCount[star] ?? 0;
     final percentage = totalReviews > 0 ? (count / totalReviews) : 0.0;
-    final baseColor = const Color(0xFF003675);
+    const baseColor = Color(0xFF003675);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -108,7 +109,7 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
             '$star star',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: baseColor.withOpacity(0.7),
+              color: baseColor.withAlpha(178),
             ),
           ),
           const SizedBox(width: 12),
@@ -117,9 +118,9 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
               borderRadius: BorderRadius.circular(10),
               child: LinearProgressIndicator(
                 value: percentage,
-                backgroundColor: baseColor.withOpacity(0.1),
+                backgroundColor: baseColor.withAlpha(25),
                 valueColor:
-                    AlwaysStoppedAnimation<Color>(baseColor.withOpacity(0.7)),
+                    AlwaysStoppedAnimation<Color>(baseColor.withAlpha(178)),
                 minHeight: 8,
               ),
             ),
@@ -130,7 +131,7 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
             child: Text(
               '${(percentage * 100).toStringAsFixed(0)}%',
               style: TextStyle(
-                color: baseColor.withOpacity(0.7),
+                color: baseColor.withAlpha(178),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -138,7 +139,7 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
           Text(
             '($count)',
             style: TextStyle(
-              color: baseColor.withOpacity(0.7),
+              color: baseColor.withAlpha(178),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -247,7 +248,7 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
                     color: const Color.fromARGB(255, 240, 246, 252),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.grey.withAlpha(25),
                         spreadRadius: 1,
                         blurRadius: 2,
                         offset: const Offset(0, 1),
@@ -255,7 +256,7 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
                     ],
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: baseColor.withOpacity(0.1),
+                      color: baseColor.withAlpha(25),
                       width: 1,
                     ),
                   ),

@@ -14,7 +14,7 @@ import 'package:momento/screens/auth_v2/signup/signup.dart';
 import 'package:momento/screens/contact_us.dart';
 import 'package:momento/screens/events/create_event.dart';
 import 'package:momento/screens/events/event_home.dart';
-import 'package:momento/screens/events/event_notification.dart';
+import 'package:momento/screens/events/notifications/event_notification.dart';
 import 'package:momento/screens/events/ticket_scanner.dart';
 import 'package:momento/screens/home.dart';
 import 'package:momento/screens/home_structure.dart';

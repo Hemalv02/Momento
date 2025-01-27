@@ -84,7 +84,7 @@ class _TransactionSummaryWidgetState extends State<TransactionSummaryWidget> {
       ),
       backgroundColor: Colors.white,
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -161,16 +161,16 @@ class _TransactionSummaryWidgetState extends State<TransactionSummaryWidget> {
                                 reservedSize: 40,
                               ),
                             ),
-                            leftTitles: AxisTitles(
+                            leftTitles: const AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 reservedSize: 40,
                               ),
                             ),
-                            topTitles: AxisTitles(
+                            topTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
-                            rightTitles: AxisTitles(
+                            rightTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
@@ -193,7 +193,7 @@ class _TransactionSummaryWidgetState extends State<TransactionSummaryWidget> {
                                         toY: categoryTotals.values.reduce(
                                                 (a, b) => a > b ? a : b) *
                                             1.2,
-                                        color: Colors.grey.withOpacity(0.1),
+                                        color: Colors.grey.withAlpha(25),
                                       ),
                                     ),
                                   ],
@@ -302,9 +302,9 @@ class _SummaryCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.5)),
+        border: Border.all(color: color.withAlpha(127)),
       ),
       child: Column(
         children: [

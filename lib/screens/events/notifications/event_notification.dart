@@ -126,7 +126,7 @@ class _EventNotificationState extends State<EventNotification> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            notification['title'],
+                            "${notification['event_name']} :${notification['title']}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16.sp,
@@ -170,7 +170,7 @@ class _EventNotificationState extends State<EventNotification> {
   }
 
   Widget _buildEmptyNotificationState() {
-    final baseColor = const Color(0xFF003675);
+    const baseColor = Color(0xFF003675);
 
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: 1),
@@ -193,17 +193,17 @@ class _EventNotificationState extends State<EventNotification> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: baseColor.withOpacity(0.1),
+                  color: baseColor.withAlpha(25),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.notifications_none,
                   size: 64,
-                  color: baseColor.withOpacity(0.6),
+                  color: baseColor.withAlpha(153)
                 ),
               ),
               const SizedBox(height: 24),
-              Text(
+              const Text(
                 'No Notifications Yet',
                 style: TextStyle(
                   fontSize: 20,
@@ -217,7 +217,7 @@ class _EventNotificationState extends State<EventNotification> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: baseColor.withOpacity(0.6),
+                  color: baseColor.withAlpha(153),
                   height: 1.5,
                 ),
               ),

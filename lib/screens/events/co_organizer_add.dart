@@ -154,11 +154,11 @@ class _CoOrganizerModalState extends State<CoOrganizerModal> {
                               : () => _handleSubmit(context),
                           style: FilledButton.styleFrom(
                             backgroundColor: state is CoOrganizerLoading
-                                ? const Color(0xFF003675).withOpacity(0.7)
+                                ? const Color(0xFF003675).withAlpha(178)
                                 : const Color(0xFF003675),
                             foregroundColor: Colors.white,
                             disabledBackgroundColor:
-                                const Color(0xFF003675).withOpacity(0.7),
+                                const Color(0xFF003675).withAlpha(178),
                             minimumSize: const Size(double.infinity, 56),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),

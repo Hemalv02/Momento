@@ -94,7 +94,7 @@ class _EventBudgetState extends State<EventBudget> {
   Widget _buildTransactionCard(Transaction transaction) {
     return Card(
       elevation: 0,
-      color: Color(0xFF003675).withOpacity(0.05),
+      color: const Color(0xFF003675).withAlpha(15),
       margin: EdgeInsets.symmetric(vertical: 4.h),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
@@ -136,7 +136,7 @@ class _EventBudgetState extends State<EventBudget> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF003675).withOpacity(0.1),
+                  color: const Color(0xFF003675).withAlpha(25),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -154,7 +154,7 @@ class _EventBudgetState extends State<EventBudget> {
   }
 
   Widget _buildEmptyState() {
-    final baseColor = const Color(0xFF003675);
+    const baseColor = Color(0xFF003675);
 
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: 1),
@@ -177,17 +177,17 @@ class _EventBudgetState extends State<EventBudget> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: baseColor.withOpacity(0.1),
+                  color: baseColor.withAlpha(25),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.money,
                   size: 64,
-                  color: baseColor.withOpacity(0.6),
+                  color: baseColor.withAlpha(178),
                 ),
               ),
               const SizedBox(height: 24),
-              Text(
+              const Text(
                 'No transactions or budgets Yet',
                 style: TextStyle(
                   fontSize: 20,
@@ -201,7 +201,7 @@ class _EventBudgetState extends State<EventBudget> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: baseColor.withOpacity(0.6),
+                  color: baseColor.withAlpha(178),
                   height: 1.5,
                 ),
               ),
