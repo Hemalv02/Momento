@@ -126,11 +126,15 @@ class _EventNotificationState extends State<EventNotification> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${notification['event_name']} :${notification['title']}",
+                            "${notification['title']}",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.sp,
+                              fontSize: 20.sp,
                             ),
+                          ),
+                          Text(
+                            "${notification['event_name']}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14.sp),
                           ),
                           SizedBox(height: 8.h),
                           Text(
@@ -196,11 +200,8 @@ class _EventNotificationState extends State<EventNotification> {
                   color: baseColor.withAlpha(25),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.notifications_none,
-                  size: 64,
-                  color: baseColor.withAlpha(153)
-                ),
+                child: Icon(Icons.notifications_none,
+                    size: 64, color: baseColor.withAlpha(153)),
               ),
               const SizedBox(height: 24),
               const Text(

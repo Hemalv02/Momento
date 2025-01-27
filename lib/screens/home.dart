@@ -112,9 +112,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         _onRefresh();
                       },
                     ),
-                  IconButton(onPressed: (){
-                      Navigator.of(context).pushNamed('event_notification');
-                    }, icon: const Icon(Icons.notifications)),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('event_notification');
+                        },
+                        icon: const Icon(Icons.notifications)),
                   ],
                 ),
                 BlocBuilder<FetchEventBloc, FetchEventState>(
@@ -374,11 +376,9 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        bool isGuest = await isUserEventOrganizerOrCoorganizer(
-            Supabase.instance.client, userId, event.id);
+        bool isGuest = event.role == 'guest';
 
-        // print(!isGuest);
-        if (!isGuest) {
+        if (isGuest) {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => GuestHome(
                     eventId: event.id,
@@ -524,47 +524,5 @@ class EventCard extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Future<bool> isUserEventOrganizerOrCoorganizer(
-    SupabaseClient supabase,
-    String userId,
-    int eventId,
-  ) async {
-    try {
-      // First, check if user is the event creator
-      final eventResponse = await supabase
-          .from('event') // assuming your events table is named 'events'
-          .select(
-              'created_by') // assuming the creator column is named 'created_by'
-          .eq('id', eventId)
-          .single();
-
-      // If user is the event creator, return true
-      // if (eventResponse != null && eventResponse['created_by'] == userId) {
-      if (eventResponse['created_by'] == userId) {
-        return true;
-      }
-
-      // If not the creator, check if user is a co-organizer
-      final coorganizerResponse = await supabase
-          .from('event_coorganizers')
-          .select('user_id')
-          .eq('event_id', eventId)
-          .eq('user_id', userId)
-          .single();
-
-      // Return true if user is found in co-organizers
-      return coorganizerResponse != null;
-    } catch (error) {
-      // Handle the case where no rows are found (not an error case)
-      if (error is PostgrestException && error.code == 'PGRST116') {
-        return false;
-      }
-
-      // Log other errors and rethrow
-      print('Error checking user event role: $error');
-      rethrow;
-    }
   }
 }

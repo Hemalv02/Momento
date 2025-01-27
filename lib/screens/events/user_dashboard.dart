@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/events/event_qa.dart';
+import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/review/event_review.dart';
 
 class GuestHome extends StatefulWidget {
@@ -78,6 +79,19 @@ class _GuestHomeState extends State<GuestHome> {
       'Additional Options',
       [
         _buildFeatureItem(
+          icon: Icons.schedule,
+          label: 'Schedule',
+          onTap: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    EventSchedule(eventId: widget.eventId, isGuest: true),
+              ),
+            )
+          },
+        ),
+        _buildFeatureItem(
           icon: Icons.question_answer,
           label: 'Q&A',
           onTap: () => Navigator.push(
@@ -93,7 +107,8 @@ class _GuestHomeState extends State<GuestHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReviewsScreen(eventId: widget.eventId, isGuest: true),
+              builder: (context) =>
+                  ReviewsScreen(eventId: widget.eventId, isGuest: true),
             ),
           ),
         ),
