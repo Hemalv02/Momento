@@ -23,6 +23,7 @@ import 'package:momento/screens/onboarding/onboarding_screens.dart';
 import 'package:momento/screens/profile/create_profile.dart';
 import 'package:momento/screens/profile/page_selector.dart';
 import 'package:momento/screens/profile/settings.dart';
+import 'package:momento/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -51,32 +52,17 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  print('User granted permission: ${settings.authorizationStatus}');
 
   // Set the background message handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  final token = await messaging.getToken();
-  print('Token: $token');
-
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Title: ${message.notification?.title}');
-    print('Body: ${message.notification?.body}');
-    print('Data: ${message.data}');
-    print('Android: ${message.notification?.android}');
-    print('Apple: ${message.notification?.apple}');
-  });
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   print('Title: ${message.notification?.title}');
+  //   print('Body: ${message.notification?.body}');
+  //   print('Data: ${message.data}');
+  //   print('Android: ${message.notification?.android}');
+  //   print('Apple: ${message.notification?.apple}');
+  // });
   _initializeApp();
 }
 
@@ -86,6 +72,16 @@ Future<void> _initializeApp() async {
   final tokenValidator = TokenValidator();
   bool isValid = await tokenValidator.isTokenValid();
   final isLoggedIn = isValid;
+
+  final notificationService = NotificationService(
+    supabase: Supabase.instance.client,
+    messaging: FirebaseMessaging.instance,
+  );
+
+  final String userId = prefs.getString('userId') ?? '';
+
+  // Initialize when user logs in
+  await notificationService.initialize(userId);
 
   FlutterNativeSplash.remove();
   runApp(MomentoApp(
