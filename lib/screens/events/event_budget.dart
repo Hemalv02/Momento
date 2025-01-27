@@ -9,6 +9,9 @@ import 'package:momento/screens/events/budget_bloc/budget_event.dart';
 import 'package:momento/screens/events/budget_bloc/budget_model.dart';
 import 'package:momento/screens/events/budget_bloc/budget_state.dart';
 import 'package:intl/intl.dart';
+import 'package:momento/screens/events/event_summary.dart';
+import 'package:momento/utils/flutter_toaster.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EventBudget extends StatefulWidget {
   final int eventId;
@@ -91,63 +94,230 @@ class _EventBudgetState extends State<EventBudget> {
     );
   }
 
-  Widget _buildTransactionCard(Transaction transaction) {
-    return Card(
-      elevation: 0,
-      color: const Color(0xFF003675).withAlpha(15),
-      margin: EdgeInsets.symmetric(vertical: 4.h),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        title: Text(
-          transaction.title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
+  Future<void> onDelete(int id, BuildContext context) async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      await supabase.from('event_transactions').delete().eq('id', id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Transaction deleted successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+
+
+Future<void> onUpdate(Transaction transaction, BuildContext context) async {
+  final supabase = Supabase.instance.client;
+
+  // Variables to hold user input
+  String title = transaction.title;
+  double amount = transaction.amount;
+  TransactionType type = transaction.type; // Default value
+  TransactionCategory? category = transaction.category ?? TransactionCategory.transport; // Default value
+  String description = transaction.description;
+
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Update Transaction'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Title input
+              TextField(
+                decoration: const InputDecoration(labelText: 'Title'),
+                onChanged: (value) => title = value,
+              ),
+              // Amount input
+              TextField(
+                decoration: const InputDecoration(labelText: 'Amount'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) => amount = double.tryParse(value) ?? 0.0,
+              ),
+              // Type dropdown (TransactionType enum)
+              DropdownButtonFormField<TransactionType>(
+                value: type, // Default value, ensure it matches an item in the list
+                decoration: const InputDecoration(labelText: 'Type'),
+                items: TransactionType.values
+                    .map((TransactionType type) {
+                      return DropdownMenuItem<TransactionType>(
+                        value: type,
+                        child: Text(type.toString().split('.').last.capitalize()),
+                      );
+                    }).toList(),
+                onChanged: (value) => type = value!, // Update the selected value
+              ),
+              // Category dropdown (TransactionCategory enum)
+              DropdownButtonFormField<TransactionCategory>(
+                value: category, // Default value, ensure it matches an item in the list
+                decoration: const InputDecoration(labelText: 'Category'),
+                items: TransactionCategory.values
+                    .map((TransactionCategory category) {
+                      return DropdownMenuItem<TransactionCategory>(
+                        value: category,
+                        child: Text(category.toString().split('.').last.capitalize()),
+                      );
+                    }).toList(),
+                onChanged: (value) => category = value!, // Update the selected value
+              ),
+              // Description input
+              TextField(
+                decoration: const InputDecoration(labelText: 'Description'),
+                onChanged: (value) => description = value,
+              ),
+            ],
           ),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              transaction.description,
-              style: TextStyle(fontSize: 14.sp),
-            ),
-            Text(
-              DateFormat('MMM dd, yyyy').format(transaction.date),
-              style: TextStyle(fontSize: 12.sp, color: Colors.grey),
-            ),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              NumberFormat.currency(symbol: '\৳').format(transaction.amount),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(), // Close dialog
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop(); // Close dialog
+              try {
+                await supabase.from('event_transactions').update({
+                  'title': title,
+                  'amount': amount,
+                  'category': category.toString().split('.').last,
+                  'type': type.toString().split('.').last,
+                  'description': description,
+                }).eq('id', transaction.id);
+            
+                toastInfo(message: "Transaction Updated", backgroundColor: Colors.black, textColor: Colors.white);
+                _refreshData();
+              } catch (e) {
+                toastInfo(message: "Error: ${e.toString()}", backgroundColor: Colors.red, textColor: Colors.white);
+              }
+            },
+            child: const Text('Update'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+
+  Widget _buildTransactionCard(Transaction transaction) {
+    return Dismissible(
+      key: ValueKey(transaction.id), // Unique identifier for the transaction
+      direction: DismissDirection.endToStart, // Swipe from right to left
+      confirmDismiss: (direction) async {
+        // Show a confirmation dialog before deleting
+        return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirm Deletion'),
+              content: const Text(
+                  'Are you sure you want to delete this transaction?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      onDismissed: (direction) {
+        // Handle the deletion logic
+        onDelete(transaction.id,context); // Replace with your deletion function
+        
+      },
+background: Container(
+        color: const Color(0xFF003675),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      secondaryBackground: Container(
+        color: const Color(0xFF003675),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      child: GestureDetector(
+        onTap: () {
+          // Navigate to the update transaction screen or trigger update logic
+          onUpdate(transaction, context); // Replace with your update function
+        },
+        child: Card(
+          elevation: 0,
+          color: const Color(0xFF003675).withAlpha(15),
+          margin: EdgeInsets.symmetric(vertical: 4.h),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: ListTile(
+            title: Text(
+              transaction.title,
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
-                color: transaction.type == TransactionType.income
-                    ? Colors.green
-                    : Colors.red,
               ),
             ),
-            if (transaction.category != null)
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF003675).withAlpha(25),
-                  borderRadius: BorderRadius.circular(10),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  transaction.description,
+                  style: TextStyle(fontSize: 14.sp),
                 ),
-                child: Text(
-                  transaction.category.toString().split('.').last,
+                Text(
+                  DateFormat('MMM dd, yyyy').format(transaction.date),
+                  style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                ),
+              ],
+            ),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  NumberFormat.currency(symbol: '\৳')
+                      .format(transaction.amount),
                   style: TextStyle(
-                    fontSize: 12.sp,
-                    color: const Color(0xFF003675),
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: transaction.type == TransactionType.income
+                        ? Colors.green
+                        : Colors.red,
                   ),
                 ),
-              ),
-          ],
+                if (transaction.category != null)
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF003675).withAlpha(25),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      transaction.category.toString().split('.').last,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: const Color(0xFF003675),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
