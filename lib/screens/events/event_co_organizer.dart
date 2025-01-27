@@ -6,7 +6,7 @@ import 'package:momento/screens/events/fetch_organizer_bloc/fetch_organizer_bloc
 import 'package:momento/screens/events/fetch_organizer_bloc/fetch_organizer_event.dart';
 import 'package:momento/screens/events/fetch_organizer_bloc/fetch_organizer_state.dart';
 import 'package:momento/screens/events/fetch_organizer_bloc/organizer_fetch_api.dart';
-import 'package:momento/screens/profile/UserProfileViewPage.dart';
+import 'package:momento/screens/profile/user_profile_view_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;

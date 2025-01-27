@@ -3,7 +3,7 @@ import 'package:momento/main.dart';
 import 'package:momento/screens/events/qa_modal.dart';
 import 'package:momento/screens/events/qa_model.dart';
 import 'package:momento/screens/events/qa_reply.dart';
-import 'package:momento/screens/profile/UserProfileViewPage.dart';
+import 'package:momento/screens/profile/user_profile_view_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timeago/timeago.dart';
