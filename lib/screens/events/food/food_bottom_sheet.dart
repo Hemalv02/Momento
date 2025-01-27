@@ -47,7 +47,7 @@ class _FoodBottomSheetState extends State<FoodBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = const Color(0xFF003675);
+    const baseColor = Color(0xFF003675);
 
     // This ensures the bottom sheet is not covered by the keyboard
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
@@ -84,7 +84,7 @@ class _FoodBottomSheetState extends State<FoodBottomSheet> {
             // Title
             Text(
               widget.food == null ? 'Add New Food' : 'Edit Food',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: baseColor,
@@ -269,9 +269,12 @@ class _FoodBottomSheetState extends State<FoodBottomSheet> {
           Navigator.pop(context);
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        if (mounted){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+        
       }
     }
   }

@@ -102,7 +102,8 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
           .eq('username', username)
           .single();
 
-      if (response != null && response['url'] != null) {
+      // if (response != null && response['url'] != null) {
+      if (response['url'] != null) {
         final url = response['url'];
         final imageResponse = await http.get(Uri.parse(url));
 
@@ -139,12 +140,14 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
 
       _commentController.clear();
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error posting reply: $error'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error posting reply: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -250,11 +253,12 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
 
               // Only navigate if it's not the current user
               if (userIdForThisReply != currentUserId) {
+                if(mounted){
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            UserProfileViewPage(viewedUsername: name)));
+                            UserProfileViewPage(viewedUsername: name)));}
               }
             },
             child: CircleAvatar(

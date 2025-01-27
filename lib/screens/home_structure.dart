@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momento/screens/home.dart';
-import 'package:momento/screens/profile/create_profile.dart';
+// import 'package:momento/screens/profile/create_profile.dart';
 import 'package:momento/screens/profile/settings.dart';
 
 class HomeStructure extends StatelessWidget {

@@ -248,14 +248,14 @@ class ModernProfileDetail extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF003675).withOpacity(0.08),
+            color: const Color(0xFF003675).withAlpha(20),
             spreadRadius: 2,
             blurRadius: 15,
             offset: const Offset(0, 3),
           ),
         ],
         border: Border.all(
-          color: const Color(0xFF003675).withOpacity(0.1),
+          color: const Color(0xFF003675).withAlpha(25),
           width: 1,
         ),
       ),
@@ -267,7 +267,7 @@ class ModernProfileDetail extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF003675).withOpacity(0.05),
+              color: const Color(0xFF003675).withAlpha(13),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -276,7 +276,7 @@ class ModernProfileDetail extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF003675).withOpacity(0.1),
+                    color: const Color(0xFF003675).withAlpha(25),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -307,7 +307,7 @@ class ModernProfileDetail extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: const Color(0xFF003675).withOpacity(0.05),
+                          color: const Color(0xFF003675).withAlpha(13),
                           width: 1,
                         ),
                       ),
@@ -320,7 +320,7 @@ class ModernProfileDetail extends StatelessWidget {
                               detail.label,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: const Color(0xFF003675).withOpacity(0.6),
+                                color: const Color(0xFF003675).withAlpha(153),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

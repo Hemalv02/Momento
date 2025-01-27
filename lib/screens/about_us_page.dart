@@ -119,7 +119,7 @@ class AboutUsPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
+                                      color: Colors.grey.withAlpha(76),
                                       offset: const Offset(0, 10),
                                       blurRadius: 10,
                                     ),
@@ -144,7 +144,7 @@ class AboutUsPage extends StatelessWidget {
                                             gradient: LinearGradient(
                                               colors: [
                                                 Colors.transparent,
-                                                Colors.black.withOpacity(0.7)
+                                                Colors.black.withAlpha(178),
                                               ],
                                               begin: Alignment.topCenter,
                                               end: Alignment.bottomCenter,

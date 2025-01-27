@@ -112,6 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         _onRefresh();
                       },
                     ),
+                  IconButton(onPressed: (){
+                      Navigator.of(context).pushNamed('event_notification');
+                    }, icon: const Icon(Icons.notifications)),
                   ],
                 ),
                 BlocBuilder<FetchEventBloc, FetchEventState>(
@@ -224,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: 64,
                         color: Colors.red[300],
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Text(
                         'Error',
                         style: TextStyle(
@@ -233,9 +236,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.red[300],
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 32),
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
                         child: Text(
                           state.message,
                           textAlign: TextAlign.center,
@@ -374,7 +377,7 @@ class EventCard extends StatelessWidget {
         bool isGuest = await isUserEventOrganizerOrCoorganizer(
             Supabase.instance.client, userId, event.id);
 
-        print(!isGuest);
+        // print(!isGuest);
         if (!isGuest) {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => GuestHome(
@@ -538,7 +541,8 @@ class EventCard extends StatelessWidget {
           .single();
 
       // If user is the event creator, return true
-      if (eventResponse != null && eventResponse['created_by'] == userId) {
+      // if (eventResponse != null && eventResponse['created_by'] == userId) {
+      if (eventResponse['created_by'] == userId) {
         return true;
       }
 

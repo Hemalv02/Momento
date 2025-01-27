@@ -52,7 +52,7 @@ class EventSchedule extends StatelessWidget {
 
                 return Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFF003675).withOpacity(0.1),
+                    color: const Color(0xFF003675).withAlpha(25),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   margin: const EdgeInsets.only(bottom: 8.0),
@@ -137,7 +137,7 @@ class EventSchedule extends StatelessWidget {
           Icon(
             Icons.event_busy,
             size: 64.w,
-            color: const Color(0xFF003675).withOpacity(0.5),
+            color: const Color(0xFF003675).withAlpha(127),
           ),
           SizedBox(height: 16.h),
           Text(

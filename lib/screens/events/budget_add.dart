@@ -352,7 +352,7 @@ class _BudgetAddState extends State<BudgetAdd> {
                                     : _handleSubmit,
                                 style: FilledButton.styleFrom(
                                   backgroundColor: state is BudgetLoading
-                                      ? const Color(0xFF003675).withOpacity(0.7)
+                                      ? const Color(0xFF003675).withAlpha(178)
                                       : const Color(0xFF003675),
                                   foregroundColor: Colors.white,
                                   minimumSize: const Size(double.infinity, 56),
