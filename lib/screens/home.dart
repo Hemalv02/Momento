@@ -8,7 +8,6 @@ import 'package:momento/screens/events/fetch_event_bloc/fetch_event_bloc.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_event.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_state.dart';
 import 'package:momento/screens/events/user_dashboard.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isSearchMode = false; // Move isSearchMode to state
   String searchQuery = ""; // To store the search query
   final TextEditingController searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -112,11 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         _onRefresh();
                       },
                     ),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('event_notification');
-                        },
-                        icon: const Icon(Icons.notifications)),
                   ],
                 ),
                 BlocBuilder<FetchEventBloc, FetchEventState>(
@@ -361,9 +354,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class EventCard extends StatelessWidget {
   final Event event;
-  final String userId = prefs.getString('userId')!;
 
-  EventCard({
+  const EventCard({
     super.key,
     required this.event,
   });
@@ -375,20 +367,11 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        bool isGuest = event.role == 'guest';
-
-        if (isGuest) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => GuestHome(
-                    eventId: event.id,
-                  )));
-        } else {
-          Navigator.of(context).pushNamed(
-            'event_home',
-            arguments: event,
-          );
-        }
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          'event_home',
+          arguments: event,
+        );
       },
       child: Card(
         // clickable
