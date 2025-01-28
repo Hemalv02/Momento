@@ -15,7 +15,8 @@ class UpdateEventScreen extends StatefulWidget {
 class _UpdateEventScreenState extends State<UpdateEventScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime startDateTime = DateTime.now();
-  DateTime endDateTime = DateTime.now().add(const Duration(hours: 1)); // Default end time 1 hour later
+  DateTime endDateTime = DateTime.now()
+      .add(const Duration(hours: 1)); // Default end time 1 hour later
 
   final TextEditingController eventName = TextEditingController();
   final TextEditingController organizedBy = TextEditingController();
@@ -70,7 +71,6 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
         'description': eventDescription.text,
       }).eq('id', widget.eventId);
 
-      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -78,7 +78,7 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
@@ -95,10 +95,11 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
   Future<void> _selectDate(BuildContext context, bool isStart) async {
     final currentDate = DateTime.now();
     final initialDate = isStart ? startDateTime : endDateTime;
-    
+
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: initialDate.isBefore(currentDate) ? currentDate : initialDate,
+      initialDate:
+          initialDate.isBefore(currentDate) ? currentDate : initialDate,
       firstDate: isStart ? currentDate : startDateTime,
       lastDate: DateTime(2100),
       builder: (context, child) {
@@ -116,7 +117,8 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
     if (pickedDate != null) {
       final pickedTime = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.fromDateTime(isStart ? startDateTime : endDateTime),
+        initialTime:
+            TimeOfDay.fromDateTime(isStart ? startDateTime : endDateTime),
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
@@ -162,102 +164,85 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
         title: const Text("Settings"),
         elevation: 0,
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
+            Padding(
               padding: EdgeInsets.all(16.w),
-              child: Card(
-                color: Colors.white,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.w),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16.w),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Update Event Information",
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF003675),
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-                        _buildTextField(
-                          "Event Name",
-                          eventName,
-                          Icons.event,
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildTextField(
-                          "Organized By",
-                          organizedBy,
-                          Icons.people,
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildTextField(
-                          "Location",
-                          location,
-                          Icons.location_on,
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildDateTimeField(
-                          "Start Date & Time",
-                          startDateTime,
-                          () => _selectDate(context, true),
-                          Icons.calendar_today,
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildDateTimeField(
-                          "End Date & Time",
-                          endDateTime,
-                          () => _selectDate(context, false),
-                          Icons.calendar_today,
-                        ),
-                        SizedBox(height: 16.h),
-                        _buildTextField(
-                          "Event Description",
-                          eventDescription,
-                          Icons.description,
-                          maxLines: 3,
-                        ),
-                        SizedBox(height: 24.h),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50.h,
-                          child: ElevatedButton(
-                            onPressed: () => _updateEvent(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF003675),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.w),
-                              ),
-                              elevation: 3,
-                            ),
-                            child: Text(
-                              "Update",
-                              style: TextStyle(fontSize: 18.sp),
-                            ),
-                          ),
-                        ),
-                      ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Update Event Information",
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF003675),
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 20.h),
+                    _buildTextField(
+                      "Event Name",
+                      eventName,
+                      Icons.event,
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildTextField(
+                      "Organized By",
+                      organizedBy,
+                      Icons.people,
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildTextField(
+                      "Location",
+                      location,
+                      Icons.location_on,
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildDateTimeField(
+                      "Start Date & Time",
+                      startDateTime,
+                      () => _selectDate(context, true),
+                      Icons.calendar_today,
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildDateTimeField(
+                      "End Date & Time",
+                      endDateTime,
+                      () => _selectDate(context, false),
+                      Icons.calendar_today,
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildTextField(
+                      "Event Description",
+                      eventDescription,
+                      Icons.description,
+                      maxLines: 3,
+                    ),
+                    SizedBox(height: 26.h),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50.h,
+                      child: ElevatedButton(
+                        onPressed: () => _updateEvent(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF003675),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.w),
+                          ),
+                          elevation: 3,
+                        ),
+                        child: Text(
+                          "Update",
+                          style: TextStyle(fontSize: 18.sp),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
