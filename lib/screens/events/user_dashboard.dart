@@ -97,7 +97,7 @@ class _GuestHomeState extends State<GuestHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QuestionsScreen(eventId: widget.eventId),
+              builder: (context) => QuestionsScreen(eventId: widget.eventId,canDelete: false,),
             ),
           ),
         ),
