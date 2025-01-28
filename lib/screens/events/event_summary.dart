@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -81,6 +82,13 @@ class _TransactionSummaryWidgetState extends State<TransactionSummaryWidget> {
 
   Future<void> _generatePdf() async {
     try {
+      
+      if (Platform.isAndroid) {
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        throw Exception("Storage permission not granted");
+      }
+    }
       final Uint8List? screenshot = await screenshotController.capture();
       if (screenshot == null) {
         throw Exception("Failed to capture screenshot.");
