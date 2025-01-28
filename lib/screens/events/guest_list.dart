@@ -6,7 +6,6 @@ import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_state.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/guest_api.dart';
 import 'package:momento/screens/events/guest_add.dart';
 import 'package:momento/screens/profile/user_profile_view_page.dart'; // Add this import
-import 'package:momento/utils/flutter_toaster.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GuestList extends StatefulWidget {
