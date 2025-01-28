@@ -14,6 +14,7 @@ import 'package:momento/screens/events/food/food_list_screen.dart';
 import 'package:momento/screens/events/guest_list.dart';
 import 'package:momento/screens/events/notifications/notification_add.dart';
 import 'package:momento/screens/events/todo_page.dart';
+import 'package:momento/screens/events/update_event_details.dart';
 
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
@@ -223,7 +224,7 @@ class _EventHomeState extends State<EventHome> {
         _buildFeatureItem(
           icon: Icons.settings,
           label: 'Settings',
-          onTap: () {},
+          onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateEventScreen(eventId: eventId))),
         ),
         _buildFeatureItem(
           icon: Icons.reviews,
