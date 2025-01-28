@@ -51,6 +51,7 @@ class QaReplyScreen extends StatefulWidget {
 
 class _QaReplyScreenState extends State<QaReplyScreen> {
   final TextEditingController _commentController = TextEditingController();
+  final TextEditingController _editController = TextEditingController();
   final supabase = Supabase.instance.client;
   late final Stream<List<Reply>> _repliesStream;
   final Map<String, String> _usernamesCache = {};
@@ -102,7 +103,6 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
           .eq('username', username)
           .single();
 
-      // if (response != null && response['url'] != null) {
       if (response['url'] != null) {
         final url = response['url'];
         final imageResponse = await http.get(Uri.parse(url));
@@ -149,6 +149,108 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
         );
       }
     }
+  }
+
+  Future<void> _editReply(Reply reply) async {
+    _editController.text = reply.answer;
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Edit Reply',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF003675),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _editController,
+                decoration: InputDecoration(
+                  hintText: "Enter Reply",
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.all(16),
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF003675),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final updatedText = _editController.text.trim();
+                    if (updatedText.isNotEmpty) {
+                      try {
+                        await supabase.from('event_answers').update({
+                          'answer': updatedText,
+                        }).eq('id', reply.id);
+
+                        if (mounted) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Reply updated successfully!'),
+                            ),
+                          );
+                        }
+                      } catch (error) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error updating reply: $error'),
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  child: const Text(
+                    'Update Reply',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -228,130 +330,81 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
     );
   }
 
-  Future<void> _editReply(Reply reply) async {
-  final updatedText = await showDialog<String>(
-    context: context,
-    builder: (context) {
-      final TextEditingController _editController =
-          TextEditingController(text: reply.answer);
-      return AlertDialog(
-        title: const Text('Edit Reply'),
-        content: TextField(
-          controller: _editController,
-          decoration: const InputDecoration(
-            hintText: "Update your reply",
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, null),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, _editController.text.trim()),
-            child: const Text('Save'),
-          ),
-        ],
-      );
-    },
-  );
+  Widget _buildCommentTile({
+    required String name,
+    required String date,
+    required String comment,
+    required Reply reply,
+    Uint8List? profilePic,
+  }) {
+    final isCurrentUserReply = reply.userId == prefs.getString('userId')!;
 
-  if (updatedText != null && updatedText.isNotEmpty) {
-    try {
-      await supabase.from('event_answers').update({
-        'answer': updatedText,
-      }).eq('id', reply.id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Reply updated successfully!')),
-      );
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating reply: $error')),
-      );
-    }
-  }
-}
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: GestureDetector(
+        onLongPress: isCurrentUserReply ? () => _editReply(reply) : null,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                final currentUserId = prefs.getString('userId')!;
 
+                final userIdResponse = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('username', name)
+                    .single();
 
+                final userIdForThisReply = userIdResponse['id'];
 
-Widget _buildCommentTile({
-  required String name,
-  required String date,
-  required String comment,
-  required Reply reply,
-  Uint8List? profilePic,
-}) {
-  final isCurrentUserReply = reply.userId == prefs.getString('userId')!;
-
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6.0),
-    child: GestureDetector(
-      onLongPress: isCurrentUserReply
-          ? () => _editReply(reply) // Show edit dialog on long press
-          : null,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () async {
-              final currentUserId = prefs.getString('userId')!;
-
-              // Get the user ID for this reply
-              final userIdResponse = await supabase
-                  .from('users')
-                  .select('id')
-                  .eq('username', name)
-                  .single();
-
-              final userIdForThisReply = userIdResponse['id'];
-
-              // Only navigate if it's not the current user
-              if (userIdForThisReply != currentUserId) {
-                if (mounted) {
-                  Navigator.push(
+                if (userIdForThisReply != currentUserId) {
+                  if (mounted) {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfileViewPage(viewedUsername: name)));
+                        builder: (context) =>
+                            UserProfileViewPage(viewedUsername: name),
+                      ),
+                    );
+                  }
                 }
-              }
-            },
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: profilePic == null
-                  ? const Color(0xFF003675)
-                  : Colors.transparent,
-              foregroundColor: Colors.white,
-              backgroundImage:
-                  profilePic != null ? MemoryImage(profilePic) : null,
-              child: profilePic == null ? Text(name[0].toUpperCase()) : null,
+              },
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: profilePic == null
+                    ? const Color(0xFF003675)
+                    : Colors.transparent,
+                foregroundColor: Colors.white,
+                backgroundImage:
+                    profilePic != null ? MemoryImage(profilePic) : null,
+                child: profilePic == null ? Text(name[0].toUpperCase()) : null,
+              ),
             ),
-          ),
-          SizedBox(width: 8.h),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "$name • $date",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                Text(comment),
-              ],
+            SizedBox(width: 8.h),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "$name • $date",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(comment),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildCommentInputField() {
     return Container(
@@ -396,6 +449,7 @@ Widget _buildCommentTile({
   @override
   void dispose() {
     _commentController.dispose();
+    _editController.dispose();
     super.dispose();
   }
 }
