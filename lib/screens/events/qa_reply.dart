@@ -207,6 +207,7 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
                                         locale: 'en_short'),
                                     comment: reply.answer,
                                     profilePic: profilePic,
+                                    reply: reply,
                                   ),
                                   SizedBox(height: 8.h),
                                 ],
@@ -227,14 +228,67 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
     );
   }
 
-  Widget _buildCommentTile({
-    required String name,
-    required String date,
-    required String comment,
-    Uint8List? profilePic,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+  Future<void> _editReply(Reply reply) async {
+  final updatedText = await showDialog<String>(
+    context: context,
+    builder: (context) {
+      final TextEditingController _editController =
+          TextEditingController(text: reply.answer);
+      return AlertDialog(
+        title: const Text('Edit Reply'),
+        content: TextField(
+          controller: _editController,
+          decoration: const InputDecoration(
+            hintText: "Update your reply",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, null),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, _editController.text.trim()),
+            child: const Text('Save'),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (updatedText != null && updatedText.isNotEmpty) {
+    try {
+      await supabase.from('event_answers').update({
+        'answer': updatedText,
+      }).eq('id', reply.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reply updated successfully!')),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating reply: $error')),
+      );
+    }
+  }
+}
+
+
+
+Widget _buildCommentTile({
+  required String name,
+  required String date,
+  required String comment,
+  required Reply reply,
+  Uint8List? profilePic,
+}) {
+  final isCurrentUserReply = reply.userId == prefs.getString('userId')!;
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6.0),
+    child: GestureDetector(
+      onLongPress: isCurrentUserReply
+          ? () => _editReply(reply) // Show edit dialog on long press
+          : null,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -253,12 +307,13 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
 
               // Only navigate if it's not the current user
               if (userIdForThisReply != currentUserId) {
-                if(mounted){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            UserProfileViewPage(viewedUsername: name)));}
+                if (mounted) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              UserProfileViewPage(viewedUsername: name)));
+                }
               }
             },
             child: CircleAvatar(
@@ -277,11 +332,14 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "$name • $date",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "$name • $date",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 4.h),
                 Text(comment),
@@ -290,8 +348,10 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildCommentInputField() {
     return Container(
