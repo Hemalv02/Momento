@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_bloc.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_event.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_state.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/guest_api.dart';
 import 'package:momento/screens/events/guest_add.dart';
+import 'package:momento/screens/profile/user_profile_view_page.dart'; // Add this import
 import 'package:momento/utils/flutter_toaster.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -20,6 +20,7 @@ class GuestList extends StatefulWidget {
 
 class _GuestListState extends State<GuestList> {
   late FetchGuestBloc fetchGuestBloc;
+  Key _listKey = UniqueKey();
 
   @override
   void initState() {
@@ -35,9 +36,25 @@ class _GuestListState extends State<GuestList> {
   }
 
   Future<void> _onRefresh() async {
+    setState(() {
+      _listKey = UniqueKey();
+    });
     fetchGuestBloc.add(RefreshGuestsByEventId(widget.eventId));
     await fetchGuestBloc.stream.firstWhere(
         (state) => state is FetchGuestLoaded || state is FetchGuestError);
+  }
+
+  void _handleAddGuest() {
+    showGuestModal(
+      context,
+      widget.eventId,
+      () {
+        setState(() {
+          _listKey = UniqueKey();
+        });
+        _onRefresh();
+      },
+    );
   }
 
   @override
@@ -52,16 +69,7 @@ class _GuestListState extends State<GuestList> {
         ),
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showGuestModal(
-              context,
-              widget.eventId,
-              () {
-                // Trigger a refresh after modal pop
-                _onRefresh();
-              },
-            );
-          },
+          onPressed: _handleAddGuest,
           foregroundColor: Colors.white,
           backgroundColor: const Color(0xFF003675),
           child: const Icon(Icons.add),
@@ -89,10 +97,14 @@ class _GuestListState extends State<GuestList> {
 
               if (guests != null && guests.isNotEmpty) {
                 return ListView.builder(
+                  key: _listKey,
                   itemCount: guests.length,
                   itemBuilder: (context, index) {
                     final guest = guests[index];
-                    return GuestCard(guest: guest);
+                    return GuestCard(
+                      key: ValueKey('guest_${guest.id}_${_listKey}'),
+                      guest: guest,
+                    );
                   },
                 );
               }
@@ -122,44 +134,154 @@ class _GuestListState extends State<GuestList> {
   }
 }
 
-class GuestCard extends StatelessWidget {
+class GuestCard extends StatefulWidget {
   final Guest guest;
 
   const GuestCard({
     super.key,
     required this.guest,
   });
+
+  @override
+  State<GuestCard> createState() => _GuestCardState();
+}
+
+class _GuestCardState extends State<GuestCard> {
+  String? username;
+  String? profilePicUrl;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
+
+  Future<void> _fetchUserProfile() async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      // Check if user exists
+      final userResponse = await supabase
+          .from('users')
+          .select('username')
+          .eq('email', widget.guest.email)
+          .single();
+
+      if (userResponse != null) {
+        final fetchedUsername = userResponse['username'] as String;
+
+        // Check if profile picture exists
+        final profilePicResponse = await supabase
+            .from('profile_pics')
+            .select('url')
+            .eq('username', fetchedUsername)
+            .maybeSingle();
+
+        setState(() {
+          username = fetchedUsername;
+          profilePicUrl = profilePicResponse?['url'] as String?;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   Future<void> onDelete(Guest guest, BuildContext context) async {
     final supabase = Supabase.instance.client;
 
     try {
       await supabase.from('guests').delete().eq('id', guest.id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${guest.name} deleted')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${guest.name} deleted')),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    }
+  }
+
+  Widget _buildAvatar() {
+    if (isLoading) {
+      return const SizedBox(
+        width: 40,
+        height: 40,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: Color(0xFF003675),
+        ),
       );
     }
+
+    if (username == null) {
+      return const SizedBox.shrink();
+    }
+
+    if (profilePicUrl != null) {
+      return GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                UserProfileViewPage(viewedUsername: username!),
+          ),
+        ),
+        child: CircleAvatar(
+          radius: 20,
+          backgroundImage: NetworkImage(profilePicUrl!),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserProfileViewPage(viewedUsername: username!),
+        ),
+      ),
+      child: CircleAvatar(
+        radius: 20,
+        backgroundColor: const Color(0xFF003675),
+        child: Text(
+          username![0].toUpperCase(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey(
-          guest.id), // Unique key for each item, assuming guest has an 'id'
-      direction: DismissDirection.startToEnd, // Swipe from right to left
+      key: ValueKey(widget.guest.id),
+      direction: DismissDirection.startToEnd,
       onDismissed: (direction) {
-        // Handle deletion logic here
-        onDelete(guest,context); // Call a function to delete the guest (implement onDelete)
+        onDelete(widget.guest, context);
       },
       confirmDismiss: (direction) async {
         return showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Confirm Deletion'),
-            content: Text('Are you sure you want to remove ${guest.name}?'),
+            content:
+                Text('Are you sure you want to remove ${widget.guest.name}?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -193,8 +315,9 @@ class GuestCard extends StatelessWidget {
         color: const Color.fromARGB(255, 240, 246, 252),
         child: ListTile(
           contentPadding: const EdgeInsets.all(16),
+          leading: _buildAvatar(),
           title: Text(
-            guest.name, // Null handling for guest.name
+            widget.guest.name,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
@@ -202,7 +325,7 @@ class GuestCard extends StatelessWidget {
             ),
           ),
           subtitle: Text(
-            guest.email, // Null handling for guest.email
+            widget.guest.email,
             style: const TextStyle(color: Colors.black87),
           ),
         ),
