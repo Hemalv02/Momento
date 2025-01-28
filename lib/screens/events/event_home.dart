@@ -216,7 +216,7 @@ class _EventHomeState extends State<EventHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QuestionsScreen(eventId: eventId),
+              builder: (context) => QuestionsScreen(eventId: eventId, canDelete: true),
             ),
           ),
         ),
