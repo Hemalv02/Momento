@@ -201,49 +201,78 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
                 maxLines: 3,
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF003675),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          foregroundColor: Colors.black87,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
                     ),
                   ),
-                  onPressed: () async {
-                    final updatedText = _editController.text.trim();
-                    if (updatedText.isNotEmpty) {
-                      try {
-                        await supabase.from('event_answers').update({
-                          'answer': updatedText,
-                        }).eq('id', reply.id);
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SizedBox(
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF003675),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () async {
+                          final updatedText = _editController.text.trim();
+                          if (updatedText.isNotEmpty) {
+                            try {
+                              await supabase.from('event_answers').update({
+                                'answer': updatedText,
+                              }).eq('id', reply.id);
 
-                        if (mounted) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Reply updated successfully!'),
-                            ),
-                          );
-                        }
-                      } catch (error) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Error updating reply: $error'),
-                            ),
-                          );
-                        }
-                      }
-                    }
-                  },
-                  child: const Text(
-                    'Update Reply',
-                    style: TextStyle(fontSize: 16),
+                              if (mounted) {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Reply updated successfully!'),
+                                  ),
+                                );
+                              }
+                            } catch (error) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('Error updating reply: $error'),
+                                  ),
+                                );
+                              }
+                            }
+                          }
+                        },
+                        child: const Text(
+                          'Update',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(height: 20),
             ],
