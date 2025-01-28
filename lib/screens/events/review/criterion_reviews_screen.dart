@@ -550,77 +550,156 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
     final TextEditingController feedbackController =
         TextEditingController(text: currentFeedback);
 
-    return showDialog(
+    await showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit Review'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RatingBar.builder(
-                initialRating: currentRating,
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemSize: 40,
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Colors.amber.shade600,
-                ),
-                onRatingUpdate: (value) {
-                  currentRating = value;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: feedbackController,
-                decoration: const InputDecoration(
-                  labelText: 'Feedback',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              try {
-                await supabase.from('reviews').update({
-                  rating: currentRating,
-                  feedback: feedbackController.text.trim(),
-                }).eq('id', review['id']);
-
-                if (mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Review updated successfully')),
-                  );
-                }
-              } catch (e) {
-                if (mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error updating review: $e')),
-                  );
-                }
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              left: 16.w,
+              right: 16.w,
+              top: 16.h,
+            ),
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.85,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Handle at the top
+                  Center(
+                    child: Container(
+                      width: 40.w,
+                      height: 4.h,
+                      margin: EdgeInsets.only(bottom: 16.h),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Edit Review',
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF003675),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Rating Bar
+                          Center(
+                            child: RatingBar.builder(
+                              initialRating: currentRating,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemSize: 40,
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber.shade600,
+                              ),
+                              onRatingUpdate: (value) {
+                                currentRating = value;
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          // Feedback TextField
+                          TextField(
+                            controller: feedbackController,
+                            decoration: const InputDecoration(
+                              labelText: 'Feedback',
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xFF003675)),
+                              ),
+                            ),
+                            maxLines: 3,
+                          ),
+                          SizedBox(height: 24.h),
+                          // Update Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50.h,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF003675),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (feedbackController.text.trim().isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('Feedback cannot be empty')),
+                                  );
+                                  return;
+                                }
+                                try {
+                                  await supabase.from('reviews').update({
+                                    rating: currentRating,
+                                    feedback: feedbackController.text.trim(),
+                                  }).eq('id', review['id']);
+
+                                  if (mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Review updated successfully')),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'Error updating review: $e')),
+                                    );
+                                  }
+                                }
+                              },
+                              child: Text(
+                                'Update Review',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
-
   // Previous methods remain the same...
 
   @override
@@ -769,7 +848,7 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
                             );
                           },
                         ),
-//                         
+//
                         const SizedBox(width: 8),
                         Expanded(
                           child: Column(

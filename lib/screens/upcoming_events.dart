@@ -193,17 +193,6 @@ class _UpcomingEventsState extends State<UpcomingEvents> {
                         ),
                       ),
                       SizedBox(height: 8.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 32.w),
-                        child: Text(
-                          'Create your first event by tapping the + button below',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 );
@@ -261,7 +250,7 @@ class _UpcomingEventsState extends State<UpcomingEvents> {
   }
 
   Future<Future<FetchEventState>> _onRefresh() async {
-    fetchEventBloc.add(RefreshEventsByCreator(creatorId));
+    fetchEventBloc.add(RefreshEventsByGuest(creatorId));
     return fetchEventBloc.stream.firstWhere((state) =>
         state is FetchEventLoaded ||
         state is FetchEventError ||

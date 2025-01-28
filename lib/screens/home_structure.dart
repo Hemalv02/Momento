@@ -20,12 +20,14 @@ class TabbedPage extends StatefulWidget {
 
 class _TabbedPageState extends State<TabbedPage> {
   int _selectedIndex = 0;
-  static const List<Widget> _pages = <Widget>[
-    HomeScreen(),
-    UpcomingEvents(),
-    SettingsScreen(),
-    // CreateProfilePage()
+
+  final List<Widget> _pages = [
+    const HomeScreen(),
+    const UpcomingEvents(),
+    const SettingsScreen(),
+    // const CreateProfilePage(),
   ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -35,7 +37,10 @@ class _TabbedPageState extends State<TabbedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -54,10 +59,10 @@ class _TabbedPageState extends State<TabbedPage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         backgroundColor: Colors.white,
-        selectedItemColor: const Color(0xFF003675), // Your specified color
+        selectedItemColor: const Color(0xFF003675),
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        elevation: 8, // Adds a subtle shadow
+        elevation: 8,
       ),
     );
   }
