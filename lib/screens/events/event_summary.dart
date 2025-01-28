@@ -99,7 +99,12 @@ class _TransactionSummaryWidgetState extends State<TransactionSummaryWidget> {
         ),
       );
 
-      final directory = await getApplicationDocumentsDirectory();
+      // Save to Downloads folder
+      final directory = await getDownloadsDirectory();
+      if (directory == null) {
+        throw Exception("Could not access Downloads directory.");
+      }
+
       final filePath = "${directory.path}/TransactionSummary.pdf";
       final file = File(filePath);
 
@@ -107,7 +112,7 @@ class _TransactionSummaryWidgetState extends State<TransactionSummaryWidget> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("PDF saved to $filePath"),
+          content: Text("PDF saved to Downloads folder: $filePath"),
         ),
       );
     } catch (e) {
