@@ -700,7 +700,6 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
       },
     );
   }
-  // Previous methods remain the same...
 
   @override
   Widget build(BuildContext context) {
@@ -781,136 +780,144 @@ class _CriterionReviewsScreenState extends State<CriterionReviewsScreen> {
               ),
               const SizedBox(height: 10),
               ...reviews.map(
-                (review) => Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 240, 246, 252),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withAlpha(25),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: baseColor.withAlpha(25),
-                      width: 1,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-//                         // Profile Picture with Tap Functionality
-                        FutureBuilder<Uint8List?>(
-                          future: _getProfilePicture(review['username']),
-                          builder: (context, snapshot) {
-                            return GestureDetector(
-                              onTap: () async {
-                                final prefs =
-                                    await SharedPreferences.getInstance();
-                                final currUser = prefs.getString("username");
-                                if (currUser != review['username']) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UserProfileViewPage(
-                                        viewedUsername: review['username'],
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-                              child: CircleAvatar(
-                                radius: 24.r,
-                                backgroundColor: snapshot.data != null
-                                    ? Colors.transparent
-                                    : Colors.amber.shade100,
-                                foregroundColor: baseColor,
-                                backgroundImage: snapshot.data != null
-                                    ? MemoryImage(snapshot.data!)
-                                    : null,
-                                child: snapshot.data == null
-                                    ? Text(
-                                        (review['username']?.isNotEmpty ??
-                                                false)
-                                            ? review['username']![0]
-                                                .toUpperCase()
-                                            : '?',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )
-                                    : null,
-                              ),
-                            );
-                          },
-                        ),
-//
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            review['username'] ?? 'Unknown',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: baseColor,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ),
-                                        if (review['username'] ==
-                                            currentUsername)
-                                          IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                size: 20),
-                                            color: baseColor,
-                                            onPressed: () =>
-                                                _showEditDialog(review),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                  RatingBarIndicator(
-                                    rating:
-                                        (review[rating] as num?)?.toDouble() ??
-                                            0.0,
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber.shade600,
-                                    ),
-                                    itemCount: 5,
-                                    itemSize: 20,
-                                  ),
-                                ],
-                              ),
-                              if (review[feedback]?.isNotEmpty ?? false) ...[
-                                const SizedBox(height: 8),
-                                Text(
-                                  review[feedback],
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade700,
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
+                (review) => GestureDetector(
+                  onTap: () {
+                    if (review['username'] == currentUsername) {
+                      _showEditDialog(review);
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 240, 246, 252),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withAlpha(25),
+                          spreadRadius: 1,
+                          blurRadius: 2,
+                          offset: const Offset(0, 1),
                         ),
                       ],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: baseColor.withAlpha(25),
+                        width: 1,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          //                         // Profile Picture with Tap Functionality
+                          FutureBuilder<Uint8List?>(
+                            future: _getProfilePicture(review['username']),
+                            builder: (context, snapshot) {
+                              return GestureDetector(
+                                onTap: () async {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  final currUser = prefs.getString("username");
+                                  if (currUser != review['username']) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserProfileViewPage(
+                                          viewedUsername: review['username'],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: CircleAvatar(
+                                  radius: 24.r,
+                                  backgroundColor: snapshot.data != null
+                                      ? Colors.transparent
+                                      : Colors.amber.shade100,
+                                  foregroundColor: baseColor,
+                                  backgroundImage: snapshot.data != null
+                                      ? MemoryImage(snapshot.data!)
+                                      : null,
+                                  child: snapshot.data == null
+                                      ? Text(
+                                          (review['username']?.isNotEmpty ??
+                                                  false)
+                                              ? review['username']![0]
+                                                  .toUpperCase()
+                                              : '?',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      : null,
+                                ),
+                              );
+                            },
+                          ),
+                          //
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              review['username'] ?? 'Unknown',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                color: baseColor,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          // if (review['username'] ==
+                                          //     currentUsername)
+                                          //   IconButton(
+                                          //     icon: const Icon(Icons.edit,
+                                          //         size: 20),
+                                          //     color: baseColor,
+                                          //     onPressed: () =>
+                                          //         _showEditDialog(review),
+                                          //   ),
+                                        ],
+                                      ),
+                                    ),
+                                    RatingBarIndicator(
+                                      rating: (review[rating] as num?)
+                                              ?.toDouble() ??
+                                          0.0,
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber.shade600,
+                                      ),
+                                      itemCount: 5,
+                                      itemSize: 20,
+                                    ),
+                                  ],
+                                ),
+                                if (review[feedback]?.isNotEmpty ?? false) ...[
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    review[feedback],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
