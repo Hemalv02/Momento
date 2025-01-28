@@ -47,14 +47,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             UserAccountSection(key: _userAccountKey),
             const Divider(),
             SettingsOption(
-              icon: Icons.language,
-              title: "App language",
-              subtitle: "English (device's language)",
-              onTap: () {
-                // Handle app language settings
-              },
-            ),
-            SettingsOption(
               icon: Icons.info,
               title: "About Us",
               subtitle: "Know the developers of Momento",
