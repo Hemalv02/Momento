@@ -5,7 +5,7 @@ import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_event.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_state.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/guest_api.dart';
 import 'package:momento/screens/events/guest_add.dart';
-import 'package:momento/screens/profile/user_profile_view_page.dart'; // Add this import
+import 'package:momento/screens/profile/user_profile_view_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GuestList extends StatefulWidget {
@@ -184,11 +184,13 @@ class _GuestCardState extends State<GuestCard> {
         });
       } else {
         setState(() {
+          username = null;
           isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
+        username = null;
         isLoading = false;
       });
     }
@@ -225,19 +227,18 @@ class _GuestCardState extends State<GuestCard> {
       );
     }
 
-    if (username == null) {
-      return const SizedBox.shrink();
-    }
-
+    // If user has a profile picture, show it
     if (profilePicUrl != null) {
       return GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                UserProfileViewPage(viewedUsername: username!),
-          ),
-        ),
+        onTap: username != null
+            ? () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        UserProfileViewPage(viewedUsername: username!),
+                  ),
+                )
+            : null,
         child: CircleAvatar(
           radius: 20,
           backgroundImage: NetworkImage(profilePicUrl!),
@@ -245,18 +246,23 @@ class _GuestCardState extends State<GuestCard> {
       );
     }
 
+    // For users with profile (username exists) or without profile (show first letter of name)
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UserProfileViewPage(viewedUsername: username!),
-        ),
-      ),
+      onTap: username != null
+          ? () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      UserProfileViewPage(viewedUsername: username!),
+                ),
+              )
+          : null,
       child: CircleAvatar(
         radius: 20,
         backgroundColor: const Color(0xFF003675),
         child: Text(
-          username![0].toUpperCase(),
+          // Use username's first letter if exists, otherwise use guest name's first letter
+          (username ?? widget.guest.name)[0].toUpperCase(),
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
