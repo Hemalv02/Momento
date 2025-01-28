@@ -13,3 +13,7 @@ class RefreshEventsByCreator extends FetchEventEvent {
   final String createdBy;
   RefreshEventsByCreator(this.createdBy);
 }
+class RefreshEventsByGuest extends FetchEventEvent {
+  final String createdBy;
+  RefreshEventsByGuest(this.createdBy);
+}
