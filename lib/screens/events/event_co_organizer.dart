@@ -42,7 +42,6 @@ class _EventCoOrganizerState extends State<EventCoOrganizer> {
 
   Future<void> _fetchOrganizerInfo() async {
     try {
-      // First, get the organizer's user_id from events table
       final eventResponse = await supabase
           .from('event')
           .select('created_by')
@@ -52,13 +51,11 @@ class _EventCoOrganizerState extends State<EventCoOrganizer> {
       if (eventResponse['created_by'] != null) {
         final organizerUserId = eventResponse['created_by'];
 
-        // Check if current user is the organizer
         setState(() {
           isOrganizer = organizerUserId == widget.userId;
           organizerId = organizerUserId;
         });
 
-        // Then get both username and email from users table
         final userResponse = await supabase
             .from('users')
             .select('username, email')
@@ -115,7 +112,6 @@ class _EventCoOrganizerState extends State<EventCoOrganizer> {
   }
 
   void _navigateToProfile(BuildContext context, String username) {
-    // Check if the user is trying to view their own profile
     if (username != prefs.getString('username')) {
       Navigator.push(
         context,
@@ -129,14 +125,6 @@ class _EventCoOrganizerState extends State<EventCoOrganizer> {
   }
 
   Widget _buildOrganizerSection() {
-    if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: Color(0xFF003675),
-        ),
-      );
-    }
-
     if (organizerUsername == null) {
       return const Center(child: Text('Organizer information not available'));
     }
@@ -224,7 +212,6 @@ class _EventCoOrganizerState extends State<EventCoOrganizer> {
           backgroundColor: const Color(0xFF003675),
           foregroundColor: Colors.white,
         ),
-        // Only show FAB if user is the organizer
         floatingActionButton: isOrganizer
             ? FloatingActionButton(
                 onPressed: () {
@@ -251,16 +238,20 @@ class _EventCoOrganizerState extends State<EventCoOrganizer> {
                           ? state.previousCoorganizers
                           : null;
 
+              // Show single loading indicator when either organizer info or co-organizers are loading
+              if (isLoading ||
+                  (state is FetchCoorganizerLoading && coorganizers == null)) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF003675),
+                  ),
+                );
+              }
+
               return ListView(
                 children: [
                   _buildOrganizerSection(),
-                  if (state is FetchCoorganizerLoading && coorganizers == null)
-                    const Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF003675),
-                      ),
-                    )
-                  else if (coorganizers != null && coorganizers.isNotEmpty)
+                  if (coorganizers != null && coorganizers.isNotEmpty)
                     ...coorganizers.map((coorganizer) {
                       return FutureBuilder<Uint8List?>(
                         future: _getProfilePicture(coorganizer.username),
@@ -399,7 +390,6 @@ class CoorganizerCard extends StatelessWidget {
       ),
     );
 
-    // Only wrap with Dismissible if user is the organizer
     if (isOrganizer) {
       return Dismissible(
         key: Key(coorganizer.username),
