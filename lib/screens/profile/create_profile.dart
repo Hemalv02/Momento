@@ -48,7 +48,7 @@ class NewProfilePageState extends State<NewProfilePage> {
   }
 
   Future<void> uploadImage(File imageFile, String username) async {
-    final uri = Uri.parse('https://fastapi-momento.vercel.app/profile/upload');
+    final uri = Uri.parse('http://146.190.73.109/profile/upload');
     final request = http.MultipartRequest('POST', uri);
     // Attach the image file
     request.files.add(await http.MultipartFile.fromPath(
@@ -103,7 +103,7 @@ class NewProfilePageState extends State<NewProfilePage> {
       });
 
       final prefs = await SharedPreferences.getInstance();
-      String url = "https://fastapi-momento.vercel.app/profile/create-profile";
+      String url = "http://146.190.73.109/profile/create-profile";
       final Map<String, dynamic> jsonBody = {
         "Username": prefs.getString('username'),
         "Email": prefs.getString('email'),

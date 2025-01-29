@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class EventApiService {
-  final String baseUrl = "https://fastapi-momento.vercel.app/event";
+  final String baseUrl = "http://146.190.73.109/event";
 
   Future<List<Event>> fetchEvents(String createdBy) async {
     try {
