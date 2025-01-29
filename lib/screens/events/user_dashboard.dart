@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:momento/main.dart';
 import 'package:momento/screens/events/event_qa.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/review/event_review.dart';
+import 'package:momento/screens/events/ticket/ticket_page.dart';
 
 class GuestHome extends StatefulWidget {
   final int eventId;
@@ -14,6 +16,8 @@ class GuestHome extends StatefulWidget {
 }
 
 class _GuestHomeState extends State<GuestHome> {
+  final String userEmail = prefs.getString('email') ?? '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +101,10 @@ class _GuestHomeState extends State<GuestHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QuestionsScreen(eventId: widget.eventId,canDelete: false,),
+              builder: (context) => QuestionsScreen(
+                eventId: widget.eventId,
+                canDelete: false,
+              ),
             ),
           ),
         ),
@@ -109,6 +116,19 @@ class _GuestHomeState extends State<GuestHome> {
             MaterialPageRoute(
               builder: (context) =>
                   ReviewsScreen(eventId: widget.eventId, isGuest: true),
+            ),
+          ),
+        ),
+        _buildFeatureItem(
+          icon: Icons.movie,
+          label: 'Ticket',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TicketPage(
+                eventId: widget.eventId,
+                userEmail: userEmail,
+              ),
             ),
           ),
         ),

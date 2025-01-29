@@ -117,7 +117,7 @@ class MomentoApp extends StatelessWidget {
             'home': (context) => const HomeScreen(),
             'create_event': (context) => const CreateEventScreen(),
             'event_home': (context) => const EventHome(),
-            'ticket_scanner': (context) => const QRScannerPage(),
+            // 'ticket_scanner': (context) => const QRScannerPage(),
             // 'guest_list': (context) => const GuestList(),
             // 'event_schedule': (context) => const EventSchedule(),
             'event_notification': (context) => const EventNotification(),
