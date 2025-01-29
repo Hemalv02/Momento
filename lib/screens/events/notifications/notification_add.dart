@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
@@ -38,6 +41,7 @@ class _NotificationModalState extends State<NotificationModal> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _messageController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -48,20 +52,68 @@ class _NotificationModalState extends State<NotificationModal> {
 
   Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
       try {
+        // 1. First, insert into Supabase
         await supabase.from('add_notifications').insert({
           'event_id': widget.eventId,
           'title': _titleController.text,
           'message': _messageController.text,
         });
-        if (mounted) Navigator.pop(context);
+
+        // 2. Then make the API call to send notifications
+        final Map<String, dynamic> requestBody = {
+          'event_id': widget.eventId,
+          'title': _titleController.text,
+          'message': _messageController.text,
+        };
+
+        final response = await http.post(
+          Uri.parse('http://146.190.73.109/notification/send'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(requestBody),
+        );
+
+        // Handle the response
+        if (response.statusCode == 200) {
+          // Success
+          if (mounted) {
+            Navigator.pop(context); // Pop only once to close the modal
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Notification saved and sent successfully.'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        } else {
+          // API Error
+          final errorMessage =
+              jsonDecode(response.body)['detail'] ?? 'Unknown error occurred';
+          throw Exception(errorMessage);
+        }
       } catch (e) {
+        // Show error message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${e.toString()}')),
+            SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
-      } finally {}
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
     }
   }
 
@@ -165,11 +217,31 @@ class _NotificationModalState extends State<NotificationModal> {
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                       ),
-                      onPressed: _handleSubmit,
-                      child: Text(
-                        'Send Notification',
-                        style: TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.bold),
+                      onPressed: _isLoading ? null : _handleSubmit,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (_isLoading)
+                            Padding(
+                              padding: EdgeInsets.only(right: 8.w),
+                              child: SizedBox(
+                                height: 20.h,
+                                width: 20.h,
+                                child: const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            ),
+                          Text(
+                            _isLoading ? 'Sending...' : 'Send Notification',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
