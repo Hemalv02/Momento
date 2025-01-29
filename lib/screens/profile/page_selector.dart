@@ -16,8 +16,7 @@ class _PageSelectorState extends State<PageSelector> {
   Future<bool> checkCondition() async {
     final prefs = await SharedPreferences.getInstance();
     final username = prefs.getString('username');
-    String url =
-        "https://fastapi-momento.vercel.app/profile/get-profile/$username";
+    String url = "http://146.190.73.109/profile/get-profile/$username";
     final response = await http.get(Uri.parse(url));
     final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
     if (jsonResponse['data'] != null && jsonResponse['data'].isEmpty) {

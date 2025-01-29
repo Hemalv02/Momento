@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_bloc.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_event.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/fetch_guest_state.dart';
 import 'package:momento/screens/events/fetch_guest_bloc/guest_api.dart';
 import 'package:momento/screens/events/guest_add.dart';
+import 'package:momento/screens/events/guest_sheet_add.dart';
 import 'package:momento/screens/profile/user_profile_view_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -56,6 +58,19 @@ class _GuestListState extends State<GuestList> {
     );
   }
 
+  void _handleSheetImport() {
+    showImportGuestSheetModal(
+      context,
+      widget.eventId,
+      () {
+        setState(() {
+          _listKey = UniqueKey();
+        });
+        _onRefresh();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -67,11 +82,31 @@ class _GuestListState extends State<GuestList> {
           foregroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-        floatingActionButton: FloatingActionButton(
-          onPressed: _handleAddGuest,
-          foregroundColor: Colors.white,
-          backgroundColor: const Color(0xFF003675),
-          child: const Icon(Icons.add),
+        floatingActionButton: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: 'addGuest',
+              onPressed: _handleAddGuest,
+              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xFF003675),
+              child: const Icon(Icons.add),
+            ),
+            SizedBox(height: 8.h),
+            FloatingActionButton.extended(
+              heroTag: 'importGuest',
+              onPressed: _handleSheetImport,
+              label: const Text(
+                "Excel Import",
+                style: TextStyle(color: Colors.white),
+              ),
+              icon: const Icon(Icons.file_download),
+              backgroundColor: const Color(0xFF003675),
+              foregroundColor: Colors.white,
+              elevation: 1,
+            ),
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: _onRefresh,

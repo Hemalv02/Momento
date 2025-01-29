@@ -36,16 +36,14 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
         .eq('id', widget.eventId)
         .single();
 
-    if (response != null) {
-      setState(() {
-        eventName.text = response['event_name'];
-        organizedBy.text = response['organized_by'];
-        location.text = response['location'];
-        startDateTime = DateTime.parse(response['start_date']);
-        endDateTime = DateTime.parse(response['end_date']);
-        eventDescription.text = response['description'];
-      });
-    }
+    setState(() {
+      eventName.text = response['event_name'];
+      organizedBy.text = response['organized_by'];
+      location.text = response['location'];
+      startDateTime = DateTime.parse(response['start_date']);
+      endDateTime = DateTime.parse(response['end_date']);
+      eventDescription.text = response['description'];
+    });
   }
 
   Future<void> _updateEvent(BuildContext context) async {

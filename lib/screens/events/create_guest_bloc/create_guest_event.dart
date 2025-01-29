@@ -7,3 +7,10 @@ class CreateGuestSubmitted extends CreateGuestEvent {
 
   CreateGuestSubmitted(this.name, this.email, this.eventId);
 }
+
+class ImportGuestFromExcel extends CreateGuestEvent {
+  final String sheetUrl;
+  final int eventId;
+
+  ImportGuestFromExcel(this.sheetUrl, this.eventId);
+}
