@@ -6,14 +6,15 @@ import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
 import 'package:momento/screens/events/event_qa.dart';
-import 'package:momento/screens/events/notifications/event_notification_admin.dart';
-import 'package:momento/screens/events/review/event_review.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/event_summary.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/food/food_list_screen.dart';
 import 'package:momento/screens/events/guest_list.dart';
-import 'package:momento/screens/events/notifications/notification_add.dart';
+import 'package:momento/screens/events/notifications/event_notification_admin.dart';
+import 'package:momento/screens/events/review/event_review.dart';
+import 'package:momento/screens/events/ticket/ticket_generate.dart';
+import 'package:momento/screens/events/ticket_scanner.dart';
 import 'package:momento/screens/events/todo_page.dart';
 import 'package:momento/screens/events/update_event_details.dart';
 
@@ -132,7 +133,11 @@ class _EventHomeState extends State<EventHome> {
         _buildFeatureItem(
           icon: Icons.qr_code_scanner,
           label: 'Scanner',
-          onTap: () => Navigator.of(context).pushNamed('ticket_scanner'),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => QRScannerPage(eventId: eventId),
+            ),
+          ),
         ),
         _buildFeatureItem(
           icon: Icons.monetization_on,
@@ -198,6 +203,15 @@ class _EventHomeState extends State<EventHome> {
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => TransactionSummaryWidget(eventId: eventId),
+            ),
+          ),
+        ),
+        _buildFeatureItem(
+          icon: Icons.bar_chart,
+          label: 'Ticket',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => TicketGenerate(eventId: eventId),
             ),
           ),
         ),
