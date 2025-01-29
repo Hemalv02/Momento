@@ -169,20 +169,22 @@ class _QRScannerPageState extends State<QRScannerPage> {
       );
       final String dbKey = selectedFeatureData['dbKey'];
 
+      print(qrResult);
       // Check if the ticket exists
       final response = await supabase
           .from('tickets')
           .select()
-          .eq('token_key', qrResult)
+          .eq('ticket_key', qrResult)
           .eq('event_id', widget.eventId)
           .single();
 
+      print(response);
       // Close loading dialog
       Navigator.pop(context);
 
       if (response != null) {
         // Check if feature is already scanned
-        if (response['${dbKey}_scanned'] == true) {
+        if (response['${dbKey}'] == true) {
           showResultDialog(
             false,
             'This ticket has already been scanned for $selectedFeature!',
@@ -191,8 +193,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
           // Update the feature scanned status to true
           await supabase
               .from('tickets')
-              .update({'${dbKey}_scanned': true})
-              .eq('token_key', qrResult)
+              .update({'${dbKey}': true})
+              .eq('ticket_key', qrResult)
               .eq('event_id', widget.eventId);
 
           showResultDialog(
