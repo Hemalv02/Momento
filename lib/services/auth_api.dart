@@ -68,6 +68,36 @@ class ApiService {
     }
   }
 
+  Future<OTPResponse> forgotPassword(
+      String email, String otp, String otpType) async {
+    try {
+      final response = await _dio.post(
+        "http://146.190.73.109/auth/forgot-password",
+        data: {
+          "email": email,
+        },
+      );
+
+      // If the request succeeded (status code 200), return the parsed response
+      return OTPResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      // Handle DioError explicitly
+      if (e.response != null) {
+        // Server responded with a non-200 status code
+        throw ApiException(e.response?.data['detail'] ??
+            'An unknown error occurred with status code ${e.response?.statusCode}');
+      } else {
+        // No response (e.g., network error, timeout, etc.)
+        throw ApiException('Failed to connect to the server');
+      }
+    } catch (e) {
+      // Catch other unexpected exceptions
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+
+
   Future<OTPResponse> verifyOTP(
       String email, String otp, String otpType) async {
     try {
