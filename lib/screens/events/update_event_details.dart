@@ -15,8 +15,7 @@ class UpdateEventScreen extends StatefulWidget {
 class _UpdateEventScreenState extends State<UpdateEventScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime startDateTime = DateTime.now();
-  DateTime endDateTime = DateTime.now()
-      .add(const Duration(hours: 1)); // Default end time 1 hour later
+  DateTime endDateTime = DateTime.now().add(const Duration(hours: 1));
 
   final TextEditingController eventName = TextEditingController();
   final TextEditingController organizedBy = TextEditingController();
@@ -46,6 +45,68 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
     });
   }
 
+  Future<void> _deleteEvent() async {
+    try {
+      await Supabase.instance.client
+          .from('event')
+          .delete()
+          .eq('id', widget.eventId);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Event deleted successfully"),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          'home_structure',
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to delete event: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _showDeleteConfirmation() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Event'),
+          content: const Text('Are you sure you want to delete this event?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Color(0xFF003675)),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteEvent();
+              },
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _updateEvent(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -60,7 +121,7 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
     }
 
     try {
-      final response = await Supabase.instance.client.from('event').update({
+      await Supabase.instance.client.from('event').update({
         'event_name': eventName.text,
         'organized_by': organizedBy.text,
         'location': location.text,
@@ -76,7 +137,6 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        // Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
@@ -141,7 +201,6 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
 
           if (isStart) {
             startDateTime = newDateTime;
-            // Automatically adjust end time if it's before start time
             if (endDateTime.isBefore(newDateTime)) {
               endDateTime = newDateTime.add(const Duration(hours: 1));
             }
@@ -221,24 +280,51 @@ class _UpdateEventScreenState extends State<UpdateEventScreen> {
                       maxLines: 3,
                     ),
                     SizedBox(height: 26.h),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50.h,
-                      child: ElevatedButton(
-                        onPressed: () => _updateEvent(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF003675),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.w),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: SizedBox(
+                            height: 50.h,
+                            child: ElevatedButton(
+                              onPressed: () => _updateEvent(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF003675),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.w),
+                                ),
+                                elevation: 3,
+                              ),
+                              child: Text(
+                                "Update",
+                                style: TextStyle(fontSize: 18.sp),
+                              ),
+                            ),
                           ),
-                          elevation: 3,
                         ),
-                        child: Text(
-                          "Update",
-                          style: TextStyle(fontSize: 18.sp),
+                        SizedBox(width: 16.w),
+                        Expanded(
+                          child: SizedBox(
+                            height: 50.h,
+                            child: ElevatedButton(
+                              onPressed: _showDeleteConfirmation,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.w),
+                                ),
+                                elevation: 3,
+                              ),
+                              child: Text(
+                                "Delete",
+                                style: TextStyle(fontSize: 18.sp),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
