@@ -6,6 +6,7 @@ import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
 import 'package:momento/screens/events/event_qa.dart';
+import 'package:momento/screens/events/notifications/event_notification_admin.dart';
 import 'package:momento/screens/events/review/event_review.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/event_summary.dart';
@@ -183,7 +184,13 @@ class _EventHomeState extends State<EventHome> {
         _buildFeatureItem(
           icon: Icons.notifications,
           label: 'Notify',
-          onTap: () => showNotificationModal(context, eventId: eventId),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              // showNotificationModal(context, eventId: eventId)
+              builder: (context) => EventNotificationAdmin(eventId: eventId),
+            ),
+          ),
         ),
         _buildFeatureItem(
           icon: Icons.bar_chart,
@@ -217,14 +224,18 @@ class _EventHomeState extends State<EventHome> {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QuestionsScreen(eventId: eventId, canDelete: true),
+              builder: (context) =>
+                  QuestionsScreen(eventId: eventId, canDelete: true),
             ),
           ),
         ),
         _buildFeatureItem(
           icon: Icons.settings,
           label: 'Settings',
-          onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateEventScreen(eventId: eventId))),
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => UpdateEventScreen(eventId: eventId))),
         ),
         _buildFeatureItem(
           icon: Icons.reviews,
