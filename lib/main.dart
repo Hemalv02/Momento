@@ -114,8 +114,6 @@ class MomentoApp extends StatelessWidget {
             'signup': (context) => const SignUpScreen(),
             // 'signup_otp': (context) => const SignUpOtpVerification(),
             'forgot_password': (context) => const ForgotPassword(),
-            'otp_verify': (context) => const OTPVerification(),
-            'reset_password': (context) => const ResetPassword(),
             'home': (context) => const HomeScreen(),
             'create_event': (context) => const CreateEventScreen(),
             'event_home': (context) => const EventHome(),
