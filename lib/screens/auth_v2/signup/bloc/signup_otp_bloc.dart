@@ -29,7 +29,7 @@ class OtpBloc extends Bloc<OtpEvent, OtpState> {
     emit(OtpLoading());
     try {
       // await _apiService.();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       emit(OtpSuccess("OTP resent successfully!"));
     } catch (e) {
       emit(OtpFailure(e.toString()));

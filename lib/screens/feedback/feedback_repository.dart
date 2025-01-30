@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FeedbackRepository {
-  final String baseUrl = 'https://fastapi-momento.vercel.app';
+  final String baseUrl = 'http://146.190.73.109';
 
   Future<Map<String, dynamic>> submitFeedback({
     required String userId,

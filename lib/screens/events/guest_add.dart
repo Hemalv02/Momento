@@ -161,11 +161,11 @@ class _GuestModalState extends State<GuestModal> {
                           style: FilledButton.styleFrom(
                             backgroundColor: state is CreateGuestLoading
                                 ? const Color(0xFF003675)
-                                    .withOpacity(0.7) // Slightly lighter color
+                                    .withAlpha(204) // Slightly lighter color
                                 : const Color(0xFF003675),
                             foregroundColor: Colors.white,
                             disabledBackgroundColor:
-                                const Color(0xFF003675).withOpacity(0.7),
+                                const Color(0xFF003675).withAlpha(204),
                             minimumSize: const Size(double.infinity, 56),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),

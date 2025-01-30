@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,7 +48,7 @@ class NewProfilePageState extends State<NewProfilePage> {
   }
 
   Future<void> uploadImage(File imageFile, String username) async {
-    final uri = Uri.parse('https://fastapi-momento.vercel.app/profile/upload');
+    final uri = Uri.parse('http://146.190.73.109/profile/upload');
     final request = http.MultipartRequest('POST', uri);
     // Attach the image file
     request.files.add(await http.MultipartFile.fromPath(
@@ -103,7 +103,7 @@ class NewProfilePageState extends State<NewProfilePage> {
       });
 
       final prefs = await SharedPreferences.getInstance();
-      String url = "https://fastapi-momento.vercel.app/profile/create-profile";
+      String url = "http://146.190.73.109/profile/create-profile";
       final Map<String, dynamic> jsonBody = {
         "Username": prefs.getString('username'),
         "Email": prefs.getString('email'),
@@ -357,7 +357,7 @@ class NewProfilePageState extends State<NewProfilePage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withAlpha(25),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1),
@@ -408,7 +408,7 @@ class NewProfilePageState extends State<NewProfilePage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withAlpha(25),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1),
@@ -465,7 +465,7 @@ class NewProfilePageState extends State<NewProfilePage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withAlpha(25),
             spreadRadius: 1,
             blurRadius: 3,
             offset: const Offset(0, 1),

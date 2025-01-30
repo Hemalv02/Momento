@@ -38,25 +38,30 @@ class _QuestionModalState extends State<QuestionModal> {
   final _formKey = GlobalKey<FormState>();
   final _questionController = TextEditingController();
   final supabase = Supabase.instance.client;
+  bool _isSubmitting = false;
 
-  Future<void> _submitQuestion(
-    int eventId,
-    String userId,
-  ) async {
-    if (_questionController.text.trim().isEmpty) return;
+  Future<void> _handleSubmit() async {
+    if (!_formKey.currentState!.validate() || _isSubmitting) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
 
     try {
       await supabase.from('event_questions').insert({
-        'event_id': eventId,
-        'user_id': userId,
+        'event_id': widget.eventId,
+        'user_id': widget.userId,
         'question': _questionController.text.trim(),
       });
 
-      _questionController.clear();
-
-      // Close modal after successful submission
       if (mounted) {
-        Navigator.pop(context);
+        Navigator.pop(context); // Only pop once
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Question submitted successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
       }
     } catch (error) {
       if (mounted) {
@@ -67,6 +72,12 @@ class _QuestionModalState extends State<QuestionModal> {
           ),
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
 
@@ -74,19 +85,6 @@ class _QuestionModalState extends State<QuestionModal> {
   void dispose() {
     _questionController.dispose();
     super.dispose();
-  }
-
-  void _handleSubmit() {
-    if (_formKey.currentState!.validate()) {
-      _submitQuestion(widget.eventId, widget.userId);
-      Navigator.of(context).pop(); // Close the modal
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Question submitted successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
   }
 
   @override
@@ -127,12 +125,11 @@ class _QuestionModalState extends State<QuestionModal> {
                     _buildLabel('Your Question'),
                     TextFormField(
                       controller: _questionController,
-                      decoration:
-                          _inputDecoration('Type your question here...'),
+                      decoration: _inputDecoration('Type your question here...'),
                       maxLines: 8,
                       textCapitalization: TextCapitalization.sentences,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'Please enter your question';
                         }
                         return null;
@@ -140,7 +137,7 @@ class _QuestionModalState extends State<QuestionModal> {
                     ),
                     SizedBox(height: 24.h),
                     FilledButton(
-                      onPressed: _handleSubmit,
+                      onPressed: _isSubmitting ? null : _handleSubmit,
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF003675),
                         foregroundColor: Colors.white,
@@ -149,13 +146,22 @@ class _QuestionModalState extends State<QuestionModal> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: _isSubmitting
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : Text(
+                              'Submit',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ],
                 ),

@@ -15,7 +15,7 @@ class EventApiService {
       String createdBy) async {
     try {
       final response = await _dio.post(
-        "https://fastapi-momento.vercel.app/event/create",
+        "http://146.190.73.109/event/create",
         data: {
           'event_name': name,
           'organized_by': organizedBy,

@@ -5,14 +5,26 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:momento/main.dart';
+import 'package:momento/screens/about_us_page.dart';
 import 'package:momento/screens/contact_us.dart';
 import 'package:momento/screens/profile/profile_page.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final GlobalKey<UserAccountSectionState> _userAccountKey = GlobalKey();
+
+  Future<void> _handleRefresh() async {
+    await _userAccountKey.currentState?.loadProfileData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,69 +36,82 @@ class SettingsScreen extends StatelessWidget {
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: ListView(
-        children: [
-          const UserAccountSection(),
-          const Divider(),
-          SettingsOption(
-            icon: Icons.language,
-            title: "App language",
-            subtitle: "English (device's language)",
-            onTap: () {
-              // Handle app language settings
-            },
-          ),
-          SettingsOption(
-            icon: Icons.help_outline,
-            title: "Contact Us",
-            subtitle: "Contact the developer of the apps.",
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const FeedbackPage(),
-                ),
-              );
-            },
-          ),
-          SettingsOption(
-            icon: Icons.logout,
-            title: "Logout",
-            subtitle: "Sign out of your account",
-            onTap: () {
-              // Handle logout action
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text("Logout"),
-                  content: Text("Are you sure you want to log out?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("Cancel"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        prefs.remove('userId');
-                        prefs.remove('token');
-                        prefs.remove('email');
-                        prefs.remove('username');
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            'login', (Route<dynamic> route) => false);
-                        // Perform logout logic here
-                      },
-                      child: Text("Logout"),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+      body: RefreshIndicator(
+        color: const Color(0xFF003675),
+        backgroundColor: Colors.white,
+        strokeWidth: 2.5,
+        displacement: 40,
+        onRefresh: _handleRefresh,
+        child: ListView(
+          children: [
+            UserAccountSection(key: _userAccountKey),
+            const Divider(),
+            SettingsOption(
+              icon: Icons.info,
+              title: "About Us",
+              subtitle: "Know the developers of Momento",
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AboutUsPage(),
+                  ),
+                );
+              },
+            ),
+            SettingsOption(
+              icon: Icons.help_outline,
+              title: "Contact Us",
+              subtitle: "Contact the developers of the app",
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const FeedbackPage(),
+                  ),
+                );
+              },
+            ),
+            SettingsOption(
+              icon: Icons.logout,
+              title: "Logout",
+              subtitle: "Sign out of your account",
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Logout"),
+                    content: const Text("Are you sure you want to log out?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          prefs.remove('userId');
+                          prefs.remove('token');
+                          prefs.remove('email');
+                          prefs.remove('username');
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              'login', (Route<dynamic> route) => false);
+                        },
+                        child: const Text("Logout"),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+
+abstract class UserAccountSectionState extends State<UserAccountSection> {
+  Future<void> loadProfileData();
 }
 
 class UserAccountSection extends StatefulWidget {
@@ -96,7 +121,7 @@ class UserAccountSection extends StatefulWidget {
   State<UserAccountSection> createState() => _UserAccountSectionState();
 }
 
-class _UserAccountSectionState extends State<UserAccountSection> {
+class _UserAccountSectionState extends UserAccountSectionState {
   final supabase = Supabase.instance.client;
   String username = '';
   String name = '';
@@ -128,7 +153,15 @@ class _UserAccountSectionState extends State<UserAccountSection> {
         });
   }
 
+  @override
   Future<void> loadProfileData() async {
+    setState(() {
+      isLoading = true;
+      // Clear existing data
+      profileImage = null;
+      name = '';
+    });
+
     try {
       // Get username from SharedPreferences
       username = prefs.getString('username') ?? '';
@@ -153,27 +186,42 @@ class _UserAccountSectionState extends State<UserAccountSection> {
             .eq('username', username)
             .single();
 
-        if (imageResponse != null) {
+        if (imageResponse != null && imageResponse['url'] != null) {
           final imageUrl = imageResponse['url'];
           final http.Response downloadResponse =
               await http.get(Uri.parse(imageUrl));
-          profileImage =
-              await _bytesToFile(downloadResponse.bodyBytes, username);
+          if (downloadResponse.statusCode == 200) {
+            final newProfileImage =
+                await _bytesToFile(downloadResponse.bodyBytes, username);
+
+            // Only update the state if the widget is still mounted
+            if (mounted) {
+              setState(() {
+                profileImage = newProfileImage;
+              });
+            }
+          }
         }
       } catch (e) {
         print('No profile image found: $e');
       }
 
-      setState(() {
-        name = profileData['Name'] ?? '';
-        isLoading = false;
-      });
+      // Only update the state if the widget is still mounted
+      if (mounted) {
+        setState(() {
+          name = profileData['Name'] ?? '';
+          isLoading = false;
+        });
+      }
 
-      // Setup real-time subscription after initial data load
+      // Cancel existing subscription before setting up a new one
+      await _profileSubscription.cancel();
       _setupRealtimeSubscription();
     } catch (e) {
       print('Error loading profile data: $e');
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
@@ -181,6 +229,11 @@ class _UserAccountSectionState extends State<UserAccountSection> {
   void initState() {
     super.initState();
     loadProfileData();
+    _profileSubscription = supabase
+        .from('user_profiles')
+        .stream(primaryKey: ['Username'])
+        .eq('Username', '')
+        .listen((_) {}); // Initialize with empty subscription
   }
 
   @override
