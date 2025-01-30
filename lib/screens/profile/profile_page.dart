@@ -64,7 +64,7 @@ class ProfilePageState extends State<ProfilePage> {
     return file;
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _updateProfilePicture() async {
     final ImagePicker picker = ImagePicker();
     setState(() => isloading = true);
 
@@ -84,6 +84,81 @@ class ProfilePageState extends State<ProfilePage> {
     } finally {
       setState(() => isloading = false);
     }
+  }
+
+  Future<void> _deleteProfilePicture() async {
+    setState(() => isloading = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String user = prefs.getString("username")!;
+
+      // Delete from profile_pics table
+      await supabase.from('profile_pics').delete().eq('username', user);
+
+      // Update UI
+      setState(() {
+        _selectedImage = null;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile picture deleted successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error deleting profile picture: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error deleting profile picture'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      setState(() => isloading = false);
+    }
+  }
+
+  void _showImageOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading:
+                    const Icon(Icons.photo_library, color: Color(0xFF003675)),
+                title: const Text('Update Profile Picture'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await _updateProfilePicture();
+                },
+              ),
+              // Only show delete option if there's an existing profile picture
+              if (_selectedImage != null)
+                ListTile(
+                  leading: const Icon(Icons.delete, color: Colors.red),
+                  title: const Text('Delete Profile Picture'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await _deleteProfilePicture();
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> uploadImage(File imageFile, String username) async {
@@ -319,7 +394,7 @@ class ProfilePageState extends State<ProfilePage> {
                                     context: context,
                                     initialDate: updatedDob ?? DateTime.now(),
                                     firstDate: DateTime(1900),
-                                    lastDate: DateTime(2100),
+                                    lastDate: DateTime.now(),
                                   );
                                   if (selectedDate != null) {
                                     setModalState(() {
@@ -616,7 +691,7 @@ class ProfilePageState extends State<ProfilePage> {
                       children: [
                         const SizedBox(height: 20),
                         GestureDetector(
-                          onTap: _pickImage,
+                          onTap: _showImageOptions,
                           child: Stack(
                             children: [
                               Container(
@@ -765,14 +840,14 @@ class ModernProfileDetail extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF003675).withOpacity(0.08),
+            color: const Color(0xFF003675).withAlpha(20),
             spreadRadius: 2,
             blurRadius: 15,
             offset: const Offset(0, 3),
           ),
         ],
         border: Border.all(
-          color: const Color(0xFF003675).withOpacity(0.1),
+          color: const Color(0xFF003675).withAlpha(25),
           width: 1,
         ),
       ),
@@ -784,7 +859,7 @@ class ModernProfileDetail extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF003675).withOpacity(0.05),
+              color: const Color(0xFF003675).withAlpha(13),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -793,7 +868,7 @@ class ModernProfileDetail extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF003675).withOpacity(0.1),
+                    color: const Color(0xFF003675).withAlpha(25),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -824,7 +899,7 @@ class ModernProfileDetail extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: const Color(0xFF003675).withOpacity(0.05),
+                          color: const Color(0xFF003675).withAlpha(13),
                           width: 1,
                         ),
                       ),
@@ -837,7 +912,7 @@ class ModernProfileDetail extends StatelessWidget {
                               detail.label,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: const Color(0xFF003675).withOpacity(0.6),
+                                color: const Color(0xFF003675).withAlpha(153),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

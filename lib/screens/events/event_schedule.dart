@@ -8,10 +8,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EventSchedule extends StatelessWidget {
   final int eventId;
+  final bool isGuest;
   final ScheduleService _scheduleService =
       ScheduleService(Supabase.instance.client);
 
-  EventSchedule({super.key, required this.eventId});
+  EventSchedule({super.key, required this.eventId, required this.isGuest});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class EventSchedule extends StatelessWidget {
 
                 return Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFF003675).withOpacity(0.1),
+                    color: const Color(0xFF003675).withAlpha(25),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   margin: const EdgeInsets.only(bottom: 8.0),
@@ -82,23 +83,30 @@ class EventSchedule extends StatelessWidget {
                         SizedBox(height: 12.h),
                         Column(
                           children: daySchedules.map((schedule) {
-                            return Dismissible(
-                              key: Key(schedule.id.toString()),
-                              background: Container(
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(right: 16),
-                                child: const Icon(Icons.delete,
-                                    color: Colors.white),
-                              ),
-                              onDismissed: (_) =>
-                                  _scheduleService.deleteSchedule(schedule.id!),
-                              child: TimelineTile(
-                                schedule: schedule,
-                                onTap: () =>
-                                    _showScheduleModal(context, schedule),
-                              ),
-                            );
+                            return isGuest
+                                ? TimelineTile(
+                                    schedule: schedule,
+                                    onTap:
+                                        () {}, // Disable tap action for guests
+                                  )
+                                : Dismissible(
+                                    key: Key(schedule.id.toString()),
+                                    background: Container(
+                                      color: Colors.red,
+                                      alignment: Alignment.centerRight,
+                                      padding: const EdgeInsets.only(right: 16),
+                                      child: const Icon(Icons.delete,
+                                          color: Colors.white),
+                                    ),
+                                    onDismissed: (_) =>
+                                        _scheduleService.deleteSchedule(
+                                            schedule.id!), // Allow deletion
+                                    child: TimelineTile(
+                                      schedule: schedule,
+                                      onTap: () => _showScheduleModal(
+                                          context, schedule), // Allow editing
+                                    ),
+                                  );
                           }).toList(),
                         ),
                         Container(
@@ -119,12 +127,14 @@ class EventSchedule extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showScheduleModal(context),
-        backgroundColor: const Color(0xFF003675),
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: isGuest
+          ? null
+          : FloatingActionButton(
+              onPressed: () => _showScheduleModal(context),
+              backgroundColor: const Color(0xFF003675),
+              foregroundColor: Colors.white,
+              child: const Icon(Icons.add),
+            ),
     );
   }
 
@@ -137,7 +147,7 @@ class EventSchedule extends StatelessWidget {
           Icon(
             Icons.event_busy,
             size: 64.w,
-            color: const Color(0xFF003675).withOpacity(0.5),
+            color: const Color(0xFF003675).withAlpha(127),
           ),
           SizedBox(height: 16.h),
           Text(
@@ -149,14 +159,16 @@ class EventSchedule extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8.h),
-          Text(
-            'Tap the + button to add your first schedule',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
+          isGuest
+              ? Text(
+                  'Tap the + button to add your first schedule',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                )
+              : const Text(""),
         ],
       ),
     );

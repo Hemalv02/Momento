@@ -12,6 +12,7 @@ class ToDoPage extends StatefulWidget {
 
 class ToDoPageState extends State<ToDoPage> {
   final _supabase = Supabase.instance.client;
+  late final StreamController<List<Map<String, dynamic>>> _todoStreamController;
   late final Stream<List<Map<String, dynamic>>> _todosStream;
   final List<Map<String, dynamic>> remainingTasks = [];
   final List<Map<String, dynamic>> finishedTasks = [];
@@ -19,28 +20,82 @@ class ToDoPageState extends State<ToDoPage> {
   @override
   void initState() {
     super.initState();
+    _todoStreamController = StreamController<List<Map<String, dynamic>>>();
+    _todosStream = _todoStreamController.stream;
     _initializeTodosStream();
   }
 
+  @override
+  void dispose() {
+    _todoStreamController.close();
+    super.dispose();
+  }
+
+  Future<void> _fetchAndUpdateTodos() async {
+    try {
+      final todos = await _supabase
+          .from('todo')
+          .select()
+          .eq('event_id', widget.eventId)
+          .order('created_at');
+
+      if (!_todoStreamController.isClosed) {
+        final List<Map<String, dynamic>> newRemainingTasks = [];
+        final List<Map<String, dynamic>> newFinishedTasks = [];
+
+        for (final todo in todos) {
+          if (todo['is_completed'] == true) {
+            newFinishedTasks.add(Map<String, dynamic>.from(todo));
+          } else {
+            newRemainingTasks.add(Map<String, dynamic>.from(todo));
+          }
+        }
+
+        setState(() {
+          remainingTasks
+            ..clear()
+            ..addAll(newRemainingTasks);
+          finishedTasks
+            ..clear()
+            ..addAll(newFinishedTasks);
+        });
+
+        _todoStreamController.add(todos);
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error fetching tasks: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   void _initializeTodosStream() {
-    _todosStream = _supabase
+    _supabase
         .from('todo')
         .stream(primaryKey: ['id'])
         .eq('event_id', widget.eventId)
         .order('created_at')
-        .map((todos) {
-          remainingTasks.clear();
-          finishedTasks.clear();
-
-          for (final todo in todos) {
-            if (todo['is_completed'] == true) {
-              finishedTasks.add(todo);
-            } else {
-              remainingTasks.add(todo);
+        .listen(
+          (data) => _fetchAndUpdateTodos(),
+          onError: (error) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Stream error: $error'),
+                  backgroundColor: Colors.red,
+                ),
+              );
             }
-          }
-          return todos;
-        });
+          },
+        );
+
+    // Initial fetch
+    _fetchAndUpdateTodos();
   }
 
   Future<void> _addTask(
@@ -55,6 +110,7 @@ class ToDoPageState extends State<ToDoPage> {
         'is_completed': false,
         'created_by': _supabase.auth.currentUser?.id,
       });
+      await _fetchAndUpdateTodos();
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -72,11 +128,82 @@ class ToDoPageState extends State<ToDoPage> {
       await _supabase
           .from('todo')
           .update({'is_completed': isCompleted}).eq('id', taskId);
+      await _fetchAndUpdateTodos();
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Error updating task'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _confirmAndDeleteTask(int taskId) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Deletion'),
+        content: const Text('Are you sure you want to delete this task?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      try {
+        await _supabase.from('todo').delete().eq('id', taskId);
+        await _fetchAndUpdateTodos();
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Task deleted successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Error deleting task'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _editTask(int taskId, String title, String description,
+      String name, DateTime dueDate) async {
+    try {
+      await _supabase.from('todo').update({
+        'title': title,
+        'description': description,
+        'assigned_to': name,
+        'due_date': dueDate.toIso8601String(),
+      }).eq('id', taskId);
+      await _fetchAndUpdateTodos();
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error editing task'),
             backgroundColor: Colors.red,
           ),
         );
@@ -123,6 +250,55 @@ class ToDoPageState extends State<ToDoPage> {
                   Navigator.pop(context);
                 }
               },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void showEditTaskModal(Map<String, dynamic> task) {
+    final titleController = TextEditingController(text: task['title']);
+    final descriptionController =
+        TextEditingController(text: task['description']);
+    final nameController = TextEditingController(text: task['assigned_to']);
+    DateTime selectedDate = DateTime.parse(task['due_date']);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: AddTaskModal(
+              titleController: titleController,
+              descriptionController: descriptionController,
+              nameController: nameController,
+              selectedDate: selectedDate,
+              onDateSelected: (pickedDate) {
+                if (pickedDate != null) {
+                  selectedDate = pickedDate;
+                }
+              },
+              onAddTask: () {
+                _editTask(
+                  task['id'],
+                  titleController.text,
+                  descriptionController.text,
+                  nameController.text,
+                  selectedDate,
+                );
+                Navigator.pop(context);
+              },
+              isEdit: true,
             ),
           ),
         );
@@ -191,20 +367,50 @@ class ToDoPageState extends State<ToDoPage> {
           ],
         ),
         children: tasks.map((task) {
+          final isOverdue = !isFinished &&
+              DateTime.parse(task['due_date']).isBefore(DateTime.now());
+
+          final textStyle = TextStyle(
+            color: isOverdue ? Colors.red : Colors.black,
+          );
+
           return ListTile(
-            title: Text(task['title'] ?? ''),
-            subtitle: Text(
-                'Assigned to: ${task['assigned_to']}\nDue: ${DateTime.parse(task['due_date']).toLocal().toString().split(' ')[0]}'),
+            title: Text(
+              task['title'] ?? '',
+              style: textStyle,
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Assigned to: ${task['assigned_to']}',
+                  style: textStyle,
+                ),
+                Text(
+                  'Due: ${DateTime.parse(task['due_date']).toLocal().toString().split(' ')[0]}',
+                  style: textStyle,
+                ),
+              ],
+            ),
             isThreeLine: true,
-            trailing: Checkbox(
-              value: isFinished,
-              onChanged: (_) {
-                if (isFinished) {
-                  _updateTaskStatus(task['id'], false);
-                } else {
-                  _updateTaskStatus(task['id'], true);
-                }
-              },
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.blue),
+                  onPressed: () => showEditTaskModal(task),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => _confirmAndDeleteTask(task['id']),
+                ),
+                Checkbox(
+                  value: isFinished,
+                  onChanged: (_) {
+                    _updateTaskStatus(task['id'], !isFinished);
+                  },
+                ),
+              ],
             ),
           );
         }).toList(),
@@ -220,7 +426,7 @@ class AddTaskModal extends StatelessWidget {
   final DateTime? selectedDate;
   final ValueChanged<DateTime?> onDateSelected;
   final VoidCallback onAddTask;
-
+  final bool isEdit;
   const AddTaskModal({
     super.key,
     required this.titleController,
@@ -229,6 +435,7 @@ class AddTaskModal extends StatelessWidget {
     required this.selectedDate,
     required this.onDateSelected,
     required this.onAddTask,
+    this.isEdit = false,
   });
 
   @override
@@ -248,11 +455,11 @@ class AddTaskModal extends StatelessWidget {
         Container(
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Text(
-              'Add New Task',
-              style: TextStyle(
+              isEdit ? 'Edit Task' : 'Add New Task',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF003675),
@@ -362,7 +569,7 @@ class AddTaskModal extends StatelessWidget {
                         onPressed: () async {
                           final pickedDate = await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: selectedDate ?? DateTime.now(),
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                           );
@@ -384,7 +591,7 @@ class AddTaskModal extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child: const Text('Add Task'),
+                    child: Text(isEdit ? 'Edit Task' : 'Add Task'),
                   ),
                 ],
               ),

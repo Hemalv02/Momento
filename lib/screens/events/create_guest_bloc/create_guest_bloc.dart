@@ -8,6 +8,24 @@ class CreateGuestBloc extends Bloc<CreateGuestEvent, CreateGuestState> {
 
   CreateGuestBloc({required this.apiService}) : super(CreateGuestInitial()) {
     on<CreateGuestSubmitted>(onCreateEventSubmitted);
+    on<ImportGuestFromExcel>(onImportGuestFromExcel);
+  }
+
+  Future<void> onImportGuestFromExcel(
+      ImportGuestFromExcel event, Emitter<CreateGuestState> emit) async {
+    emit(CreateGuestLoading());
+    try {
+      final response =
+          await apiService.importGuestsFromExcel(event.sheetUrl, event.eventId);
+
+      emit(CreateGuestSuccess(response.message));
+    } catch (e) {
+      if (e is GuestApiException) {
+        emit(CreateGuestFailure(e.message)); // Handle specific API errors
+      } else {
+        emit(CreateGuestFailure("An unexpected error occurred"));
+      }
+    }
   }
 
   Future<void> onCreateEventSubmitted(

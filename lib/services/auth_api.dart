@@ -1,4 +1,6 @@
-import 'package:dio/dio.dart'; // or use any HTTP client like `http`
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:momento/utils/flutter_toaster.dart'; // or use any HTTP client like `http`
 
 class ApiService {
   final Dio _dio;
@@ -8,7 +10,7 @@ class ApiService {
   Future<LoginResponse> loginUser(String email, String password) async {
     try {
       final response = await _dio.post(
-        "https://fastapi-momento.vercel.app/auth/login",
+        "http://146.190.73.109/auth/login",
         data: {
           'email': email,
           'password': password,
@@ -42,7 +44,7 @@ class ApiService {
       String username, String email, String password) async {
     try {
       final response = await _dio.post(
-        "https://fastapi-momento.vercel.app/auth/register",
+        "http://146.190.73.109/auth/register",
         data: {
           "username": username,
           "email": email,
@@ -68,11 +70,66 @@ class ApiService {
     }
   }
 
+  Future<OTPResponse> forgotPwd(String email) async {
+    try {
+      final response = await _dio.post(
+        "http://146.190.73.109/auth/forgot-password",
+        data: {
+          "email": email,
+        },
+      );
+
+      // If the request succeeded (status code 200), return the parsed response
+      return OTPResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      // Handle DioError explicitly
+      if (e.response != null) {
+        // Server responded with a non-200 status code
+        throw ApiException(e.response?.data['detail'] ??
+            'An unknown error occurred with status code ${e.response?.statusCode}');
+      } else {
+        // No response (e.g., network error, timeout, etc.)
+        throw ApiException('Failed to connect to the server');
+      }
+    } catch (e) {
+      // Catch other unexpected exceptions
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+  Future<OTPResponse> resetPassword(String password,String email) async {
+    try {
+      final response = await _dio.post(
+        "http://146.190.73.109/auth/update-password",
+        data: {
+          "new_password": password,
+          "email": email,
+        },
+      );
+      // If the request succeeded (status code 200), return the parsed response
+      return OTPResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      toastInfo(message: e.toString(), backgroundColor: Colors.black, textColor: Colors.white);
+      // Handle DioError explicitly
+      if (e.response != null) {
+        // Server responded with a non-200 status code
+        throw ApiException(
+            'An unknown error occurred with status code ${e.response?.statusCode}');
+      } else {
+        // No response (e.g., network error, timeout, etc.)
+        throw ApiException('Failed to connect to the server');
+      }
+    } catch (e) {
+      // Catch other unexpected exceptions
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
   Future<OTPResponse> verifyOTP(
       String email, String otp, String otpType) async {
     try {
       final response = await _dio.post(
-        "https://fastapi-momento.vercel.app/auth/verify-otp",
+        "http://146.190.73.109/auth/verify-otp",
         data: {
           "email": email,
           "otp": otp,

@@ -59,7 +59,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = const Color(0xFF003675);
+    const baseColor = Color(0xFF003675);
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
 
     return Container(
@@ -94,7 +94,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
             // Title
             Text(
               widget.schedule == null ? 'Add New Schedule' : 'Edit Schedule',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: baseColor,
@@ -295,10 +295,11 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
           Navigator.pop(context);
         }
       } catch (e) {
+        if(mounted){
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
         );
-      }
+      }}
     }
   }
 

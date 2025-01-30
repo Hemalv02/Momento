@@ -45,7 +45,7 @@ class _AnimatedLoadingOverlayState extends State<AnimatedLoadingOverlay>
         widget.child,
         if (widget.isLoading)
           Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withAlpha(127),
             child: Center(
               child: ScaleTransition(
                 scale: _animation,
