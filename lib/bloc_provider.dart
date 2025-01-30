@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momento/screens/auth_v2/login/bloc/login_bloc.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_bloc.dart';
+import 'package:momento/screens/auth/login/bloc/login_bloc.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_bloc.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_bloc.dart';
 import 'package:momento/screens/onboarding/bloc/onboarding_bloc.dart';
@@ -11,10 +11,8 @@ class AppBlocProviders {
         BlocProvider(
           create: (context) => OnboardingBloc(),
         ),
-        BlocProvider(
-            create: (context) => LoginBloc(apiService: ApiService())),
-        BlocProvider(
-            create: (context) => SignUpBloc(apiService: ApiService())),
+        BlocProvider(create: (context) => LoginBloc(apiService: ApiService())),
+        BlocProvider(create: (context) => SignUpBloc(apiService: ApiService())),
         BlocProvider(
             create: (context) => FetchEventBloc(apiService: EventApiService())),
       ];

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:momento/screens/auth_v2/reset_password/reset_password.dart';
+import 'package:momento/screens/auth/reset_password/reset_password.dart';
 import 'dart:async';
 import 'package:momento/services/auth_api.dart';
 
@@ -16,7 +16,7 @@ class _OTPVerificationState extends State<OTPVerification> {
   final List<TextEditingController> _otpControllers =
       List.generate(6, (index) => TextEditingController());
   final ApiService _apiService = ApiService();
-  
+
   int _secondsRemaining = 120;
   bool _isTimerActive = true;
   Timer? _timer;
@@ -65,7 +65,7 @@ class _OTPVerificationState extends State<OTPVerification> {
 
   Future<void> _verifyOTP() async {
     final otp = _otpControllers.map((controller) => controller.text).join();
-    
+
     if (otp.length != 6 || !RegExp(r'^\d{6}$').hasMatch(otp)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter a valid 6-digit OTP.")),
@@ -74,13 +74,15 @@ class _OTPVerificationState extends State<OTPVerification> {
     }
 
     try {
-      final response = await _apiService.verifyOTP(widget.email, otp, "otp_password");
+      final response =
+          await _apiService.verifyOTP(widget.email, otp, "otp_password");
 
       if (response.message == "OTP verified successfully") {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("OTP Verified Successfully!")),
         );
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResetPassword(email: widget.email)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ResetPassword(email: widget.email)));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response.message)),
@@ -88,7 +90,8 @@ class _OTPVerificationState extends State<OTPVerification> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("The OTP verification failed. Please try again.")),
+        const SnackBar(
+            content: Text("The OTP verification failed. Please try again.")),
       );
     }
   }

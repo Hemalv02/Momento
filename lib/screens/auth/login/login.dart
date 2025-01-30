@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/custom_widgets/loading.dart';
 import 'package:momento/custom_widgets/login_widget.dart';
-import 'package:momento/screens/auth_v2/login/bloc/login_bloc.dart';
-import 'package:momento/screens/auth_v2/login/bloc/login_event.dart';
-import 'package:momento/screens/auth_v2/login/bloc/login_states.dart';
+import 'package:momento/screens/auth/login/bloc/login_bloc.dart';
+import 'package:momento/screens/auth/login/bloc/login_event.dart';
+import 'package:momento/screens/auth/login/bloc/login_states.dart';
 import 'package:momento/services/auth_api.dart';
 import 'package:momento/utils/password_validator.dart';
 

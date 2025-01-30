@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/services/auth_api.dart';
+
 class ResetPassword extends StatefulWidget {
   final String email;
   const ResetPassword({super.key, required this.email});
@@ -11,7 +12,8 @@ class ResetPassword extends StatefulWidget {
 
 class _ResetPasswordState extends State<ResetPassword> {
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ApiService _apiService = ApiService();
   bool _isPasswordVisible = false;
@@ -34,7 +36,8 @@ class _ResetPasswordState extends State<ResetPassword> {
   Future<void> _submitResetPassword() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        final response = await _apiService.resetPassword(_passwordController.text, widget.email);
+        final response = await _apiService.resetPassword(
+            _passwordController.text, widget.email);
 
         if (response.message == "Password updated successfully") {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -98,7 +101,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                     hintText: "Enter your new password",
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setState(() {
@@ -140,11 +145,14 @@ class _ResetPasswordState extends State<ResetPassword> {
                     hintText: "Re-enter your password",
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isConfirmPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                     ),
@@ -197,4 +205,3 @@ class _ResetPasswordState extends State<ResetPassword> {
     );
   }
 }
-
