@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:momento/custom_widgets/build_loading_list.dart';
+import 'package:momento/custom_widgets/empty_state.dart';
+import 'package:momento/custom_widgets/error_state.dart';
+import 'package:momento/custom_widgets/event_card.dart';
 import 'package:momento/main.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_bloc.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_event.dart';
 import 'package:momento/screens/events/fetch_event_bloc/fetch_event_state.dart';
+import 'package:momento/custom_widgets/search_bar.dart' as custom_widgets;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,26 +55,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   automaticallyImplyLeading: false,
                   scrolledUnderElevation: 0,
                   title: isSearchMode
-                      ? TextField(
+                      ? custom_widgets.SearchBar(
                           controller: searchController,
                           onChanged: (value) {
                             setState(() {
                               searchQuery = value.toLowerCase();
                             });
                           },
-                          autofocus: true,
-                          decoration: InputDecoration(
-                            hintText: 'Search events...',
-                            hintStyle: TextStyle(
-                              fontSize: 18.sp,
-                              color: Colors.grey[600],
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            color: Colors.black,
-                          ),
+                          onClose: () {
+                            setState(() {
+                              isSearchMode = false;
+                              searchQuery = '';
+                              searchController.clear();
+                            });
+                          },
+                          isSearchMode: isSearchMode,
                         )
                       : Text(
                           'Momento',
@@ -83,18 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: Colors.white,
                   elevation: 0,
                   actions: [
-                    if (isSearchMode)
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          setState(() {
-                            isSearchMode = false;
-                            searchQuery = '';
-                            searchController.clear();
-                          });
-                        },
-                      )
-                    else
+                    if (!isSearchMode)
                       IconButton(
                         icon: const Icon(Icons.search),
                         onPressed: () {
@@ -105,9 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     IconButton(
                       icon: const Icon(Icons.refresh),
-                      onPressed: () {
-                        _onRefresh();
-                      },
+                      onPressed: _onRefresh,
                     ),
                   ],
                 ),
@@ -123,25 +109,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Color(0xFF003675),
                               ),
                             )
-                          : Container(
-                              color: Colors.grey,
-                            ),
+                          : Container(color: Colors.grey),
                     );
                   },
                 ),
               ],
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed('create_event').then((_) {
-              fetchEventBloc.add(FetchEventsByCreator(creatorId));
-            });
-          },
-          foregroundColor: Colors.white,
-          backgroundColor: const Color(0xFF003675),
-          child: const Icon(Icons.add),
         ),
         backgroundColor: Colors.white,
         body: RefreshIndicator(
@@ -156,107 +130,34 @@ class _HomeScreenState extends State<HomeScreen> {
                         event.description.toLowerCase().contains(searchQuery))
                     .toList();
 
-                if (filteredEvents.isEmpty) {
-                  return const Center(
-                    child: Text('No events match your search.'),
-                  );
-                }
-
-                return ListView.builder(
-                  itemCount: filteredEvents.length,
-                  itemBuilder: (context, index) {
-                    return EventCard(event: filteredEvents[index]);
-                  },
-                );
-              } else if (state is FetchEventLoading) {
-                return _buildLoadingList();
-              } else if (state is FetchEventError) {
-                return Center(
-                  child: Text(
-                    state.message,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                );
-              } else if (state is FetchEventEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.event_busy,
-                        size: 64.sp,
-                        color: Colors.grey[400],
-                      ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        'No Events Yet',
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[800],
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 32.w),
-                        child: Text(
-                          'Create your first event by tapping the + button below',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (state is FetchEventError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 64,
-                        color: Colors.red[300],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Error',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red[300],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: Text(
-                          state.message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-                      ElevatedButton(
-                        onPressed: () {
-                          fetchEventBloc.add(FetchEventsByCreator(creatorId));
+                return filteredEvents.isEmpty
+                    ? const EmptyState(
+                        message: 'No events match your search.',
+                        icon: Icons.event_busy)
+                    : ListView.builder(
+                        itemCount: filteredEvents.length,
+                        itemBuilder: (context, index) {
+                          return EventCard(
+                              event: filteredEvents[index],
+                              onEventTap: () {
+                                Navigator.of(context).pushNamed(
+                                  'event_home',
+                                  arguments: filteredEvents[index],
+                                );
+                              });
                         },
-                        child: const Text('Try Again'),
-                      ),
-                    ],
-                  ),
-                );
+                      );
+              } else if (state is FetchEventLoading) {
+                return buildLoadingList();
+              } else if (state is FetchEventError) {
+                return ErrorState(
+                    message: state.message,
+                    onRetry: () =>
+                        fetchEventBloc.add(FetchEventsByCreator(creatorId)));
+              } else {
+                return const EmptyState(
+                    message: 'No Events Yet', icon: Icons.event_busy);
               }
-
-              return const Center(
-                child: Text('Unexpected state occurred.'),
-              );
             },
           ),
         ),
@@ -270,241 +171,5 @@ class _HomeScreenState extends State<HomeScreen> {
         state is FetchEventLoaded ||
         state is FetchEventError ||
         state is FetchEventEmpty);
-  }
-
-  Widget _buildLoadingList() {
-    return ListView.builder(
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header shimmer
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF003675),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                ),
-                child: Container(
-                  height: 24.h,
-                  width: 150.w,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(51),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-              // Content shimmer
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF0F6FC),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                  ),
-                ),
-                child: Column(
-                  children: List.generate(
-                      4,
-                      (index) => Padding(
-                            padding: EdgeInsets.only(bottom: 12.h),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 20.w,
-                                  height: 20.h,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                SizedBox(width: 8.w),
-                                Container(
-                                  width: 200.w,
-                                  height: 16.h,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class EventCard extends StatelessWidget {
-  final Event event;
-
-  const EventCard({
-    super.key,
-    required this.event,
-  });
-
-  String formatDate(DateTime date) {
-    return DateFormat('EEE, MMM d, y, hh:mm a').format(date);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed(
-          'event_home',
-          arguments: event,
-        );
-      },
-      child: Card(
-        // clickable
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        color: const Color.fromARGB(255, 240, 246, 252),
-        margin: const EdgeInsets.all(8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                color: const Color(0xFF003675),
-                child: Text(
-                  event.eventName,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              // Content
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Dates
-                    Wrap(
-                      spacing: 24,
-                      runSpacing: 16,
-                      children: [
-                        _buildDateInfo(
-                          context,
-                          Icons.calendar_today,
-                          'Start Date',
-                          formatDate(event.startDate),
-                        ),
-                        _buildDateInfo(
-                          context,
-                          Icons.calendar_today,
-                          'End Date',
-                          formatDate(event.endDate),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Location
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          size: 20,
-                          color: Theme.of(context).textTheme.bodySmall?.color,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          'Location:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          event.location,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Organizer
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.person_outline,
-                          size: 20,
-                          color: Theme.of(context).textTheme.bodySmall?.color,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Organized by ',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        Text(
-                          event.organizedBy,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDateInfo(
-    BuildContext context,
-    IconData icon,
-    String label,
-    String date,
-  ) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: Theme.of(context).textTheme.bodySmall?.color,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          '$label:',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(width: 8),
-        // const SizedBox(height: 4),
-        Text(
-          date,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
-    );
   }
 }
