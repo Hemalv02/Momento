@@ -138,6 +138,7 @@ class _GuestListState extends State<GuestList> {
                     return GuestCard(
                       key: ValueKey('guest_${guest.id}_${_listKey}'),
                       guest: guest,
+                      onDismissed: () => _onRefresh(),
                     );
                   },
                 );
@@ -170,10 +171,12 @@ class _GuestListState extends State<GuestList> {
 
 class GuestCard extends StatefulWidget {
   final Guest guest;
+  final VoidCallback onDismissed;
 
   const GuestCard({
     super.key,
     required this.guest,
+    required this.onDismissed,
   });
 
   @override
@@ -184,6 +187,7 @@ class _GuestCardState extends State<GuestCard> {
   String? username;
   String? profilePicUrl;
   bool isLoading = true;
+  bool _isDeleting = false;
 
   @override
   void initState() {
@@ -195,7 +199,6 @@ class _GuestCardState extends State<GuestCard> {
     final supabase = Supabase.instance.client;
 
     try {
-      // Check if user exists
       final userResponse = await supabase
           .from('users')
           .select('username')
@@ -205,33 +208,44 @@ class _GuestCardState extends State<GuestCard> {
       if (userResponse != null) {
         final fetchedUsername = userResponse['username'] as String;
 
-        // Check if profile picture exists
         final profilePicResponse = await supabase
             .from('profile_pics')
             .select('url')
             .eq('username', fetchedUsername)
             .maybeSingle();
 
-        setState(() {
-          username = fetchedUsername;
-          profilePicUrl = profilePicResponse?['url'] as String?;
-          isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            username = fetchedUsername;
+            profilePicUrl = profilePicResponse?['url'] as String?;
+            isLoading = false;
+          });
+        }
       } else {
+        if (mounted) {
+          setState(() {
+            username = null;
+            isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         setState(() {
           username = null;
           isLoading = false;
         });
       }
-    } catch (e) {
-      setState(() {
-        username = null;
-        isLoading = false;
-      });
     }
   }
 
-  Future<void> onDelete(Guest guest, BuildContext context) async {
+  Future<bool> onDelete(Guest guest, BuildContext context) async {
+    if (_isDeleting) return false;
+
+    setState(() {
+      _isDeleting = true;
+    });
+
     final supabase = Supabase.instance.client;
 
     try {
@@ -240,6 +254,8 @@ class _GuestCardState extends State<GuestCard> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${guest.name} deleted')),
         );
+        widget.onDismissed();
+        return true;
       }
     } catch (e) {
       if (mounted) {
@@ -247,7 +263,14 @@ class _GuestCardState extends State<GuestCard> {
           SnackBar(content: Text('Error: ${e.toString()}')),
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
     }
+    return false;
   }
 
   Widget _buildAvatar() {
@@ -262,7 +285,6 @@ class _GuestCardState extends State<GuestCard> {
       );
     }
 
-    // If user has a profile picture, show it
     if (profilePicUrl != null) {
       return GestureDetector(
         onTap: username != null
@@ -281,7 +303,6 @@ class _GuestCardState extends State<GuestCard> {
       );
     }
 
-    // For users with profile (username exists) or without profile (show first letter of name)
     return GestureDetector(
       onTap: username != null
           ? () => Navigator.push(
@@ -296,7 +317,6 @@ class _GuestCardState extends State<GuestCard> {
         radius: 20,
         backgroundColor: const Color(0xFF003675),
         child: Text(
-          // Use username's first letter if exists, otherwise use guest name's first letter
           (username ?? widget.guest.name)[0].toUpperCase(),
           style: const TextStyle(
             color: Colors.white,
@@ -312,11 +332,10 @@ class _GuestCardState extends State<GuestCard> {
     return Dismissible(
       key: ValueKey(widget.guest.id),
       direction: DismissDirection.startToEnd,
-      onDismissed: (direction) {
-        onDelete(widget.guest, context);
-      },
       confirmDismiss: (direction) async {
-        return showDialog(
+        if (_isDeleting) return false;
+
+        final shouldDelete = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Confirm Deletion'),
@@ -334,6 +353,13 @@ class _GuestCardState extends State<GuestCard> {
             ],
           ),
         );
+
+        if (shouldDelete == true) {
+          // Perform the delete operation before confirming the dismiss
+          return await onDelete(widget.guest, context);
+        }
+
+        return false;
       },
       background: Container(
         color: const Color(0xFF003675),
