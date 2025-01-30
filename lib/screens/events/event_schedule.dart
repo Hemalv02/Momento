@@ -160,7 +160,8 @@ class EventSchedule extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           isGuest
-              ? Text(
+              ? const Text("")
+              : Text(
                   'Tap the + button to add your first schedule',
                   style: TextStyle(
                     fontSize: 14.sp,
@@ -168,7 +169,6 @@ class EventSchedule extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 )
-              : const Text(""),
         ],
       ),
     );
