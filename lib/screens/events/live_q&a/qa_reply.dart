@@ -371,7 +371,7 @@ class _QaReplyScreenState extends State<QaReplyScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: GestureDetector(
-        onLongPress: isCurrentUserReply ? () => _editReply(reply) : null,
+        onTap: isCurrentUserReply ? () => _editReply(reply) : null,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
