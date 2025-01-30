@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 
-import 'package:momento/screens/auth/sign_up/loading.dart';
+import 'package:momento/custom_widgets/loading.dart';
 import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_bloc.dart';
 import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_event.dart';
 import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_state.dart';

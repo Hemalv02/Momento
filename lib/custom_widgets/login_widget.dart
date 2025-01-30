@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
 Widget reusableText(String text) {
   return Container(
     margin: EdgeInsets.only(bottom: 5.h),
@@ -9,25 +10,33 @@ Widget reusableText(String text) {
       style: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.bold,
+        fontFamily: 'Roboto',
         color: Colors.grey.shade700,
       ),
     ),
   );
 }
 
-Widget buildTextField(
-    String text, String textType, void Function(String value)? func) {
-  return TextField(
-    textInputAction:
-        textType == 'email' ? TextInputAction.next : TextInputAction.done,
+/// **Reusable Text Field**
+Widget reusableTextField({
+  required TextEditingController controller,
+  required String hintText,
+  required IconData prefixIcon,
+  required TextInputAction textInputAction,
+  required bool obscureText,
+  String? Function(String?)? validator,
+}) {
+  return TextFormField(
+    controller: controller,
+    validator: validator,
+    textInputAction: textInputAction,
+    obscureText: obscureText,
     autocorrect: false,
     decoration: InputDecoration(
       border: const OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
-      prefixIcon: Icon(
-        textType == 'password' ? Icons.lock : Icons.person,
-      ),
+      prefixIcon: Icon(prefixIcon),
       focusedBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         borderSide: BorderSide(color: const Color(0xFF003675), width: 2.w),
@@ -36,19 +45,68 @@ Widget buildTextField(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         borderSide: BorderSide(color: Colors.red, width: 2.w),
       ),
-      hintText: text,
+      hintText: hintText,
       hintStyle: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.normal,
-        //color: _textColor.withAlpha(180),
       ),
     ),
-    obscureText: textType == 'password' ? true : false,
     style: TextStyle(
-        fontSize: 15.sp, fontWeight: FontWeight.normal, fontFamily: "Avenir"),
-    onChanged: (value) => func!(value),
+      fontSize: 15.sp,
+      fontWeight: FontWeight.normal,
+      fontFamily: "Avenir",
+    ),
   );
 }
+
+/// **Reusable Filled Button**
+Widget reusableFilledButton({
+  required String text,
+  required VoidCallback onPressed,
+}) {
+  return FilledButton(
+    onPressed: onPressed,
+    style: FilledButton.styleFrom(
+      backgroundColor: const Color(0xFF003675),
+      foregroundColor: Colors.white,
+      minimumSize: const Size(double.infinity, 56),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+    ),
+    child: Text(text),
+  );
+}
+
+/// **Reusable Outlined Button**
+Widget reusableOutlinedButton({
+  required String text,
+  required VoidCallback onPressed,
+}) {
+  return OutlinedButton(
+    onPressed: onPressed,
+    style: OutlinedButton.styleFrom(
+      foregroundColor: const Color(0XFF003675),
+      minimumSize: const Size(double.infinity, 56),
+      side: BorderSide(
+        width: 2.w,
+        color: const Color(0xFF003675),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+    ),
+    child: Text(text),
+  );
+}
+
+PreferredSizeWidget reusableAppBar() {
+  return AppBar(
+    backgroundColor: Colors.white,
+    scrolledUnderElevation: 0,
+  );
+}
+
 
 Widget forgotPassword(void Function()? func) {
   return Container(
@@ -71,36 +129,3 @@ Widget forgotPassword(void Function()? func) {
   );
 }
 
-Widget loginButton(String buttonName, void Function()? function) {
-  return FilledButton(
-    onPressed: function,
-    style: FilledButton.styleFrom(
-      backgroundColor: const Color(0xFF003675),
-      foregroundColor: Colors.white,
-      minimumSize: const Size(double.infinity, 56),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-    ),
-    child: Text(buttonName),
-  );
-}
-
-Widget signUpButton(String buttonName, void Function()? function) {
-  return OutlinedButton(
-    onPressed: function,
-    style: OutlinedButton.styleFrom(
-      // backgroundColor: const Color(0xFFA7C4F7),
-      foregroundColor: const Color(0XFF003675),
-      minimumSize: const Size(double.infinity, 56),
-      side: BorderSide(
-        width: 2.w,
-        color: const Color(0xFF003675),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-    ),
-    child: Text(buttonName),
-  );
-}
