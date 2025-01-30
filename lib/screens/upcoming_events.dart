@@ -170,7 +170,6 @@ class _UpcomingEventsState extends State<UpcomingEvents> {
       ),
     );
   }
-
   Future<Future<FetchEventState>> _onRefresh() async {
     fetchEventBloc.add(RefreshEventsByGuest(creatorId));
     return fetchEventBloc.stream.firstWhere((state) =>
@@ -178,8 +177,4 @@ class _UpcomingEventsState extends State<UpcomingEvents> {
         state is FetchEventError ||
         state is FetchEventEmpty);
   }
-
-  
-
-
 }
