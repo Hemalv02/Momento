@@ -122,7 +122,7 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:momento/screens/auth/log_in/widget/login_widget.dart';
+import 'package:momento/custom_widgets/login_widget.dart';
 import 'package:momento/screens/auth_v2/otp_verify/otp_verify.dart';
 import 'package:momento/services/auth_api.dart';
 class ForgotPassword extends StatefulWidget {
