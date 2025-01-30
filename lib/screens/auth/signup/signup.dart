@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momento/custom_widgets/loading.dart';
 import 'package:momento/custom_widgets/login_widget.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_bloc.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_event.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_state.dart';
-import 'package:momento/screens/auth_v2/signup/signup_otp.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_bloc.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_event.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_state.dart';
+import 'package:momento/screens/auth/signup/signup_otp.dart';
 import 'package:momento/services/auth_api.dart';
 import 'package:momento/utils/password_validator.dart';
 
@@ -100,10 +100,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       reusableText("We are excited to have you join us!"),
                       SizedBox(height: 30.h),
-                      reusableText("Username"),                        SizedBox(height: 5.h),
-                        SizedBox(height: 5.h),
-
-
+                      reusableText("Username"),
+                      SizedBox(height: 5.h),
+                      SizedBox(height: 5.h),
                       reusableTextField(
                         controller: usernameController,
                         hintText: "Enter your username",
@@ -116,8 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       SizedBox(height: 15.h),
                       reusableText("Email"),
-                                              SizedBox(height: 5.h),
-
+                      SizedBox(height: 5.h),
                       reusableTextField(
                         controller: emailController,
                         hintText: "Enter your email",
@@ -128,8 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       SizedBox(height: 15.h),
                       reusableText("Password"),
-                                              SizedBox(height: 5.h),
-
+                      SizedBox(height: 5.h),
                       reusableTextField(
                         controller: passwordController,
                         hintText: "Enter your password",
@@ -140,8 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       SizedBox(height: 15.h),
                       reusableText("Confirm Password"),
-                                              SizedBox(height: 5.h),
-
+                      SizedBox(height: 5.h),
                       reusableTextField(
                         controller: confirmPasswordController,
                         hintText: "Confirm your password",

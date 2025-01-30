@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_event.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_state.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_otp_event.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_otp_state.dart';
 import 'package:momento/services/auth_api.dart';
 
 class OtpBloc extends Bloc<OtpEvent, OtpState> {

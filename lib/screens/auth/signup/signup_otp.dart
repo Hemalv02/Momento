@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 
 import 'package:momento/custom_widgets/loading.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_bloc.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_event.dart';
-import 'package:momento/screens/auth_v2/signup/bloc/signup_otp_state.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_otp_bloc.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_otp_event.dart';
+import 'package:momento/screens/auth/signup/bloc/signup_otp_state.dart';
 import 'package:momento/services/auth_api.dart';
 
 class SignUpOtpVerification extends StatefulWidget {
