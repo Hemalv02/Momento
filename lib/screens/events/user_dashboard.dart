@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:momento/main.dart';
-import 'package:momento/screens/events/event_qa.dart';
+import 'package:momento/screens/events/live_q&a/event_qa.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/review/event_review.dart';
 import 'package:momento/screens/events/ticket/ticket_page.dart';

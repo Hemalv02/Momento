@@ -5,7 +5,7 @@ import 'package:momento/screens/events/budget_bloc/budget_api_service.dart';
 import 'package:momento/screens/events/budget_bloc/budget_bloc.dart';
 import 'package:momento/screens/events/event_budget.dart';
 import 'package:momento/screens/events/event_co_organizer.dart';
-import 'package:momento/screens/events/event_qa.dart';
+import 'package:momento/screens/events/live_q&a/event_qa.dart';
 import 'package:momento/screens/events/event_schedule.dart';
 import 'package:momento/screens/events/event_summary.dart';
 import 'package:momento/screens/events/fetch_event_bloc/event_api.dart';
