@@ -117,6 +117,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed('create_event').then((_) {
+              fetchEventBloc.add(FetchEventsByCreator(creatorId));
+            });
+          },
+          foregroundColor: Colors.white,
+          backgroundColor: const Color(0xFF003675),
+          child: const Icon(Icons.add),
+        ),
         backgroundColor: Colors.white,
         body: RefreshIndicator(
           onRefresh: _onRefresh,
